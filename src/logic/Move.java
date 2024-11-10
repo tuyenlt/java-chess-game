@@ -1,6 +1,5 @@
 package logic;
 
-
 public class Move {
     private int startRow, startCol;
     private int endRow, endCol;

@@ -1,5 +1,6 @@
 package logic;
 
+
 import java.util.*;
 
 public abstract class Piece {
