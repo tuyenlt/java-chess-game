@@ -70,3 +70,7 @@ Thumbs.db
 # JUnit and test result files
 test-output/
 surefire-reports/
+
+
+#env
+*.env

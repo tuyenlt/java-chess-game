@@ -1,28 +1,22 @@
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.stage.Stage;
+import java.io.*;
 
-public class Test extends Application {
-    @Override
-    public void start(Stage stage) {
-        // Create a label with text
-        Label label = new Label("Hello, JavaFX!");
+import engine.StockfishEngine;
 
-        // Create a scene with the label and set its dimensions
-        Scene scene = new Scene(label, 400, 200);
 
-        // Set the scene to the stage (the main window)
-        stage.setScene(scene);
+public class Test {
 
-        // Set the title of the window
-        stage.setTitle("JavaFX Simple Example");
-
-        // Show the window
-        stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args); // Launch the JavaFX application
+    public static void main(String[] args) throws IOException {
+        StockfishEngine stockfish = new StockfishEngine();
+        stockfish.startNewGame();
+        stockfish.makePlayerMove("e2e4");
+        int n = 10;
+        while(n-->0){
+            System.out.println(stockfish.getBoardState());
+            String bestMove = stockfish.getBestMove();
+            System.out.println(bestMove);
+            System.out.println(stockfish.getCurrentFen());
+            stockfish.makePlayerMove(bestMove);
+        }
+        stockfish.close();
     }
 }
