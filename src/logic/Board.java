@@ -105,6 +105,7 @@ public class Board {
         if(piece instanceof King){
             setKing_pos(piece.getColor(), move.getEndRow(), move.getEndCol());
         }
+        // thêm tham số bool isFakeMove là được
         //Đoạn này đang cần xử lý việc đánh giấu xem vua và xe đã di chuyển chưa
         //Có 1 vấn đề là ở bên Utils có ham is_safe_move nó di chuyển giả 
         //Đang không biết làm sao để không đánh dấu nếu nó là di chuyển giả  

@@ -7,6 +7,7 @@ public class StockfishEngine {
     private Process stockfishProcess;
     private BufferedReader reader;
     private PrintWriter writer;
+    private int depth = 1;
     private StringBuilder movesHistory = new StringBuilder();
     private String currentFen = "";
 
@@ -15,6 +16,10 @@ public class StockfishEngine {
         stockfishProcess = new ProcessBuilder("E:\\TuyenLt\\Java\\chessgame\\stockfish\\stockfish.exe").start();
         reader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
         writer = new PrintWriter(stockfishProcess.getOutputStream(), true);
+    }
+
+    public void setDepth(int depth){
+        this.depth = depth;
     }
 
     public void startNewGame() {
@@ -29,7 +34,7 @@ public class StockfishEngine {
     }
 
     public String getBestMove() throws IOException {
-        writer.println("go depth 1");
+        writer.println("go depth " + depth);
         String line;
         while ((line = reader.readLine()) != null) {
             if (line.startsWith("bestmove")) {
