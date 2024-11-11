@@ -167,7 +167,7 @@ public class Board {
 
         //Thêm phép di chuyển vào danh sách
         if(isFakeMove) return;
-        if(currentTurn == "w"){
+        if(currentTurn.equals("w")){
             white_moves.add(move);
             currentTurn = "b";
         }else{
