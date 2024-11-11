@@ -12,5 +12,15 @@ public class ClassRegester {
         kryo.register(LoginRequest.class);
         kryo.register(RegisterRequest.class);
         kryo.register(UserResponse.class);
+        kryo.register(ErrorResponse.class);
+        kryo.register(FindGame.Request.class);
+        kryo.register(FindGame.Response.class);
+        kryo.register(HistoryGame.Request.class);
+        kryo.register(HistoryGame.Response.class);
+        kryo.register(RankingListRequest.class);
+        kryo.register(RankingListResponse.class);
+        kryo.register(ProfileView.Request.class);
+        kryo.register(ProfileView.Response.class);
+        kryo.register(GameStateResponse.class);
     }
 }

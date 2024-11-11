@@ -124,10 +124,10 @@ public class Board {
         //Đánh dấu trạng thái di chuyển của King và Rook
         if(piece instanceof King){
             setKing_pos(piece.getpieceColor(), move.getEndRow(), move.getEndCol());
-            if(!is_fake_move)((King)piece).setHasMoved(true);
+            if(!isFakeMove)((King)piece).setHasMoved(true);
         }
         if(piece instanceof Rook){
-            if(!is_fake_move)((Rook)piece).setHasMoved(true);
+            if(!isFakeMove)((Rook)piece).setHasMoved(true);
         }
         
         //Phép xử lý các nước đi đặc biệt

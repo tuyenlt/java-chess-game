@@ -4,27 +4,50 @@ import network.RequestAndResponse.*;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryo.Kryo;
-
+import java.net.ServerSocket;
 
 import java.io.IOException;
 
 
-public class ServerNetwork{
+public class GameServer{
     private Server server;
-    private int TCPPort;
-    private int UDPPort;
     private String[][] broad;
-
-    public ServerNetwork(int TCPPort, int UDPPort){
-        this.TCPPort = TCPPort;
-        this.UDPPort = UDPPort;
+    private String WhitePlayerId;
+    private String BlackPlayerId;
+    private int tcpPort;
+    private int udpPort;
+    
+    public GameServer(String WhitePlayerId, String BlackPlayerId){
+        this.BlackPlayerId = BlackPlayerId;
+        this.WhitePlayerId = WhitePlayerId;
         server = new Server();
-        Kryo kryo = server.getKryo();
-        kryo.register(SimpleRequest.class);
-        kryo.register(SimpleResponse.class);
-        kryo.register(MoveRequest.class);
+        ClassRegester.register(server);
+        try{
+            int[] ports = getTwoFreePorts();
+            tcpPort = ports[0];
+            udpPort = ports[1];
+            server.bind(tcpPort, udpPort);
+        }catch(IOException ex){
+            System.err.println(ex);
+        }
         broadInit();
+    }
+
+    private int[] getTwoFreePorts() throws IOException {
+        int[] ports = new int[2]; 
+        try (
+            ServerSocket serverSocket1 = new ServerSocket(0);
+            ServerSocket serverSocket2 = new ServerSocket(0)
+            ) { 
+            ports[0] = serverSocket1.getLocalPort(); 
+            ports[1] = serverSocket2.getLocalPort(); 
+        } 
+        return ports; 
+    }
+
+    public int[] getServerPorts(){
+        int[] ports = {tcpPort, udpPort};
+        return ports;
     }
 
     void broadInit(){
@@ -59,6 +82,7 @@ public class ServerNetwork{
         broad[7][7] = "bR";
     }
 
+
     public String getState(){
         StringBuilder state = new StringBuilder();
         for(int i=0;i<8;i++){
@@ -70,9 +94,8 @@ public class ServerNetwork{
         return state.toString();
     }
 
-    public void run() throws IOException{
+    public void run(){
         server.start();
-        server.bind(TCPPort, UDPPort);
         System.out.println("start listening for you guy");
         server.addListener(new Listener(){
             public void received (Connection connection, Object object) {
@@ -86,6 +109,7 @@ public class ServerNetwork{
             }
         });
     }
+
     private void handleSimpleRequest(Connection connection, Object object){
         SimpleRequest request = (SimpleRequest)object;
         System.out.println(request.msg);

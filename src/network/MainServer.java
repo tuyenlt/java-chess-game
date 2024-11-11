@@ -29,9 +29,11 @@ public class MainServer {
     class WaitingPlayer{
         public Connection connection;
         public int elo;
+        public String playerId;
 
-        public WaitingPlayer(Connection connection, int elo) {
+        public WaitingPlayer(Connection connection,String playerId,int elo) {
             this.connection = connection;
+            this.playerId = playerId;
             this.elo = elo;
         }
     }
@@ -127,13 +129,12 @@ public class MainServer {
                 //*! create new game server here
                 //*!
                 //*!
-
-
-                FindGame.Response response = new FindGame.Response(); // * example info of new game server
-                response.address = "localhost";
-                response.tcpPort = 5555;
-                response.udpPort = 6666;
-
+                GameServer gameServer = new GameServer(waitingPlayer.playerId, request.userId);
+                int[] newServerPort = gameServer.getServerPorts();
+                FindGame.Response response = new FindGame.Response();
+                response.tcpPort = newServerPort[0];
+                response.udpPort = newServerPort[1];
+                gameServer.run();
                 waitingPlayer.connection.sendTCP(response);
                 connection.sendTCP(response);
                 waitingPlayers.remove(waitingPlayer);
@@ -142,7 +143,7 @@ public class MainServer {
             }
         }
         if(!isFoundNewGame){
-            waitingPlayers.add(new WaitingPlayer(connection, request.elo));
+            waitingPlayers.add(new WaitingPlayer(connection, request.userId, request.elo));
         }
     }
 }
