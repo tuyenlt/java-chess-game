@@ -13,7 +13,7 @@ public class StockfishEngine {
 
     public StockfishEngine() throws IOException {
         // change path to stock fish here
-        stockfishProcess = new ProcessBuilder("E:\\TuyenLt\\Java\\chessgame\\stockfish\\stockfish.exe").start();
+        stockfishProcess = new ProcessBuilder("stockfish\\stockfish.exe").start();
         reader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
         writer = new PrintWriter(stockfishProcess.getOutputStream(), true);
     }

@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public abstract class Piece {
+
     protected String pieceColor; 
 
     public Piece(String pieceColor) {
@@ -23,6 +24,17 @@ public abstract class Piece {
         }
         return safeMoves;
     }
+
+    public boolean canAtack(Board board, int row, int col, int targetRow, int targetCol){
+        for(Move move : getValidMoves(board, row, col)){
+            if(move.getEndRow()==targetRow && move.getEndCol()==targetCol){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
 }
 
 

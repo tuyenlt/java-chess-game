@@ -20,9 +20,7 @@ public class Utils {
             for (int col = 0; col < 8; col++) {
                 Piece piece = board.getPiece(row, col);
                 if (piece == null || piece.getpieceColor().equals(pieceColor)) continue;
-                if (piece.getValidMoves(board, row, col).contains(new Move(row, col, targetRow, targetCol))) {
-                    return true;
-                }
+                if (piece.canAtack(board, row, col, targetRow, targetCol)) return true;
             }
         }
         return false;

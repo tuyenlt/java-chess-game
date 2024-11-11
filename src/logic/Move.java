@@ -60,4 +60,10 @@ public class Move {
         int endRowNum = 8 - endRow;
         return "" + startColChar + startRowNum + endColChar + endRowNum;
     }
+    @Override
+    public boolean equals(Object obj){
+        Move move = (Move) obj;
+        return startRow == move.startRow && startCol == move.startCol 
+            && endRow == move.endRow && endCol == move.endCol;
+    }
 }
