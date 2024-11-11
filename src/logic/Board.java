@@ -1,7 +1,7 @@
-// File này thuộc package logic
 package logic;
 
-
+import java.util.ArrayList;
+import java.util.List;
 class Box {
     private Piece piece;
 
@@ -24,6 +24,11 @@ class Box {
 
 public class Board {
     private Box[][] board;
+    
+    //Thêm danh sách lịch sử di chuyển của 2 bên để tiện sử dụng sau này
+    private List<Move> white_moves = new ArrayList<>();
+    private List<Move> black_moves = new ArrayList<>();
+
     private int wK_row, wK_col;
     private int bK_row, bK_col;
     Board() {
@@ -72,60 +77,89 @@ public class Board {
 
         return initialBoard;
     }
+
+    // Lấy thông tin quân cờ
     public Piece getPiece(int row, int col){
         return board[row][col].getPiece();
     }
+
+    // Thiết lập quân cờ
     public void setPiece(int row, int col, Piece piece){
         board[row][col].setPiece(piece);
     }
-    public int getKing_row(String color){
-        if(color.equals("w")) return wK_row;
+
+    // Lấy thông tin vị trí của King
+    public int getKingRow(String pieceColor){
+        if(pieceColor.equals("w")) return wK_row;
         else return bK_row;
     }
  
-    public int getKing_col(String color){
-        if(color.equals("w")) return wK_col;
+    public int getKingCol(String pieceColor){
+        if(pieceColor.equals("w")) return wK_col;
         else return bK_col;
     }
 
-    public void setKing_pos(String color, int row, int col){
-        if(color.equals("w")){
+    // Thiết lập vị trí của King
+    public void setKing_pos(String pieceColor, int row, int col){
+        if(pieceColor.equals("w")){
             wK_row=row;
             wK_col=col;
         }else{
             bK_row=row;
             bK_col=col;
         }  
-    } 
+    }
 
-    public void move_piece(Move move){
+    // Thực hiện di chuyển quân cờ
+    public void movePiece(Move move){
+        movePiece(move, false);
+    }
+
+    public void movePiece(Move move, boolean is_fake_move){
+        //Thực hiện di chuyển
         Piece piece = getPiece(move.getStartRow(), move.getStartCol());
         setPiece(move.getEndRow(), move.getEndCol(), piece);
         setPiece(move.getStartRow(), move.getStartCol(), null);
+        
+        //Đánh dấu trạng thái di chuyển của King và Rook
         if(piece instanceof King){
-            setKing_pos(piece.getColor(), move.getEndRow(), move.getEndCol());
+            setKing_pos(piece.getpieceColor(), move.getEndRow(), move.getEndCol());
+            ((King)piece).setHasMoved(true);
         }
-        // thêm tham số bool isFakeMove là được
-        //Đoạn này đang cần xử lý việc đánh giấu xem vua và xe đã di chuyển chưa
-        //Có 1 vấn đề là ở bên Utils có ham is_safe_move nó di chuyển giả 
-        //Đang không biết làm sao để không đánh dấu nếu nó là di chuyển giả  
-        //King King_piece = (King)piece;
-        //King_piece.setIs_move(true);
+        if(piece instanceof Rook){
+            ((Rook)piece).setHasMoved(true);
+        }
+        
         //Phép xử lý các nước đi đặc biệt
-        if(move.is_castling(this)){
-            Castling();
+        if(move.isCastling(this)){
+            Castling(move);
         }
-        if(move.is_promotion(this)){
-            Promotion();
+        if(move.isPromotion(this)){
+            Promotion(move.getEndRow(),move.getEndCol(),piece.getpieceColor());
+        }
+
+        //Thêm phép di chuyển vào danh sách
+        if(is_fake_move) return;
+        if(piece.getpieceColor().equals("w")){
+            white_moves.add(move);
+        }else{
+            black_moves.add(move);
         }
     }
-    //Nhập thành
-    private void Castling (){
-
+         
+    // Xử lý riêng phần nhập thành
+    private void Castling (Move move){
+        if(move.getEndCol() == 2){
+            movePiece(new Move(move.getStartRow(),0,move.getEndRow(),3),true);
+        }else{
+            movePiece(new Move(move.getStartRow(),7,move.getEndRow(),5),true);
+        }
     }
-    //Phong hậu 
-    private void Promotion (){
 
+    // Xử lý riêng phần phong hậu
+    // Phần này nếu muốn có thể nâng cấp lên thành chon 1 trong 4 quân xe, mã, tịnh, hậu.
+    private void Promotion (int row, int col, String pieceColor){
+        setPiece(row,col,new Queen(pieceColor));
     }
 
 }

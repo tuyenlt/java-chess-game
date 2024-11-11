@@ -4,23 +4,21 @@ public class Move {
     private int startRow, startCol;
     private int endRow, endCol;
 
-    // convert the move like e2e4 to the broad index
-    Move(String strMove){
-        startCol = strMove.charAt(0) - 'a'; 
-        startRow = 8 - (strMove.charAt(1) - '0');
-        endCol = strMove.charAt(2) - 'a';
-        endRow = 8 - (strMove.charAt(3) - '0');
+    // Khởi tạo nước đi từ chuỗi
+    public Move(String moveString) {
+        this.startCol = moveString.charAt(0) - 'a'; 
+        this.startRow = 8 - (moveString.charAt(1) - '0');
+        this.endCol = moveString.charAt(2) - 'a';
+        this.endRow = 8 - (moveString.charAt(3) - '0');
     }
 
-    Move(int startRow, int startCol, int endRow, int endCol) {
+    public Move(int startRow, int startCol, int endRow, int endCol) {
         this.startRow = startRow;
         this.startCol = startCol;
         this.endRow = endRow;
         this.endCol = endCol;
     }
-    public Move backMove(){
-        return new Move(endRow, endCol, startRow, startCol);
-    }
+
     public int getStartRow() {
         return startRow;
     }
@@ -36,18 +34,26 @@ public class Move {
     public int getEndCol() {
         return endCol;
     }
-    public boolean is_castling(Board board){
-        if(!(board.getPiece(startRow, startCol) instanceof King)) return false;
-        if(endCol - startCol == 1)return false;
-        return true;
-    }
-    public boolean is_promotion(Board board){
-        if(!(board.getPiece(startRow, startCol) instanceof Pawn)) return false;
-        return endRow == 0 || endRow == 7;
+
+    // Kiểm tra nước đi có phải nhập thành hoặc phong hậu không?
+    public boolean isCastling(Board board) {
+        Piece piece = board.getPiece(startRow, startCol);
+        return piece instanceof King && Math.abs(endCol - startCol) == 2;
     }
 
+    public boolean isPromotion(Board board) {
+        Piece piece = board.getPiece(startRow, startCol);
+        return piece instanceof Pawn && (endRow == 0 || endRow == 7);
+    }
+
+    // Lấy nước đi ngược lại
+    public Move getReverseMove() {
+        return new Move(endRow, endCol, startRow, startCol);
+    }
+
+    // toString để in nước đi dạng chuẩn
     @Override 
-    public String toString(){ // convert to string move, stockfish read only string move
+    public String toString() { 
         char startColChar = (char) ('a' + startCol);
         char endColChar = (char) ('a' + endCol);
         int startRowNum = 8 - startRow;

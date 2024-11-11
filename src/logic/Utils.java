@@ -1,47 +1,91 @@
 package logic;
+
 public class Utils {
-    static boolean is_empty(Board board,int row,int col){
-        return board.getPiece(row, col) ==null;
+
+    // Kiểm tra trạng thái của ô
+    static boolean isEmpty(Board board, int row, int col) {
+        return board.getPiece(row, col) == null;
     }
-    static boolean is_can_next(Board board,String color, int row,int col){
-        if (row <0 || row >7 || col <0 || col >7) return false;
-        if (is_empty(board, row, col)) return true;
-        if (board.getPiece(row, col).getColor().equals(color)){
-            return false;
-        }
-        return true;
+
+    // Kiểm tra điều kiện di chuyển của quân cờ
+    static boolean isMoveAllowed(Board board, String pieceColor, int row, int col) {
+        if (row < 0 || row > 7 || col < 0 || col > 7) return false;
+        if (isEmpty(board, row, col)) return true;
+        return !board.getPiece(row, col).getpieceColor().equals(pieceColor);
     }
-    static boolean is_under_attack(Board board, String color, int row_piece, int col_piece){
-        for(int row = 0; row<8; row++){
-            for (int col = 0; col <8; col++){
-                Piece piece = board.getPiece(row,col);
-                if(piece.getColor().equals(color)) continue;
-                if(piece.getValidMoves(board, row, col).contains(new Move(row, col, row_piece, col_piece))){
+
+    // Kiểm tra xem ô (row, col) có đang bị tấn công không
+    static boolean isUnderAttack(Board board, String pieceColor, int targetRow, int targetCol) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece piece = board.getPiece(row, col);
+                if (piece == null || piece.getpieceColor().equals(pieceColor)) continue;
+                if (piece.getValidMoves(board, row, col).contains(new Move(row, col, targetRow, targetCol))) {
                     return true;
                 }
-
             }
         }
         return false;
     }
-    static boolean is_check(Board board, String color){
-        int King_row = board.getKing_row(color);
-        int King_col = board.getKing_col(color);
-        return is_under_attack(board, color, King_row, King_col);
-        
-    }
-    static boolean is_safe_move(Board board, String color, Move move){
-        Piece original__Piece = board.getPiece(move.getEndRow(), move.getEndCol());
-        
-        //Di chuyển giả
-        //Đang vướng chỗ này
-        board.move_piece(move);
-        boolean safe = !is_check(board, color);
 
-        //Khôi phục lại
-        board.move_piece(move.backMove());
-        board.setPiece(move.getStartRow(), move.getStartCol(), original__Piece);
+    // Kiểm tra trạng thái bị chiếu của King
+    static boolean isCheck(Board board, String pieceColor) {
+        int kingRow = board.getKingRow(pieceColor);
+        int kingCol = board.getKingCol(pieceColor);
+        return isUnderAttack(board, pieceColor, kingRow, kingCol);
+    }
+
+    // Kiểm tra nếu một nước đi là an toàn cho quân cờ
+    static boolean isSafeMove(Board board, String pieceColor, Move move) {
+        // Nếu là nước đi nhập thành thì chắc chắn an toàn
+        if (move.isCastling(board)) return true;
+
+        Piece originalPiece = board.getPiece(move.getEndRow(), move.getEndCol());
+
+        // Di chuyển giả
+        board.movePiece(move, true);
+        boolean safe = !isCheck(board, pieceColor);
+
+        // Khôi phục lại
+        board.movePiece(move.getReverseMove(), true);
+        board.setPiece(move.getStartRow(), move.getStartCol(), originalPiece);
+
+        if (move.isPromotion(board)) {
+            board.setPiece(move.getStartRow(), move.getStartCol(), new Pawn(pieceColor));
+        }
+
         return safe;
     }
-}
 
+    // Kiểm tra điều kiện nhập thành trái
+    static boolean canCastleLeft(Board board, int startRow, int startCol, boolean hasMoved, String pieceColor) {
+        int initialRow = (pieceColor.equals("w") ? 7 : 0);
+        if (hasMoved || isCheck(board, pieceColor)) return false;
+        Piece piece = board.getPiece(initialRow, 0);
+        if (!(piece instanceof Rook) || !piece.getpieceColor().equals(pieceColor)) return false;
+        Rook rook = (Rook) piece;
+        if (rook.isMove()) return false;
+        for (int col = 1; col < 4; col++) {
+            if (!isEmpty(board, initialRow, col) || isUnderAttack(board, pieceColor, initialRow, col)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Kiểm tra điều kiện nhập thành phải
+    static boolean canCastleRight(Board board, int startRow, int startCol, boolean hasMoved, String pieceColor) {
+        int initialRow = (pieceColor.equals("w") ? 7 : 0);
+        if (hasMoved || isCheck(board, pieceColor)) return false;
+        Piece piece = board.getPiece(initialRow, 7);
+        if (!(piece instanceof Rook) || !piece.getpieceColor().equals(pieceColor)) return false;
+        Rook rook = (Rook) piece;
+        if (rook.isMove()) return false;
+        for (int col = 5; col < 7; col++) {
+            if (!isEmpty(board, initialRow, col) || isUnderAttack(board, pieceColor, initialRow, col)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}

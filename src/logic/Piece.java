@@ -1,16 +1,15 @@
 package logic;
-
-
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public abstract class Piece {
-    protected String color; 
+    protected String pieceColor; 
 
-    public Piece(String color) {
-        this.color = color;
+    public Piece(String pieceColor) {
+        this.pieceColor = pieceColor;
     }
-    public String getColor(){
-        return color;
+    public String getpieceColor(){
+        return pieceColor;
     }
     
     public abstract List<Move> getValidMoves(Board board, int startRow, int startCol);
@@ -18,7 +17,7 @@ public abstract class Piece {
     public List<Move> getSafeMoves(Board board, int startRow, int startCol) {
         List<Move> safeMoves = new ArrayList<>(); 
         for(Move move : getValidMoves(board, startRow, startCol)){
-            if(Utils.is_safe_move(board, color, move)){
+            if(Utils.isSafeMove(board, pieceColor, move)){
                 safeMoves.add(move);
             }
         }
@@ -28,27 +27,27 @@ public abstract class Piece {
 
 
 class Pawn extends Piece {
-    public Pawn(String color) {
-        super(color);
+    public Pawn(String pieceColor) {
+        super(pieceColor);
     }
 
     @Override
     public List<Move> getValidMoves(Board board, int startRow, int startCol) {
         List<Move> validMoves = new ArrayList<>();
-        int direction = (color.equals("w")) ? -1 : 1;
+        int direction = (pieceColor.equals("w")) ? -1 : 1;
 
-        if (Utils.is_empty(board, startRow + direction, startCol)) {
+        if (Utils.isEmpty(board, startRow + direction, startCol)) {
             validMoves.add(new Move(startRow, startCol, startRow + direction, startCol));
-            int initialRow = (color.equals("w")) ? 6 : 1;
-            if (startRow == initialRow && Utils.is_empty(board, startRow + 2 * direction, startCol)) {
+            int initialRow = (pieceColor.equals("w")) ? 6 : 1;
+            if (startRow == initialRow && Utils.isEmpty(board, startRow + 2 * direction, startCol)) {
                 validMoves.add(new Move(startRow, startCol, startRow + 2 * direction, startCol));
             }
         }
 
         for (int offset : new int[]{-1, 1}) {
             int endCol = startCol + offset;
-            if (Utils.is_can_next(board, color, startRow + direction, endCol) 
-                && !Utils.is_empty(board, startRow + direction, endCol)) {
+            if (Utils.isMoveAllowed(board, pieceColor, startRow + direction, endCol) 
+                && !Utils.isEmpty(board, startRow + direction, endCol)) {
                 validMoves.add(new Move(startRow, startCol, startRow + direction, endCol));
             }
         }
@@ -58,18 +57,18 @@ class Pawn extends Piece {
 }
 
 class Rook extends Piece {
-    private boolean is_move = false;
+    private boolean hasMoved = false;
     
-    public Rook(String color) {
-        super(color);
+    public Rook(String pieceColor) {
+        super(pieceColor);
     }
     
     public boolean isMove() {
-        return is_move;
+        return hasMoved;
     }
 
-    public void setIs_move(boolean is_move) {
-        this.is_move = is_move;
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
     }
 
     @Override
@@ -80,9 +79,9 @@ class Rook extends Piece {
         for (int [] direction : directions){
             int endRow = startRow + direction[0];
             int endCol = startCol + direction[1];
-            while (Utils.is_can_next(board, color, endRow, endCol)) {
+            while (Utils.isMoveAllowed(board, pieceColor, endRow, endCol)) {
                 validMoves.add(new Move(startRow, startCol, endRow, endCol));
-                if (!Utils.is_empty(board, endRow, endCol)){
+                if (!Utils.isEmpty(board, endRow, endCol)){
                     break;
                 }
                 endRow += direction[0];
@@ -95,8 +94,8 @@ class Rook extends Piece {
 
 
 class Knight extends Piece {
-    public Knight(String color) {
-        super(color);
+    public Knight(String pieceColor) {
+        super(pieceColor);
     }
 
     @Override
@@ -107,7 +106,7 @@ class Knight extends Piece {
         for (int [] direction : directions){
             int endRow = startRow + direction[0];
             int endCol = startCol + direction[1];
-            if (Utils.is_can_next(board, color, endRow, endCol)){
+            if (Utils.isMoveAllowed(board, pieceColor, endRow, endCol)){
                 validMoves.add(new Move(startRow, startCol, endRow, endCol));
             }
         }
@@ -116,8 +115,8 @@ class Knight extends Piece {
 }
 
 class Bishop extends Piece {
-    public Bishop(String color) {
-        super(color);
+    public Bishop(String pieceColor) {
+        super(pieceColor);
     }
 
     @Override
@@ -128,9 +127,9 @@ class Bishop extends Piece {
         for (int [] direction : directions){
             int endRow = startRow + direction[0];
             int endCol = startCol + direction[1];
-            while (Utils.is_can_next(board, color, endRow, endCol)) {
+            while (Utils.isMoveAllowed(board, pieceColor, endRow, endCol)) {
                 validMoves.add(new Move(startRow, startCol, endRow, endCol));
-                if (!Utils.is_empty(board, endRow, endCol)){
+                if (!Utils.isEmpty(board, endRow, endCol)){
                     break;
                 }
                 endRow += direction[0];
@@ -142,8 +141,8 @@ class Bishop extends Piece {
 }
 
 class Queen extends Piece {
-    public Queen(String color) {
-        super(color);
+    public Queen(String pieceColor) {
+        super(pieceColor);
     }
 
     @Override
@@ -154,9 +153,9 @@ class Queen extends Piece {
         for (int [] direction : directions){
             int endRow = startRow + direction[0];
             int endCol = startCol + direction[1];
-            while (Utils.is_can_next(board, color, endRow, endCol)) {
+            while (Utils.isMoveAllowed(board, pieceColor, endRow, endCol)) {
                 validMoves.add(new Move(startRow, startCol, endRow, endCol));
-                if (!Utils.is_empty(board, endRow, endCol)){
+                if (!Utils.isEmpty(board, endRow, endCol)){
                     break;
                 }
                 endRow += direction[0];
@@ -168,18 +167,18 @@ class Queen extends Piece {
 }
 
 class King extends Piece {
-    private boolean is_move = false;
+    private boolean hasMoved = false;
 
-    public King(String color) {
-        super(color);
+    public King(String pieceColor) {
+        super(pieceColor);
     }
 
     public boolean isMove() {
-        return is_move;
+        return hasMoved;
     }
 
-    public void setIs_move(boolean is_move) {
-        this.is_move = is_move;
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
     }
 
     @Override
@@ -190,47 +189,17 @@ class King extends Piece {
 
             int endRow = startRow + direction[0];
             int endCol = startCol + direction[1];
-            if (Utils.is_can_next(board, color, endRow, endCol)){
+            if (Utils.isMoveAllowed(board, pieceColor, endRow, endCol)){
                 validMoves.add(new Move(startRow, startCol, endRow, endCol));
             }
         }
-        if(is_LeftCastle(board, startRow, startCol)){
+        if (Utils.canCastleLeft(board, startRow, startCol, hasMoved, pieceColor)){
             validMoves.add(new Move(startRow, startCol, startRow, 2));
         }
-        if (is_RightCastle(board, startRow, startCol)) {
+        if (Utils.canCastleRight(board, startRow, startCol, hasMoved, pieceColor)) {
             validMoves.add(new Move(startRow, startCol, startRow, 6));
         }
         return validMoves;
     }
     
-    //Chỗ này là để xử lý logic hoán thành
-    private boolean is_LeftCastle(Board board, int startRow, int startCol){
-        int initialRow = ((color.equals("w")) ? 7 : 0);
-        if(is_move||Utils.is_check(board, color)) return false;
-        Piece piece = board.getPiece(initialRow, 0);
-        if(!(piece instanceof Rook) || !piece.getColor().equals(color)) return false;
-        Rook rook =(Rook) piece;
-        if(rook.isMove()) return false;
-        for(int col= 1; col < 4; col++){
-            if(!Utils.is_empty(board, initialRow, col) || Utils.is_under_attack(board, color, initialRow, col)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean is_RightCastle(Board board, int startRow, int startCol){
-        int initialRow = ((color.equals("w")) ? 7 : 0);
-        if(is_move || Utils.is_check(board, color)) return false;
-        Piece piece = board.getPiece(initialRow, 7);
-        if(!(piece instanceof Rook) || !piece.getColor().equals(color)) return false;
-        Rook rook =(Rook) piece;
-        if(rook.isMove()) return false;
-        for(int col= 5; col < 7; col++){
-            if(!Utils.is_empty(board, initialRow, col)|| Utils.is_under_attack(board, color, initialRow, col)){
-                return false;
-            }
-        }
-        return true;
-    }
 }
