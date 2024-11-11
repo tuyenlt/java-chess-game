@@ -1,5 +1,6 @@
 package network;
 import java.io.IOException;
+import java.util.*;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -7,7 +8,10 @@ import com.esotericsoftware.kryonet.Server;
 
 import network.RequestAndResponse.ClassRegester;
 import network.RequestAndResponse.ErrorResponse;
+import network.RequestAndResponse.FindGame;
+import network.RequestAndResponse.HistoryGame;
 import network.RequestAndResponse.LoginRequest;
+import network.RequestAndResponse.ProfileView;
 import network.RequestAndResponse.RankingListRequest;
 import network.RequestAndResponse.RankingListResponse;
 import network.RequestAndResponse.RegisterRequest;
@@ -20,7 +24,17 @@ public class MainServer {
     private Server server;
     private int tcpPort;
     private int udpPort;
+    private ArrayList<WaitingPlayer> waitingPlayers;
     
+    class WaitingPlayer{
+        public Connection connection;
+        public int elo;
+
+        public WaitingPlayer(Connection connection, int elo) {
+            this.connection = connection;
+            this.elo = elo;
+        }
+    }
 
     public MainServer(int tcpPort ,int udpPort){
         this.tcpPort = tcpPort;
@@ -48,37 +62,87 @@ public class MainServer {
                 if(object instanceof RankingListRequest){
                     handleGetRankingList(connection, object);
                 }
+
+                if(object instanceof HistoryGame.Request){
+                    handleGetHistoryGame(connection, object);
+                }
+
+                if(object instanceof ProfileView.Request){
+                    handleViewProfile(connection, object);
+                }
+
+                if(object instanceof FindGame.Request){
+                    handleWatingPlayer(connection, object);
+                }
+
             }
         });
     }
 
     private void handleLogin(Connection connection, Object object){
-        LoginRequest loginRequest =  (LoginRequest)object;
+        LoginRequest request =  (LoginRequest)object;
         try{
-            UserResponse userResponse = DatabaseConnection.loginAuthentication(loginRequest);
-            connection.sendTCP(userResponse);
+            UserResponse response = DatabaseConnection.loginAuthentication(request);
+            connection.sendTCP(response);
         }catch(Exception error){
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.error = error.getMessage();
             connection.sendTCP(errorResponse);
-        }
-            
+        }    
     }
 
 
     private void handleRegister(Connection connection, Object object){
-        RegisterRequest registerRequest = (RegisterRequest)object;
-        SimpleResponse response = DatabaseConnection.registerNewUser(registerRequest);
+        RegisterRequest request = (RegisterRequest)object;
+        SimpleResponse response = DatabaseConnection.registerNewUser(request);
         connection.sendTCP(response);
     }
 
 
     
     private void handleGetRankingList(Connection connection, Object object){
-        RankingListRequest rankingListRequest = (RankingListRequest)object;
-        RankingListResponse rankingListResponse = DatabaseConnection.getRankingList(rankingListRequest);
-        connection.sendTCP(rankingListResponse);
+        RankingListRequest request = (RankingListRequest)object;
+        RankingListResponse response = DatabaseConnection.getRankingList(request);
+        connection.sendTCP(response);
+    }
+
+    private void handleViewProfile(Connection connection, Object object){
+        ProfileView.Request request = (ProfileView.Request)object;
+        ProfileView.Response response = DatabaseConnection.getProfile(request);
+        connection.sendTCP(response);
     }
     
+
+    private void handleGetHistoryGame(Connection connection, Object object){
+        HistoryGame.Request request = (HistoryGame.Request)object;
+        HistoryGame.Response response = DatabaseConnection.getHistoryGame(request);
+        connection.sendTCP(response);
+    }
     
+    private void handleWatingPlayer(Connection connection, Object object){
+        FindGame.Request request = (FindGame.Request)object;
+        boolean isFoundNewGame = false;
+        for(WaitingPlayer waitingPlayer: waitingPlayers){
+            if(Math.abs(waitingPlayer.elo - request.elo) <= 200){
+                //*! create new game server here
+                //*!
+                //*!
+
+
+                FindGame.Response response = new FindGame.Response(); // * example info of new game server
+                response.address = "localhost";
+                response.tcpPort = 5555;
+                response.udpPort = 6666;
+
+                waitingPlayer.connection.sendTCP(response);
+                connection.sendTCP(response);
+                waitingPlayers.remove(waitingPlayer);
+                isFoundNewGame = true;
+                break;
+            }
+        }
+        if(!isFoundNewGame){
+            waitingPlayers.add(new WaitingPlayer(connection, request.elo));
+        }
+    }
 }

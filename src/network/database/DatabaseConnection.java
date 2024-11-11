@@ -8,6 +8,7 @@ public class DatabaseConnection {
         // throws exptions
         boolean isUserExits = false;
         boolean isPasswordCorrect = false;
+        
         UserResponse user = new UserResponse();
 
         //*xử lý database logic ở đây, nếu hợp lệ trả về thông tin user qua class UserResponse
@@ -22,7 +23,7 @@ public class DatabaseConnection {
         }
 
         if(!isPasswordCorrect){
-            throw new Exception("Password is incorrect");
+            throw new Exception("Wrong password try again");
         }
 
         return user;
@@ -41,6 +42,8 @@ public class DatabaseConnection {
         //*
         //*
         //* */
+
+
 
         if(isUserNameExist){
             response.msg = "User name already exist";
@@ -65,6 +68,29 @@ public class DatabaseConnection {
         return rankingListResponse;
     }
 
+    public static HistoryGame.Response getHistoryGame(HistoryGame.Request gameRequest){
+        HistoryGame.Response response = new HistoryGame.Response();
+        //* trả về nước đi của trận có id = gameReuest.gameId
+        //*xử lý database logic ở đây
+        //*
+        //*
+        //*
+        //* */
 
-    
+        return response;
+    }
+
+
+    public static ProfileView.Response getProfile(ProfileView.Request request){
+        ProfileView.Response response = new ProfileView.Response();
+        //* trả về thông tin của user id = request.userID
+        //*xử lý database logic ở đây
+        //*
+        //*
+        //*
+        //* */
+
+        return response;
+
+    }    
 }

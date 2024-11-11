@@ -115,7 +115,7 @@ public class Board {
         movePiece(move, false);
     }
 
-    public void movePiece(Move move, boolean is_fake_move){
+    public void movePiece(Move move, boolean isFakeMove){
         //Thực hiện di chuyển
         Piece piece = getPiece(move.getStartRow(), move.getStartCol());
         setPiece(move.getEndRow(), move.getEndCol(), piece);
@@ -139,7 +139,7 @@ public class Board {
         }
 
         //Thêm phép di chuyển vào danh sách
-        if(is_fake_move) return;
+        if(isFakeMove) return;
         if(piece.getpieceColor().equals("w")){
             white_moves.add(move);
         }else{
