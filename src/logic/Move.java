@@ -36,7 +36,7 @@ public class Move {
     public int getEndCol() {
         return endCol;
     }
-    public boolean is_castling(Board board){
+    public boolean isCastling(Board board){
         if(!(board.getPiece(startRow, startCol) instanceof King)) return false;
         if(endCol - startCol == 1)return false;
         return true;

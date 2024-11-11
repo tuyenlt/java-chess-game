@@ -112,7 +112,7 @@ public class Board {
         //King King_piece = (King)piece;
         //King_piece.setIs_move(true);
         //Phép xử lý các nước đi đặc biệt
-        if(move.is_castling(this)){
+        if(move.isCastling(this)){
             Castling();
         }
         if(move.is_promotion(this)){
