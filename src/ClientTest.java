@@ -2,13 +2,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import network.ClientNetwork;
 import network.ClientResponseHandle;
-import network.RequestAndResponse.GeneralConnectionManager.ErrorResponse;
-import network.RequestAndResponse.GeneralConnectionManager.LoginResponse;
-import network.RequestAndResponse.GeneralConnectionManager.MsgPacket;
-import network.RequestAndResponse.GeneralConnectionManager.ProfileViewResponse;
-import network.RequestAndResponse.GeneralConnectionManager.RankingListResponse;
-import network.RequestAndResponse.GeneralConnectionManager.RegisterResponse;
-import network.RequestAndResponse.GeneralConnectionManager.ReplayGameResponse;
+import network.packets.GeneralPackets.*;
 
 
 class GameClient implements ClientResponseHandle{
@@ -50,7 +44,7 @@ class GameClient implements ClientResponseHandle{
     }
 
     @Override
-    public void handleReplayGame(ReplayGameResponse response) {
+    public void handleHistoryGame(HistoryGameResponse response) {
         // TODO Auto-generated method stub
         
     }
@@ -64,13 +58,6 @@ public class ClientTest{
         
         Scanner sc = new Scanner(System.in);
         
-        while(true){
-            int stX = sc.nextInt();
-            int stY = sc.nextInt();
-            int enX = sc.nextInt();
-            int enY = sc.nextInt();
-            client.sendMove(stX, stY, enX, enY);
-        }
         
     }
 

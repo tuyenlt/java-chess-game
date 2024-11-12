@@ -1,6 +1,6 @@
-package network.RequestAndResponse;
+package network.packets;
 
-public class IngameConnectionManager {
+public class IngamePackets {
     public static class GameStateResponse {
         public int timeWhite;
         public int timeBlack;

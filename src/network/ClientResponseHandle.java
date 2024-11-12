@@ -1,7 +1,7 @@
 package network;
 
 
-import network.RequestAndResponse.GeneralConnectionManager.*;
+import network.packets.GeneralPackets.*;
 
 public interface ClientResponseHandle{
     void handleLoginSuccess(LoginResponse user);
@@ -10,5 +10,5 @@ public interface ClientResponseHandle{
     void handleRegister(MsgPacket response);
     void handleRankingList(RankingListResponse response);
     void handleProfileView(ProfileViewResponse response);
-    void handleReplayGame(ReplayGameResponse response);
+    void handleHistoryGame(HistoryGameResponse response);
 }

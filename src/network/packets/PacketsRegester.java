@@ -1,11 +1,10 @@
-package network.RequestAndResponse;
-
-import network.RequestAndResponse.GeneralConnectionManager.*;
-import network.RequestAndResponse.IngameConnectionManager.*;
-
+package network.packets;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+
+import network.packets.GeneralPackets.*;
+import network.packets.IngamePackets.*;
 
 public class PacketsRegester {
     static public void register(EndPoint endPoint){
@@ -16,8 +15,8 @@ public class PacketsRegester {
         kryo.register(RegisterRequest.class);
         kryo.register(ProfileViewRequest.class);
         kryo.register(ProfileViewResponse.class);
-        kryo.register(ReplayGameResponse.class);
-        kryo.register(ReplayGameRequest.class);
+        kryo.register(HistoryGameResponse.class);
+        kryo.register(HistoryGameRequest.class);
         kryo.register(RankingListRequest.class);
         kryo.register(RankingListResponse.class);
         kryo.register(FindGameRequest.class);

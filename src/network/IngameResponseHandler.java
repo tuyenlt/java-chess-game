@@ -1,6 +1,6 @@
 package network;
 
-import network.RequestAndResponse.IngameConnectionManager.*;
+import network.packets.IngamePackets.*;
 
 public interface IngameResponseHandler {
     public void handleMovePacket(MovePacket movePacket);

@@ -1,8 +1,8 @@
-package network.RequestAndResponse;
+package network.packets;
 
 import java.util.ArrayList;
 
-public class GeneralConnectionManager {
+public class GeneralPackets {
     public static class LoginRequest {
         public String userName;
         public String passwd;
@@ -18,11 +18,13 @@ public class GeneralConnectionManager {
     }
     
     public static class LoginResponse {
-        public String fullName;
-        public String name;
+        public int userId;
+        public String userName;
         public String passwd;
-        public String avatarPath;
         public int elo;
+        public int win;
+        public int lose;
+        public int draw;
     }
 
     public static class RegisterRequest {
@@ -51,20 +53,30 @@ public class GeneralConnectionManager {
         public String error;
     }
     
-    public static class ReplayGameRequest {
+    public static class HistoryGameRequest {
         public String gameId;
-        public ReplayGameRequest(){
+        public HistoryGameRequest(){
 
         }
 
-        public ReplayGameRequest(String gameId) {
+        public HistoryGameRequest(String gameId) {
             this.gameId = gameId;
         }
-        
     }
 
-    public static class ReplayGameResponse {
-        public String gameMoves;
+    public static class HistoryGameResponse {
+        public int playerId;
+        public int opponentId;
+        public String moves;
+        public String result;
+
+        public HistoryGameResponse(){}
+        public HistoryGameResponse(int playerId, int opponentId, String moves, String result) {
+            this.playerId = playerId;
+            this.opponentId = opponentId;
+            this.moves = moves;
+            this.result = result;
+        }
     }
 
     public static class RankingListRequest {
@@ -83,29 +95,34 @@ public class GeneralConnectionManager {
     public static class RankingListResponse {
         public ArrayList<UserRank> rankingList;
         class UserRank{
-            public String fullName;
+            public String userName;
             public int elo;
-            public int win;
-            public int lose;
-            public int draw;
+
+            public UserRank(String userName, int elo){
+                this.userName = userName;
+                this.elo = elo;
+            }
+        }
+
+        public void addUserRankToList(String userName, int elo){
+            rankingList.add(new UserRank(userName, elo));
         }
     }
 
     public static class ProfileViewRequest{
-        public String userId;
+        public int userId;
         public ProfileViewRequest(){
 
         }
 
-        public ProfileViewRequest(String userId) {
+        public ProfileViewRequest(int userId) {
             this.userId = userId;
         }
         
     }
     
     public static class ProfileViewResponse{
-        public String name;
-        public String avatarPath;
+        public String userName;
         public int elo;
         public int win;
         public int lose;

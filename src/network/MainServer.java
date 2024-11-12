@@ -8,9 +8,9 @@ import com.esotericsoftware.kryonet.Server;
 
 
 import network.database.DatabaseConnection;
-import network.RequestAndResponse.PacketsRegester;
-import network.RequestAndResponse.GeneralConnectionManager.*;
-import network.RequestAndResponse.IngameConnectionManager.*;
+import network.packets.PacketsRegester;
+import network.packets.GeneralPackets.*;
+import network.packets.IngamePackets.*;
 
 public class MainServer {
     private Server server;
@@ -57,8 +57,8 @@ public class MainServer {
                     handleGetRankingList(connection, object);
                 }
 
-                if(object instanceof ReplayGameRequest){
-                    handleGetHistoryGame(connection, object);
+                if(object instanceof HistoryGameRequest){
+                    handleHistoryGame(connection, object);
                 }
 
                 if(object instanceof ProfileViewRequest){
@@ -87,30 +87,47 @@ public class MainServer {
 
 
     private void handleRegister(Connection connection, Object object){
-        RegisterRequest request = (RegisterRequest)object;
-        MsgPacket response = DatabaseConnection.registerNewUser(request);
-        connection.sendTCP(response);
+        try{
+
+            RegisterRequest request = (RegisterRequest)object;
+            MsgPacket response = DatabaseConnection.registerNewUser(request);
+            connection.sendTCP(response);
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
 
     
     private void handleGetRankingList(Connection connection, Object object){
-        RankingListRequest request = (RankingListRequest)object;
-        RankingListResponse response = DatabaseConnection.getRankingList(request);
-        connection.sendTCP(response);
+        try{
+            RankingListRequest request = (RankingListRequest)object;
+            RankingListResponse response = DatabaseConnection.getRankingList(request);
+            connection.sendTCP(response);
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     private void handleViewProfile(Connection connection, Object object){
-        ProfileViewRequest request = (ProfileViewRequest)object;
-        ProfileViewResponse response = DatabaseConnection.getProfile(request);
-        connection.sendTCP(response);
+        try{
+            ProfileViewRequest request = (ProfileViewRequest)object;
+            ProfileViewResponse response = DatabaseConnection.getProfile(request);
+            connection.sendTCP(response);
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
     
 
-    private void handleGetHistoryGame(Connection connection, Object object){
-        ReplayGameRequest request = (ReplayGameRequest)object;
-        ReplayGameResponse response = DatabaseConnection.getHistoryGame(request);
-        connection.sendTCP(response);
+    private void handleHistoryGame(Connection connection, Object object){
+        try {   
+            HistoryGameRequest request = (HistoryGameRequest)object;
+            HistoryGameResponse response = DatabaseConnection.getHistoryGame(request);
+            connection.sendTCP(response);
+        } catch (Exception ex) {
+            // TODO: handle exception
+        }
     }
     
     private void handleWatingPlayer(Connection connection, Object object){

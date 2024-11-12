@@ -5,9 +5,9 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import network.RequestAndResponse.PacketsRegester;
-import network.RequestAndResponse.GeneralConnectionManager.*;
-import network.RequestAndResponse.IngameConnectionManager.*;
+import network.packets.PacketsRegester;
+import network.packets.GeneralPackets.*;
+import network.packets.IngamePackets.*;
 
 public class ClientNetwork {
     private Client client;
@@ -71,8 +71,8 @@ public class ClientNetwork {
                     responseHandle.handleProfileView((ProfileViewResponse)object);
                 }
 
-                if (object instanceof ReplayGameResponse){
-                    responseHandle.handleReplayGame((ReplayGameResponse)object);
+                if (object instanceof HistoryGameResponse){
+                    responseHandle.handleHistoryGame((HistoryGameResponse)object);
                 }
 
                 if (object instanceof RankingListResponse){
@@ -201,8 +201,8 @@ public class ClientNetwork {
             client.sendTCP((RankingListRequest)object);
         }
 
-        if(object instanceof ReplayGameRequest){
-            client.sendTCP((ReplayGameRequest)object);
+        if(object instanceof HistoryGameRequest){
+            client.sendTCP((HistoryGameRequest)object);
         }
 
         if(object instanceof MsgPacket){

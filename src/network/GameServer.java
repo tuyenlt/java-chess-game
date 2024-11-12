@@ -1,10 +1,11 @@
 package network;
 
-import network.RequestAndResponse.*;
-import network.RequestAndResponse.GeneralConnectionManager.*;
-import network.RequestAndResponse.IngameConnectionManager.*;
-
 import com.esotericsoftware.kryonet.Server;
+
+import network.packets.*;
+import network.packets.GeneralPackets.*;
+import network.packets.IngamePackets.*;
+
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import java.net.ServerSocket;
