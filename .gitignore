@@ -77,4 +77,4 @@ surefire-reports/
 *.env
 src/game/ChessGame.java
 
-/bin/
+src/game/Test.java
