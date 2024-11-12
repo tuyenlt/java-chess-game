@@ -6,19 +6,11 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
-import network.RequestAndResponse.ClassRegester;
-import network.RequestAndResponse.ErrorResponse;
-import network.RequestAndResponse.FindGame;
-import network.RequestAndResponse.HistoryGame;
-import network.RequestAndResponse.LoginRequest;
-import network.RequestAndResponse.ProfileView;
-import network.RequestAndResponse.RankingListRequest;
-import network.RequestAndResponse.RankingListResponse;
-import network.RequestAndResponse.RegisterRequest;
-import network.RequestAndResponse.SimpleResponse;
-import network.RequestAndResponse.UserResponse;
-import network.database.DatabaseConnection;
 
+import network.database.DatabaseConnection;
+import network.RequestAndResponse.PacketsRegester;
+import network.RequestAndResponse.GeneralConnectionManager.*;
+import network.RequestAndResponse.IngameConnectionManager.*;
 
 public class MainServer {
     private Server server;
@@ -43,7 +35,7 @@ public class MainServer {
         this.udpPort = udpPort;
 
         server = new Server();
-        ClassRegester.register(server);
+        PacketsRegester.register(server);
 
     }
 
@@ -65,15 +57,15 @@ public class MainServer {
                     handleGetRankingList(connection, object);
                 }
 
-                if(object instanceof HistoryGame.Request){
+                if(object instanceof ReplayGameRequest){
                     handleGetHistoryGame(connection, object);
                 }
 
-                if(object instanceof ProfileView.Request){
+                if(object instanceof ProfileViewRequest){
                     handleViewProfile(connection, object);
                 }
 
-                if(object instanceof FindGame.Request){
+                if(object instanceof FindGameRequest){
                     handleWatingPlayer(connection, object);
                 }
 
@@ -84,7 +76,7 @@ public class MainServer {
     private void handleLogin(Connection connection, Object object){
         LoginRequest request =  (LoginRequest)object;
         try{
-            UserResponse response = DatabaseConnection.loginAuthentication(request);
+            LoginResponse response = DatabaseConnection.loginAuthentication(request);
             connection.sendTCP(response);
         }catch(Exception error){
             ErrorResponse errorResponse = new ErrorResponse();
@@ -96,7 +88,7 @@ public class MainServer {
 
     private void handleRegister(Connection connection, Object object){
         RegisterRequest request = (RegisterRequest)object;
-        SimpleResponse response = DatabaseConnection.registerNewUser(request);
+        MsgPacket response = DatabaseConnection.registerNewUser(request);
         connection.sendTCP(response);
     }
 
@@ -109,20 +101,20 @@ public class MainServer {
     }
 
     private void handleViewProfile(Connection connection, Object object){
-        ProfileView.Request request = (ProfileView.Request)object;
-        ProfileView.Response response = DatabaseConnection.getProfile(request);
+        ProfileViewRequest request = (ProfileViewRequest)object;
+        ProfileViewResponse response = DatabaseConnection.getProfile(request);
         connection.sendTCP(response);
     }
     
 
     private void handleGetHistoryGame(Connection connection, Object object){
-        HistoryGame.Request request = (HistoryGame.Request)object;
-        HistoryGame.Response response = DatabaseConnection.getHistoryGame(request);
+        ReplayGameRequest request = (ReplayGameRequest)object;
+        ReplayGameResponse response = DatabaseConnection.getHistoryGame(request);
         connection.sendTCP(response);
     }
     
     private void handleWatingPlayer(Connection connection, Object object){
-        FindGame.Request request = (FindGame.Request)object;
+        FindGameRequest request = (FindGameRequest)object;
         boolean isFoundNewGame = false;
         for(WaitingPlayer waitingPlayer: waitingPlayers){
             if(Math.abs(waitingPlayer.elo - request.elo) <= 200){
@@ -131,7 +123,7 @@ public class MainServer {
                 //*!
                 GameServer gameServer = new GameServer(waitingPlayer.playerId, request.userId);
                 int[] newServerPort = gameServer.getServerPorts();
-                FindGame.Response response = new FindGame.Response();
+                FindGameResponse response = new FindGameResponse();
                 response.tcpPort = newServerPort[0];
                 response.udpPort = newServerPort[1];
                 gameServer.run();

@@ -8,13 +8,19 @@ import java.sql.ResultSet;
 import network.RequestAndResponse.*;
 import ui.LoginForm;
 import ui.RegisterForm;
+import network.RequestAndResponse.GeneralConnectionManager.*;
 
 public class DatabaseConnection {
     private static Connection connection;
 
     // Phương thức kết nối cơ sở dữ liệu
-    public static void connectToDatabase() {
-        try {
+	  private static Connection connection;
+    public void DatabaseConnectionInit() {
+        connectToDatabase();
+    }
+          
+    private void connectToDatabase() {
+    	try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://LAPTOP-MP2192TB:1433;databaseName=ChessGame;encrypt=true;trustServerCertificate=true";
             String userName = "sa";
@@ -29,8 +35,8 @@ public class DatabaseConnection {
     public static synchronized UserResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
         boolean isUserExits = false;
         boolean isPasswordCorrect = false;
-        UserResponse user = new UserResponse();
-
+        
+        LoginResponse user = new LoginResponse();
         // Kiểm tra input hợp lệ
         if (loginRequest.UserName() == null || loginRequest.UserName().isEmpty()) {
             throw new Exception("Tên đăng nhập không được để trống");
@@ -77,6 +83,9 @@ public class DatabaseConnection {
     public static synchronized SimpleResponse registerNewUser(RegisterRequest registerRequest) throws Exception {
         boolean isUserNameExist = false;
         SimpleResponse response = new SimpleResponse();
+
+
+
 
         // Kiểm tra input hợp lệ
         if (registerRequest.UserName() == null || registerRequest.UserName().isEmpty()) {
