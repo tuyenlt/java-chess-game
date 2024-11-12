@@ -12,6 +12,7 @@ public class Move {
         this.endRow = 8 - (moveString.charAt(3) - '0');
     }
 
+
     public Move(int startRow, int startCol, int endRow, int endCol) {
         this.startRow = startRow;
         this.startCol = startCol;

@@ -7,15 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-//Demo chơi với bot dưới dạng dòng lệnh
 public class StockfishEngineDemo {
     private Process stockfishProcess;
     private BufferedReader stockfishReader;
     private OutputStreamWriter stockfishWriter;
     private final String stockfishPath = "stockfish\\stockfish.exe"; 
-
+    
     // Khởi chạy Stockfish
-    public boolean startStockfish() {
+    public boolean start() {
         try {
             stockfishProcess = new ProcessBuilder(stockfishPath).start();
             stockfishReader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
@@ -26,7 +25,7 @@ public class StockfishEngineDemo {
         }
         return true;
     }
-
+    
     // Gửi lệnh tới Stockfish
     public void sendCommand(String command) {
         try {
@@ -36,7 +35,7 @@ public class StockfishEngineDemo {
             e.printStackTrace();
         }
     }
-
+    
     // Đọc phản hồi từ Stockfish
     public List<String> readOutput() {
         List<String> output = new ArrayList<>();
@@ -52,7 +51,7 @@ public class StockfishEngineDemo {
         }
         return null;
     }
-
+    
     // Xử lý trường hợp gửi hàng loạt các nước đi từ trước tới giờ
     public void setPosition(List<String> moves) {
         sendCommand("position startpos moves " + String.join(" ", moves));
@@ -60,7 +59,7 @@ public class StockfishEngineDemo {
     public void setPosition(String move){
         sendCommand("position startpos moves " + move);
     }
-
+    
     // Lấy nước đi tốt nhất từ vị trí hiện tại
     public String getBestMove() {
         sendCommand("go movetime 1000");  // Phân tích trong 1 giây
@@ -72,9 +71,9 @@ public class StockfishEngineDemo {
         }
         return null;
     }
-
+    
     // Dừng Stockfish
-    public void stopStockfish() {
+    public void stop() {
         sendCommand("quit");
         try {
             stockfishReader.close();
@@ -84,11 +83,12 @@ public class StockfishEngineDemo {
             e.printStackTrace();
         }
     }
-
+    
+    //Demo chơi với bot dưới dạng dòng lệnh
     public static void main(String[] args) {
         StockfishEngineDemo client = new StockfishEngineDemo();
-        if (client.startStockfish()) {
-
+        if (client.start()) {
+            
             // Chơi với bot dưới dạng dòng lệnh
             Scanner sc = new Scanner(System.in);
             String move = sc.nextLine().trim();
@@ -99,7 +99,7 @@ public class StockfishEngineDemo {
                 client.setPosition(bestMove);
                 move = sc.nextLine().trim();
             }
-            client.stopStockfish();
+            client.stop();
         }
     }
 }

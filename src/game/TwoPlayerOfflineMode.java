@@ -25,6 +25,11 @@ public class TwoPlayerOfflineMode extends Application {
         primaryStage.setTitle("Two Player Chess Game");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Lắng nghe sự kiện thoát game
+        primaryStage.setOnCloseRequest(event -> {
+            exitGame();
+        });
     }
 
     private void drawBoard(){
@@ -49,10 +54,15 @@ public class TwoPlayerOfflineMode extends Application {
         }else{
             int startRow = selectedSquare[0];
             int startCol = selectedSquare[1];   
-            // Move move = new Move(startRow, startCol, row, col);
 
             if(board.isValidMove(startRow, startCol, row, col)){
                 playturn(startRow, startCol, row, col);
+                
+                // Thoát game nếu có người dành chiến thắng
+                if(!gameRunning){
+                    exitGame();
+                    return;
+                }
             }
         }
     }
@@ -75,12 +85,19 @@ public class TwoPlayerOfflineMode extends Application {
 
         // Trò chơi tiếp tục
         if(gamestate.equals("ongoing")) return;
-        
+
         // Trò chơi kết thúc
         // Giao diện chiến thắng hoặc hòa(UI)
         System.out.println((board.getCurrentTurn().equals("w")) ? "blackPlayer" : "whitePlayer" + gamestate );
         gameRunning =false;
     }
+
+    // Thoát game
+    private void exitGame() {
+        System.out.println("Đã thoát khỏi trò chơi");
+        System.exit(0); // Thoát chương trình
+    }
+    
     public static void main(String[] args) {
         launch(args);
     }

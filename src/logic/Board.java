@@ -154,6 +154,11 @@ public class Board {
         movePiece(new Move(startRow, startCol, endRow, endCol));
     }
 
+    // Di chuyển quân cờ theo dạng chuỗi
+    public void movePiece(String stringMove){
+        movePiece(new Move(stringMove));
+    }
+
     public void movePiece(Move move){
         movePiece(move, false);
     }
@@ -211,6 +216,11 @@ public class Board {
     public boolean isCorrectTurn(int row, int col){
         Piece piece = getPiece(row, col);
         return piece.getpieceColor().equals(currentTurn);
+    }
+
+    //Trả về nước đi cuối cùng dạng chuỗi (phục vụ cho chế độ 1 người chơi)
+    public String getLastMove(){
+        return white_moves.getLast().toString();
     }
 
     // Kiểm tra trạng thái trò chơi ongoing , draw, win
