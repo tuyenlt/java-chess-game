@@ -13,7 +13,7 @@ import ui.RegisterForm;
 import network.RequestAndResponse.GeneralConnectionManager.*;
 
 public class DatabaseConnection {
-	private Connection connection;
+	private static Connection connection;
     public DatabaseConnection() {
     	connectToDatabase();
     }
@@ -30,7 +30,7 @@ public class DatabaseConnection {
             //JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu!");
         }
     }
-    private UserResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
+    private LoginResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
         boolean isUserExits = false;
         boolean isPasswordCorrect = false;
         
@@ -55,7 +55,6 @@ public class DatabaseConnection {
                         user.setWin(resultSet.getInt("win"));
                         user.setLose(resultSet.getInt("lose"));
                         user.setDraw(resultSet.getInt("draw"));
-                        
                     }
                 }
             }
@@ -166,8 +165,8 @@ public class DatabaseConnection {
     }
 
 
-    public static ProfileView.Response getProfile(ProfileView.Request request){
-        ProfileView.Response response = new ProfileView.Response();
+    public static ProfileViewResponse getProfile(ProfileViewRequest request){
+        ProfileViewResponse response = new ProfileViewResponse();
         //* trả về thông tin của user id = request.userID
         //*xử lý database logic ở đây
         //*
