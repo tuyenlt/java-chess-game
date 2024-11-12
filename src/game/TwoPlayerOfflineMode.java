@@ -69,9 +69,11 @@ public class TwoPlayerOfflineMode extends Application {
 
         // Di chuyển quân cờ(logic)
         board.movePiece(startRow, startCol, endRow, endCol);
+        
+        // Biến kiểm tra trạng thái của game
+        String gamestate = board.gameState();
 
         // Trò chơi tiếp tục
-        String gamestate = board.getCurrentTurn();
         if(gamestate.equals("ongoing")) return;
         
         // Trò chơi kết thúc

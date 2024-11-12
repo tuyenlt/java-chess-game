@@ -214,15 +214,15 @@ public class Board {
     }
 
     // Kiểm tra trạng thái trò chơi ongoing , draw, win
-    public String gameState(String pieceColor){
+    public String gameState(){
         for(int row = 0; row < 8; row++){
             for(int col = 0; col < 8; col++){
                 Piece piece = getPiece(row, col);
-                if(piece == null || piece.getpieceColor().equals(pieceColor)) continue;
+                if(piece == null || piece.getpieceColor().equals(currentTurn)) continue;
                 if(!piece.getValidMoves(this, row, col).isEmpty()) return "ongoing";
             }
         }
-        if(Utils.isCheck(this, pieceColor)) return "win";
+        if(Utils.isCheck(this, currentTurn)) return "win";
         return "draw";
     }
 
