@@ -2,6 +2,7 @@ package logic;
 
 import java.util.ArrayList;
 import java.util.List;
+
 class Box {
     private Piece piece;
 
@@ -25,18 +26,29 @@ class Box {
 public class Board {
     private Box[][] board;
     
-    //Thêm danh sách lịch sử di chuyển của 2 bên để tiện sử dụng sau này
+    // Thêm danh sách lịch sử di chuyển của 2 bên để tiện sử dụng sau này
     private List<Move> white_moves = new ArrayList<>();
     private List<Move> black_moves = new ArrayList<>();
-
+    
+    // Danh sách quân cờ 2 bên
+    // public List<Piece> whitePieces = new ArrayList<>();
+    // public List<Piece> blackPieces = new ArrayList<>();
+    
+    // Vị trí quân vua của 2 bên
     private int wK_row, wK_col;
     private int bK_row, bK_col;
-    Board() {
+
+    // Đánh dấu lượt của người chơi hiện tại
+    private String currentTurn;
+    
+    public Board() {
         board = createBoard();
+        // createPieceList();
         wK_row = 7;
         wK_col = 4;
         bK_row = 0;
         bK_col = 4;
+        currentTurn ="w";
     }
 
     private Box[][] createBoard() {
@@ -77,6 +89,21 @@ public class Board {
 
         return initialBoard;
     }
+    
+    // Tạo danh sách các quân cờ 2 bên nếu cần
+    // void createPieceList(){
+    //     for(int i = 0; i < 8; i++){
+    //         blackPieces.add(board[0][i].getPiece());
+    //         blackPieces.add(board[1][i].getPiece());
+    //         whitePieces.add(board[6][i].getPiece());
+    //         whitePieces.add(board[7][i].getPiece());
+    //     }
+    // }
+
+    // Kiểm tra box ở pos có trống không
+    public boolean isEmpty(int row, int col){
+        return getPiece(row, col)==null;
+    }
 
     // Lấy thông tin quân cờ
     public Piece getPiece(int row, int col){
@@ -110,7 +137,23 @@ public class Board {
         }  
     }
 
+    // Trả về lượt người chơi hiện tại
+    public String getCurrentTurn(){
+        return currentTurn;
+    }
+
+    // Hàm kiểm tra xem 1 nước đi có hợp lệ hay không
+    public boolean isValidMove(int startRow, int startCol, int endRow,int endCol){
+        Piece piece = getPiece(startRow, startCol);
+        Move move = new Move(startRow, startCol, endRow, endCol);
+        return piece.getSafeMoves(this, startRow, startCol).contains(move); 
+    }
+
     // Thực hiện di chuyển quân cờ
+    public void movePiece(int startRow, int startCol, int endRow,int endCol){
+        movePiece(new Move(startRow, startCol, endRow, endCol));
+    }
+
     public void movePiece(Move move){
         movePiece(move, false);
     }
@@ -140,10 +183,12 @@ public class Board {
 
         //Thêm phép di chuyển vào danh sách
         if(isFakeMove) return;
-        if(piece.getpieceColor().equals("w")){
+        if(currentTurn.equals("w")){
             white_moves.add(move);
+            currentTurn = "b";
         }else{
             black_moves.add(move);
+            currentTurn = "w";
         }
     }
          
@@ -160,6 +205,25 @@ public class Board {
     // Phần này nếu muốn có thể nâng cấp lên thành chon 1 trong 4 quân xe, mã, tịnh, hậu.
     private void Promotion (int row, int col, String pieceColor){
         setPiece(row,col,new Queen(pieceColor));
+    }
+
+    // Kiểm tra xem quân cờ đã chọn có đang đi đi đúng lượt hay không?
+    public boolean isCorrectTurn(int row, int col){
+        Piece piece = getPiece(row, col);
+        return piece.getpieceColor().equals(currentTurn);
+    }
+
+    // Kiểm tra trạng thái trò chơi ongoing , draw, win
+    public String gameState(){
+        for(int row = 0; row < 8; row++){
+            for(int col = 0; col < 8; col++){
+                Piece piece = getPiece(row, col);
+                if(piece == null || piece.getpieceColor().equals(currentTurn)) continue;
+                if(!piece.getValidMoves(this, row, col).isEmpty()) return "ongoing";
+            }
+        }
+        if(Utils.isCheck(this, currentTurn)) return "win";
+        return "draw";
     }
 
 }
