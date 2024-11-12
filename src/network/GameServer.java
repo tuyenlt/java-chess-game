@@ -1,6 +1,9 @@
 package network;
 
 import network.RequestAndResponse.*;
+import network.RequestAndResponse.GeneralConnectionManager.*;
+import network.RequestAndResponse.IngameConnectionManager.*;
+
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -21,7 +24,7 @@ public class GameServer{
         this.BlackPlayerId = BlackPlayerId;
         this.WhitePlayerId = WhitePlayerId;
         server = new Server();
-        ClassRegester.register(server);
+        PacketsRegester.register(server);
         try{
             int[] ports = getTwoFreePorts();
             tcpPort = ports[0];
@@ -99,32 +102,32 @@ public class GameServer{
         System.out.println("start listening for you guy");
         server.addListener(new Listener(){
             public void received (Connection connection, Object object) {
-                if (object instanceof SimpleRequest) {
-                   handleSimpleRequest(connection, object);
+                if (object instanceof MsgPacket) {
+                   handleMsgPacket(connection, object);
                 }
 
-                if (object instanceof MoveRequest){
+                if (object instanceof MovePacket){
                     handleMoveRequest(connection, object);
                 }
             }
         });
     }
 
-    private void handleSimpleRequest(Connection connection, Object object){
-        SimpleRequest request = (SimpleRequest)object;
+    private void handleMsgPacket(Connection connection, Object object){
+        MsgPacket request = (MsgPacket)object;
         System.out.println(request.msg);
 
-        SimpleResponse response = new SimpleResponse();
+        MsgPacket response = new MsgPacket();
         response.msg = "Welcome to our house bitch";
         connection.sendTCP(response);
     }
 
     private void handleMoveRequest(Connection connection, Object object){
-        MoveRequest request = (MoveRequest)object;
+        MovePacket request = (MovePacket)object;
         System.out.println(request);
         broad[request.enX][request.enY] = broad[request.stX][request.stY];
         broad[request.stX][request.stY] = "";
-        SimpleResponse response = new SimpleResponse();
+        MsgPacket response = new MsgPacket();
         
         response.msg = getState();
         connection.sendTCP(response);

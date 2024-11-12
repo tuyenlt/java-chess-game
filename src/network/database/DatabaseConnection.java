@@ -1,17 +1,17 @@
 package network.database;
-import network.RequestAndResponse.*;
+import network.RequestAndResponse.GeneralConnectionManager.*;
 
 public class DatabaseConnection {
-    public static UserResponse loginAuthentication(LoginRequest loginRequest) throws Exception{
+    public static LoginResponse loginAuthentication(LoginRequest loginRequest) throws Exception{
 
         // xử lý đăng nhập nếu DB không có userName hoặc không khớp mk
         // throws exptions
         boolean isUserExits = false;
         boolean isPasswordCorrect = false;
         
-        UserResponse user = new UserResponse();
+        LoginResponse user = new LoginResponse();
 
-        //*xử lý database logic ở đây, nếu hợp lệ trả về thông tin user qua class UserResponse
+        //*xử lý database logic ở đây, nếu hợp lệ trả về thông tin user qua class LoginResponse
         //*
         //*
         //*
@@ -31,10 +31,10 @@ public class DatabaseConnection {
 
 
 
-    public static SimpleResponse registerNewUser(RegisterRequest registerRequest){
+    public static MsgPacket registerNewUser(RegisterRequest registerRequest){
 
         boolean isUserNameExist = false; // check xem userName đã tồn tại chưa
-        SimpleResponse response = new SimpleResponse();
+        MsgPacket response = new MsgPacket();
 
 
         //*xử lý database logic ở đây
@@ -68,8 +68,8 @@ public class DatabaseConnection {
         return rankingListResponse;
     }
 
-    public static HistoryGame.Response getHistoryGame(HistoryGame.Request gameRequest){
-        HistoryGame.Response response = new HistoryGame.Response();
+    public static ReplayGameResponse getHistoryGame(ReplayGameRequest gameRequest){
+        ReplayGameResponse response = new ReplayGameResponse();
         //* trả về nước đi của trận có id = gameReuest.gameId
         //*xử lý database logic ở đây
         //*
@@ -81,8 +81,8 @@ public class DatabaseConnection {
     }
 
 
-    public static ProfileView.Response getProfile(ProfileView.Request request){
-        ProfileView.Response response = new ProfileView.Response();
+    public static ProfileViewResponse getProfile(ProfileViewRequest request){
+        ProfileViewResponse response = new ProfileViewResponse();
         //* trả về thông tin của user id = request.userID
         //*xử lý database logic ở đây
         //*

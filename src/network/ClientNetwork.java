@@ -5,12 +5,9 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import network.RequestAndResponse.ClassRegester;
-import network.RequestAndResponse.FindGame;
-import network.RequestAndResponse.MoveRequest;
-import network.RequestAndResponse.SimpleRequest;
-import network.RequestAndResponse.SimpleResponse;
-import network.RequestAndResponse.UserResponse;
+import network.RequestAndResponse.PacketsRegester;
+import network.RequestAndResponse.GeneralConnectionManager.*;
+import network.RequestAndResponse.IngameConnectionManager.*;
 
 public class ClientNetwork {
     private Client client;
@@ -19,7 +16,8 @@ public class ClientNetwork {
     private int udpPort;
     private String serverAddr;
     public boolean isConnected = false;
-    private ClientResponseHandle onResponse;
+    private ClientResponseHandle responseHandle;
+    private IngameResponseHandler ingameResponseHandler;
 
     public ClientNetwork(int timeout, int tcpPort, int udpPort, String serverAddr) {
         this.timeout = timeout;
@@ -27,9 +25,20 @@ public class ClientNetwork {
         this.udpPort = udpPort;
         this.serverAddr = serverAddr;
         client = new Client();
-        ClassRegester.register(client);
+        PacketsRegester.register(client);
     }
 
+    public void setUiResponseHandler(ClientResponseHandle clientResponseHandle){
+        responseHandle = clientResponseHandle;
+    }
+
+    public void setIngameResponHandler(IngameResponseHandler ingameResponseHandler){
+        this.ingameResponseHandler = ingameResponseHandler;
+    }
+    
+    //* 
+    //* 
+    //* main server  ..........................................................................
     public void connectMainServer() throws IOException {
         isConnected = false;
         client.start();
@@ -40,17 +49,34 @@ public class ClientNetwork {
             }
 
             public void received(Connection connection, Object object) {
-                if (object instanceof SimpleResponse) {
-                    SimpleResponse response = (SimpleResponse) object;
+
+                if (object instanceof MsgPacket) {
+                    MsgPacket response = (MsgPacket) object;
                     System.out.println(response.msg);
                 }
 
-                if (object instanceof FindGame.Response){
+                if (object instanceof FindGameResponse){
                     handleNewGame(connection, object);
                 }
 
-                if (object instanceof UserResponse){
-                    onResponse.handleLoginSuccess((UserResponse)object);
+                if (object instanceof LoginResponse){
+                    responseHandle.handleLoginSuccess((LoginResponse)object);
+                }
+
+                if (object instanceof RegisterResponse){
+                    responseHandle.handleRegisterResponse((RegisterResponse)object);
+                }
+
+                if (object instanceof ProfileViewResponse){
+                    responseHandle.handleProfileView((ProfileViewResponse)object);
+                }
+
+                if (object instanceof ReplayGameResponse){
+                    responseHandle.handleReplayGame((ReplayGameResponse)object);
+                }
+
+                if (object instanceof RankingListResponse){
+                    responseHandle.handleRankingList(null);
                 }
             }
 
@@ -75,8 +101,17 @@ public class ClientNetwork {
             }
         }
     }
+    
+    //* 
+    //* 
+    //* end */
 
 
+
+
+    //* 
+    //* 
+    //* game server part ..........................................................................
     public void connectGameServer(int serverTcpPort, int serverUdpPort) throws IOException {
         isConnected = false;
         client.start();
@@ -87,13 +122,21 @@ public class ClientNetwork {
             }
 
             public void received(Connection connection, Object object) {
-                if (object instanceof SimpleResponse) {
-                    SimpleResponse response = (SimpleResponse) object;
+                if (object instanceof MsgPacket) {
+                    MsgPacket response = (MsgPacket) object;
                     System.out.println(response.msg);
                 }
 
-                if (object instanceof FindGame.Response){
-                    handleNewGame(connection, object);
+                if (object instanceof MovePacket){
+                    ingameResponseHandler.handleMovePacket((MovePacket)object);
+                }
+
+                if (object instanceof GameStateResponse){
+                    ingameResponseHandler.handleGamestateUpdate((GameStateResponse)object);
+                }
+
+                if (object instanceof GameEndResponse){
+                    ingameResponseHandler.handleGameEnd((GameEndResponse)object);
                 }
             }
 
@@ -120,9 +163,14 @@ public class ClientNetwork {
         }
     }
 
+    //* 
+    //* 
+    //* end */
+
+
     private void handleNewGame(Connection connection, Object object){
         try{
-            FindGame.Response newServerInfo = (FindGame.Response)object;
+            FindGameResponse newServerInfo = (FindGameResponse)object;
             client.close();
             connectGameServer(newServerInfo.tcpPort, newServerInfo.udpPort);
         }catch(IOException ex){
@@ -130,25 +178,52 @@ public class ClientNetwork {
         }
     }
 
-    private void handleGameEnd(Connection connection, Object object){
-        
-    }
-
     public void sendMsg(String msg) {
-        SimpleRequest req = new SimpleRequest();
+        MsgPacket req = new MsgPacket();
         req.msg = msg;
         client.sendTCP(req); 
     }
 
+    public void sendRequest(Object object){
+        if(object instanceof LoginRequest){
+            client.sendTCP((LoginRequest)object);
+        }
+
+        if(object instanceof RegisterRequest){
+            client.sendTCP((RegisterRequest)object);
+        }
+
+        if(object instanceof ProfileViewRequest){
+            client.sendTCP((ProfileViewRequest)object);
+        }
+
+        if(object instanceof RankingListRequest){
+            client.sendTCP((RankingListRequest)object);
+        }
+
+        if(object instanceof ReplayGameRequest){
+            client.sendTCP((ReplayGameRequest)object);
+        }
+
+        if(object instanceof MsgPacket){
+            client.sendTCP((MsgPacket)object);
+        }
+    }
+    
+    public void SendIngameRequest(Object object){
+        if(object instanceof MsgPacket){
+            client.sendTCP((MsgPacket)object);
+        }
+
+        if(object instanceof MovePacket){
+            client.sendTCP((MovePacket)object);
+        }
+    }
+
     public void findGameRequest(String userId, int elo){
-        FindGame.Request request = new FindGame.Request();
+        FindGameRequest request = new FindGameRequest();
         request.userId = userId;
         request.elo = elo;
         client.sendTCP(request);
-    }
-
-    public void sendMove(int stX, int stY, int enX, int enY){
-        MoveRequest req = new MoveRequest(stX,stY,enX,enY);
-        client.sendTCP(req);
     }
 }
