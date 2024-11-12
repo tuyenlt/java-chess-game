@@ -5,18 +5,20 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import javax.swing.JOptionPane;
-
 import network.RequestAndResponse.*;
 import ui.LoginForm;
 import ui.RegisterForm;
 import network.RequestAndResponse.GeneralConnectionManager.*;
 
 public class DatabaseConnection {
-	private static Connection connection;
-    public DatabaseConnection() {
-    	connectToDatabase();
+    private static Connection connection;
+
+    // Phương thức kết nối cơ sở dữ liệu
+	  private static Connection connection;
+    public void DatabaseConnectionInit() {
+        connectToDatabase();
     }
+          
     private void connectToDatabase() {
     	try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -24,38 +26,43 @@ public class DatabaseConnection {
             String userName = "sa";
             String password = "123456789";
             connection = DriverManager.getConnection(url, userName, password);
-            System.out.println("Thành công!");
+            System.out.println("Kết nối cơ sở dữ liệu thành công!");
         } catch (Exception e) {
             e.printStackTrace();
-            //JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu!");
+            System.err.println("Lỗi kết nối cơ sở dữ liệu: " + e.getMessage());
         }
     }
-    private LoginResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
+    public static synchronized UserResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
         boolean isUserExits = false;
         boolean isPasswordCorrect = false;
         
         LoginResponse user = new LoginResponse();
+        // Kiểm tra input hợp lệ
+        if (loginRequest.UserName() == null || loginRequest.UserName().isEmpty()) {
+            throw new Exception("Tên đăng nhập không được để trống");
+        }
+        if (loginRequest.Password() == null || loginRequest.Password().isEmpty()) {
+            throw new Exception("Mật khẩu không được để trống");
+        }
 
-        try {
-            String query = "SELECT * FROM Users WHERE userName = ?";
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setString(1, loginRequest.getUserName());
-                ResultSet resultSet = statement.executeQuery();
+        String query = "SELECT * FROM Users WHERE username = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, loginRequest.UserName());
+            ResultSet resultSet = statement.executeQuery();
 
-                if (resultSet.next()) {
-                    isUserExits = true;
-                    String dbPassword = resultSet.getString("password");
-                    isPasswordCorrect = dbPassword.equals(loginRequest.getPassword());
+            if (resultSet.next()) {
+                isUserExits = true;
+                String dbPassword = resultSet.getString("password");
+                isPasswordCorrect = dbPassword.equals(loginRequest.Password());
 
-                    if (isPasswordCorrect) {
-                        user.setUserId(resultSet.getInt("id"));
-                        user.setUserName(resultSet.getString("username"));
-                        user.setPassword(resultSet.getString("password"));
-                        user.setelo(resultSet.getInt("elo"));
-                        user.setWin(resultSet.getInt("win"));
-                        user.setLose(resultSet.getInt("lose"));
-                        user.setDraw(resultSet.getInt("draw"));
-                    }
+                if (isPasswordCorrect) {
+                    user.UserId(resultSet.getInt("id"));
+                    user.UserName(resultSet.getString("username"));
+                    user.Password(resultSet.getString("password"));
+                    user.Elo(resultSet.getInt("elo"));
+                    user.Win(resultSet.getInt("win"));
+                    user.Lose(resultSet.getInt("lose"));
+                    user.Draw(resultSet.getInt("draw"));
                 }
             }
         } catch (Exception e) {
@@ -73,17 +80,24 @@ public class DatabaseConnection {
         return user;
     }
 
+    public static synchronized SimpleResponse registerNewUser(RegisterRequest registerRequest) throws Exception {
+        boolean isUserNameExist = false;
+        SimpleResponse response = new SimpleResponse();
 
 
-    public static MsgPacket registerNewUser(RegisterRequest registerRequest){
 
-        boolean isUserNameExist = false; // check xem userName đã tồn tại chưa
-        MsgPacket response = new MsgPacket();
 
-        // Kiểm tra xem userName đã tồn tại trong cơ sở dữ liệu chưa
-        String query = "SELECT * FROM Users WHERE userName = ?";
+        // Kiểm tra input hợp lệ
+        if (registerRequest.UserName() == null || registerRequest.UserName().isEmpty()) {
+            throw new Exception("Tên đăng nhập không được để trống");
+        }
+        if (registerRequest.Password() == null || registerRequest.Password().isEmpty()) {
+            throw new Exception("Mật khẩu không được để trống");
+        }
+
+        String query = "SELECT * FROM Users WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, registerRequest.getUserName());
+            statement.setString(1, registerRequest.UserName());
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -91,70 +105,61 @@ public class DatabaseConnection {
             }
         }
 
-        // Đưa ra phản hồi dựa trên kết quả kiểm tra
         if (isUserNameExist) {
-            response.msg = "User name already exist";
+            response.msg = "User name already exists";
         } else {
-            // Nếu không tồn tại, thêm người dùng mới vào cơ sở dữ liệu
-        	String insertQuery = "INSERT INTO Users (username, password) VALUES (?, ?)";
-        	try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-        	    insertStatement.setString(1, registerRequest.getUserName());
-        	    insertStatement.setString(2, registerRequest.getPassword());
-        	    insertStatement.executeUpdate();
-        	    response.msg = "Create new account success, go back to login";
-        	}
-
+            String insertQuery = "INSERT INTO Users (username, password) VALUES (?, ?)";
+            try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+                insertStatement.setString(1, registerRequest.UserName());
+                insertStatement.setString(2, registerRequest.Password());
+                insertStatement.executeUpdate();
+                response.msg = "Create new account success, go back to login";
+            }
         }
 
         return response;
     }
-    private RankingListResponse getRankingList(RankingListRequest rankingListRequest) throws Exception {
-    	   RankingListResponse rankingListResponse = new RankingListResponse();
-    	   String query = "SELECT username, elo FROM Rank ORDER BY elo DESC"; // Truy vấn lấy danh sách xếp hạng theo elo giảm dần
 
-    	   try (PreparedStatement statement = connection.prepareStatement(query);
-    	         ResultSet resultSet = statement.executeQuery()) {
+    public static synchronized RankingListResponse getRankingList(RankingListRequest rankingListRequest) throws Exception {
+        RankingListResponse rankingListResponse = new RankingListResponse();
+        String query = "SELECT username, elo FROM Rank ORDER BY elo DESC";
 
-    	        // Lấy từng bản ghi từ kết quả truy vấn và thêm vào danh sách xếp hạng
-    		   while (resultSet.next()) {
-    			   String userName = resultSet.getString("username");
-    			   int elo = resultSet.getInt("elo");
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
 
-    	            // Thêm vào danh sách (sử dụng Map, ví dụ: "username" -> "elo")
-    			   rankingListResponse.addRanking(userName, elo);
-    		   }
-    	   } catch (Exception e) {
-    	        	e.printStackTrace();
-    	        	throw new Exception("Error fetching ranking list: " + e.getMessage());
-    	   }
-    	   
-    	   return rankingListResponse;
+            while (resultSet.next()) {
+                String userName = resultSet.getString("username");
+                int elo = resultSet.getInt("elo");
+                rankingListResponse.addRanking(userName, elo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Error fetching ranking list: " + e.getMessage());
+        }
+
+        return rankingListResponse;
     }
 
-
-    private ReplayGameResponse getHistoryGame(ReplayGameRequest gameRequest) throws Exception {
-        ReplayGameResponse response = new ReplayGameResponse();
-        String query = "SELECT player_id, opponent_id, moves, result FROM HistoryGame WHERE macthid = ?"; // Truy vấn thông tin trận đấu
+    public static synchronized HistoryGame.Response getHistoryGame(HistoryGame.Request gameRequest) throws Exception {
+        HistoryGame.Response response = new HistoryGame.Response();
+        String query = "SELECT player_id, opponent_id, moves, result FROM HistoryGame WHERE matchid = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, gameRequest.getGameId()); // Set macthid từ gameRequest vào truy vấn
+            statement.setInt(1, gameRequest.GameId());
             ResultSet resultSet = statement.executeQuery();
 
-            // Kiểm tra nếu có dữ liệu trả về
             if (resultSet.next()) {
-                // Lấy thông tin người chơi và đối thủ
                 int playerId = resultSet.getInt("player_id");
                 int opponentId = resultSet.getInt("opponent_id");
                 String moves = resultSet.getString("moves");
                 String result = resultSet.getString("result");
 
-                // Thêm thông tin vào đối tượng response
-                response.setPlayerId(playerId);
-                response.setOpponentId(opponentId);
-                response.setMoves(moves); // Lưu chuỗi nước đi PGN
-                response.setResult(result); // Kết quả trận đấu
+                response.PlayerId(playerId);
+                response.OpponentId(opponentId);
+                response.Moves(moves);
+                response.Result(result);
             } else {
-                throw new Exception("Game not found with ID: " + gameRequest.getGameId());
+                throw new Exception("Game not found with ID: " + gameRequest.GameId());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,17 +169,29 @@ public class DatabaseConnection {
         return response;
     }
 
+    public static synchronized ProfileView.Response getProfile(ProfileView.Request request) throws Exception {
+        ProfileView.Response response = new ProfileView.Response();
+        String query = "SELECT id, username, email, elo, win, lose, draw FROM Users WHERE id = ?";
 
-    public static ProfileViewResponse getProfile(ProfileViewRequest request){
-        ProfileViewResponse response = new ProfileViewResponse();
-        //* trả về thông tin của user id = request.userID
-        //*xử lý database logic ở đây
-        //*
-        //*
-        //*
-        //* */
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, request.UserID());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                response.UserId(resultSet.getInt("id"));
+                response.UserName(resultSet.getString("username"));
+                response.Elo(resultSet.getInt("elo"));
+                response.Win(resultSet.getInt("win"));
+                response.Lose(resultSet.getInt("lose"));
+                response.Draw(resultSet.getInt("draw"));
+            } else {
+                throw new Exception("User not found with ID: " + request.UserID());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Error fetching profile: " + e.getMessage());
+        }
 
         return response;
     }
-
 }
