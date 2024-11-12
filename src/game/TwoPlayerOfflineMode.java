@@ -1,47 +1,87 @@
 package game;
 
-import javafx.scene.chart.PieChart;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import logic.Board;
-import logic.Move;
-import logic.Piece;
-import logic.Utils;
+// import logic.Move;
 
-public class TwoPlayerOfflineMode {
+public class TwoPlayerOfflineMode extends Application {
     private Board board = new Board();
     private int [] selectedSquare =null;
-    public void start(){
-        // Mai làm tiếp
+    private static final int SQUARE_SIZE = 80;
+    private static final int BOARD_SIZE = 8;
+    private GridPane gridPane;
+    private boolean gameRunning;
+    
+    public void start(Stage primaryStage){
+        gridPane = new GridPane();
+        gameRunning = true;
+        drawBoard();
+
+        Scene scene = new Scene(gridPane, SQUARE_SIZE * BOARD_SIZE, SQUARE_SIZE * BOARD_SIZE);
+        primaryStage.setTitle("Two Player Chess Game");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void drawBoard(){
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
+                // Vẽ bàn cờ và các quân cờ
+                final int finalRow = row;  
+                final int finalCol = col;
+
+                // lắng nghe sự kiện click chuột
+                square.setOnMouseClicked(event -> handleClick(finalRow, finalCol));
+                gridPane.add(square, finalRow, finalCol);
+            }
+        }
     }
 
     private void handleClick(int row, int col){
-        Piece piece = board.getPiece(row, col);
-        if (piece ==null) return;
-        if(selectedSquare == null || piece.getpieceColor().equals(board.getCurrentTurn())){
+        if (board.isEmpty(row, col)) return;
+        if(selectedSquare == null || board.isCorrectTurn(row, col)){
             selectPiece(row, col);
         }else{
             int startRow = selectedSquare[0];
             int startCol = selectedSquare[1];   
-            Move move = new Move(startRow, startCol, row, col);
+            // Move move = new Move(startRow, startCol, row, col);
 
-            if(board.getPiece(startRow, startCol).getSafeMoves(board, startRow, startCol).contains(move)){
-                playturn(move);
+            if(board.isValidMove(startRow, startCol, row, col)){
+                playturn(startRow, startCol, row, col);
             }
         }
     }
     private void selectPiece(int row,int col){
-        Piece piece = board.getPiece(row, col);
-        if(piece.getpieceColor().equals(board.getCurrentTurn())){
+        if(board.isCorrectTurn(row, col)){
             selectedSquare = new int[]{row, col};
             // Thực hiện highlight quân cờ
         }
     }
 
-    private void playturn(Move move){
+    private void playturn(int startRow, int startCol, int endRow, int endCol){
         // Bỏ highlight
         // Di chuyển quân cờ(UI)
 
         // Di chuyển quân cờ(logic)
-        board.movePiece(move);
+        board.movePiece(startRow, startCol, endRow, endCol);
+        
+        // Biến kiểm tra trạng thái của game
+        String gamestate = board.gameState();
 
+        // Trò chơi tiếp tục
+        if(gamestate.equals("ongoing")) return;
+        
+        // Trò chơi kết thúc
+        // Giao diện chiến thắng hoặc hòa(UI)
+        System.out.println((board.getCurrentTurn().equals("w")) ? "blackPlayer" : "whitePlayer" + gamestate );
+        gameRunning =false;
+    }
+    public static void main(String[] args) {
+        launch(args);
     }
 }
