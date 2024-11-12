@@ -100,6 +100,11 @@ public class Board {
     //     }
     // }
 
+    // Kiểm tra box ở pos có trống không
+    public boolean isEmpty(int row, int col){
+        return getPiece(row, col)==null;
+    }
+
     // Lấy thông tin quân cờ
     public Piece getPiece(int row, int col){
         return board[row][col].getPiece();
@@ -137,7 +142,18 @@ public class Board {
         return currentTurn;
     }
 
+    // Hàm kiểm tra xem 1 nước đi có hợp lệ hay không
+    public boolean isValidMove(int startRow, int startCol, int endRow,int endCol){
+        Piece piece = getPiece(startRow, startCol);
+        Move move = new Move(startRow, startCol, endRow, endCol);
+        return piece.getSafeMoves(this, startRow, startCol).contains(move); 
+    }
+
     // Thực hiện di chuyển quân cờ
+    public void movePiece(int startRow, int startCol, int endRow,int endCol){
+        movePiece(new Move(startRow, startCol, endRow, endCol));
+    }
+
     public void movePiece(Move move){
         movePiece(move, false);
     }
@@ -189,6 +205,12 @@ public class Board {
     // Phần này nếu muốn có thể nâng cấp lên thành chon 1 trong 4 quân xe, mã, tịnh, hậu.
     private void Promotion (int row, int col, String pieceColor){
         setPiece(row,col,new Queen(pieceColor));
+    }
+
+    // Kiểm tra xem quân cờ đã chọn có đang đi đi đúng lượt hay không?
+    public boolean isCorrectTurn(int row, int col){
+        Piece piece = getPiece(row, col);
+        return piece.getpieceColor().equals(currentTurn);
     }
 
     // Kiểm tra trạng thái trò chơi ongoing , draw, win

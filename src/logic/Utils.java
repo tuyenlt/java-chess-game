@@ -4,7 +4,7 @@ public class Utils {
 
     // Kiểm tra trạng thái của ô
     static boolean isEmpty(Board board, int row, int col) {
-        return board.getPiece(row, col) == null;
+        return board.isEmpty(row, col);
     }
 
     // Kiểm tra điều kiện di chuyển của quân cờ
