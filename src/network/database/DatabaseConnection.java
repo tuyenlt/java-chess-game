@@ -5,33 +5,38 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import network.RequestAndResponse.*;
-import ui.LoginForm;
-import ui.RegisterForm;
-import network.RequestAndResponse.GeneralConnectionManager.*;
+import network.packets.GeneralPackets.HistoryGameRequest;
+import network.packets.GeneralPackets.HistoryGameResponse;
+import network.packets.GeneralPackets.LoginRequest;
+import network.packets.GeneralPackets.LoginResponse;
+import network.packets.GeneralPackets.MsgPacket;
+import network.packets.GeneralPackets.ProfileViewRequest;
+import network.packets.GeneralPackets.ProfileViewResponse;
+import network.packets.GeneralPackets.RankingListRequest;
+import network.packets.GeneralPackets.RankingListResponse;
+import network.packets.GeneralPackets.RegisterRequest;
 
 public class DatabaseConnection {
 
     // Phương thức kết nối cơ sở dữ liệu
-	private static Connection connection;
+    private static Connection connection;
+
     public void DatabaseConnectionInit() {
         connectToDatabase();
     }
-          
+
     private void connectToDatabase() {
-    	try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://LAPTOP-MP2192TB:1433;databaseName=ChessGame;encrypt=true;trustServerCertificate=true";
-            String userName = "sa";
-            String password = "123456789";
-            connection = DriverManager.getConnection(url, userName, password);
-            System.out.println("Kết nối cơ sở dữ liệu thành công!");
+        try {
+            
+            Class.forName("org.sqlite.JDBC");
+            String url = "jdbc:sqlite:ChessGame.db"; 
+            connection = DriverManager.getConnection(url);
+            System.out.println("Kết nối cơ sở dữ liệu SQLite thành công!");
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Lỗi kết nối cơ sở dữ liệu: " + e.getMessage());
+            System.err.println("Lỗi kết nối cơ sở dữ liệu SQLite: " + e.getMessage());
         }
     }
-
 
     public static synchronized LoginResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
         boolean isUserExits = false;
@@ -84,9 +89,6 @@ public class DatabaseConnection {
     public static synchronized MsgPacket registerNewUser(RegisterRequest registerRequest) throws Exception {
         boolean isUserNameExist = false;
         MsgPacket response = new MsgPacket();
-
-
-
 
         // Kiểm tra input hợp lệ
         if (registerRequest.userName == null || registerRequest.userName.isEmpty()) {
