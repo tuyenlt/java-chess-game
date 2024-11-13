@@ -1,0 +1,36 @@
+-- Kết nối cơ sở dữ liệu SQLite (nếu chưa tạo cơ sở dữ liệu sẽ tự động tạo)
+ATTACH DATABASE 'ChessGame.db' AS ChessGame;
+
+-- Tạo bảng Users
+CREATE TABLE IF NOT EXISTS Users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Sử dụng AUTOINCREMENT thay vì IDENTITY
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    elo INTEGER DEFAULT 0,
+    win INTEGER DEFAULT 0,
+    lose INTEGER DEFAULT 0,
+    draw INTEGER DEFAULT 0
+);
+
+-- Tạo bảng Rank
+CREATE TABLE IF NOT EXISTS Rank (
+    id INTEGER NOT NULL,  -- Không cần khai báo kiểu INT cho khóa ngoại, chỉ cần INTEGER
+    username TEXT,
+    elo INTEGER,
+    FOREIGN KEY (id) REFERENCES Users(id)
+);
+
+-- Tạo bảng HistoryGame
+CREATE TABLE IF NOT EXISTS HistoryGame (
+    matchid INTEGER PRIMARY KEY AUTOINCREMENT,  -- Sử dụng AUTOINCREMENT thay vì IDENTITY
+    player_id INTEGER,
+    opponent_id INTEGER,
+    moves TEXT,  -- Lưu chuỗi nước đi bằng PGN
+    result TEXT,  -- Sử dụng TEXT thay cho VARCHAR(10), vì SQLite không cần giới hạn độ dài
+    FOREIGN KEY (player_id) REFERENCES Users(id),
+    FOREIGN KEY (opponent_id) REFERENCES Users(id),
+    CHECK (result IN ('win', 'lose', 'draw'))  -- Ràng buộc CHECK vẫn hoạt động tốt trong SQLite
+);
+
+-- Bật hỗ trợ khóa ngoại (SQLite mặc định không bật tính năng này)
+PRAGMA foreign_keys = ON;
