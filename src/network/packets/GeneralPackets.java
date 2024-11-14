@@ -142,12 +142,12 @@ public class GeneralPackets {
 
 
     public static class FindGameRequest{
-        public String userId;
+        public int userId;
         public int elo;
         public FindGameRequest(){
 
         }
-        public FindGameRequest(String userId, int elo) {
+        public FindGameRequest(int userId, int elo) {
             this.userId = userId;
             this.elo = elo;
         }
@@ -157,6 +157,7 @@ public class GeneralPackets {
     public static class FindGameResponse{
         public int tcpPort;
         public int udpPort;
+        public String side;
     }
 
 }

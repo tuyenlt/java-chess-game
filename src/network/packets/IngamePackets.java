@@ -1,6 +1,12 @@
 package network.packets;
 
 public class IngamePackets {
+
+    public static class ConnectedPacket {
+        public String side;
+    }
+
+
     public static class GameStateResponse {
         public int timeWhite;
         public int timeBlack;

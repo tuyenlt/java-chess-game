@@ -188,7 +188,40 @@ public class DatabaseConnection {
         return response;
     }
 
-    public static  getPlayerInfoById(){
-        
+    public static Player getPlayerInfoById(int id) throws Exception{
+        String query = "SELECT id, username, elo, win, lose, draw FROM Users WHERE id = ?";        
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                Player player = new Player(
+                    resultSet.getInt("id"),
+                    resultSet.getString("username"),
+                    resultSet.getInt("elo"),
+                    resultSet.getInt("win"),
+                    resultSet.getInt("lose"),
+                    resultSet.getInt("draw")
+                    );
+                return player;
+            } else {
+                throw new Exception("User not found with ID: " + id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Error fetching profile: " + e.getMessage());
+        }
+    }
+
+    public static void updatePlayerToDB(Player player) throws Exception{
+        String query = "UPDATE Users SET elo = ?, win = ?, lose = ?, draw = ? WHERE id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setInt(1, player.elo);
+            statement.setInt(2, player.win);
+            statement.setInt(3, player.lose);
+            statement.setInt(4, player.draw);
+            statement.setInt(5, player.playerId);
+            statement.executeUpdate();
+        }
     }
 }
