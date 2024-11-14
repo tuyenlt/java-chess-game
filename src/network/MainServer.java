@@ -15,7 +15,7 @@ public class MainServer {
     private Server server;
     private int tcpPort;
     private int udpPort;
-    private ArrayList<WaitingPlayer> waitingPlayers;
+    private ArrayList<WaitingPlayer> waitingPlayers = new ArrayList<>();
     
     class WaitingPlayer{
         public Connection connection;
@@ -77,7 +77,7 @@ public class MainServer {
         try{
             LoginResponse response = DatabaseConnection.loginAuthentication(request);
             connection.sendTCP(response);
-        }catch(Exception error){
+        }catch(Exception error){ 
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.error = error.getMessage();
             connection.sendTCP(errorResponse);

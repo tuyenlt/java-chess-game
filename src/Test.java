@@ -1,22 +1,20 @@
 import java.io.*;
 
 import engine.StockfishEngine;
-
+import network.database.DatabaseConnection;
+import network.packets.GeneralPackets.LoginRequest;
 
 public class Test {
 
-    public static void main(String[] args) throws IOException {
-        StockfishEngine stockfish = new StockfishEngine();
-        stockfish.startNewGame();
-        stockfish.makePlayerMove("e2e4");
-        int n = 10;
-        while(n-->0){
-            System.out.println(stockfish.getBoardState());
-            String bestMove = stockfish.getBestMove();
-            System.out.println(bestMove);
-            System.out.println(stockfish.getCurrentFen());
-            stockfish.makePlayerMove(bestMove);
+    public static void main(String[] args){
+        try {    
+            DatabaseConnection.DatabaseConnectionInit();
+            LoginRequest req = new LoginRequest();
+            req.userName = "tuyenlt";
+            req.passwd = "tuyenlt";
+            DatabaseConnection.loginAuthentication(req);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        stockfish.close();
     }
 }

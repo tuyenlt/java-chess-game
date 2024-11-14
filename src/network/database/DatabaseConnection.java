@@ -15,11 +15,11 @@ public class DatabaseConnection {
     // Phương thức kết nối cơ sở dữ liệu
     private static Connection connection;
 
-    public void DatabaseConnectionInit() {
+    public static void DatabaseConnectionInit() {
         connectToDatabase();
     }
 
-    private void connectToDatabase() {
+    private static void connectToDatabase() {
         try {
             
             Class.forName("org.sqlite.JDBC");
@@ -32,7 +32,7 @@ public class DatabaseConnection {
         }
     }
 
-    public static synchronized LoginResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
+    public static LoginResponse loginAuthentication(LoginRequest loginRequest) throws Exception {
         boolean isUserExits = false;
         boolean isPasswordCorrect = false;
         
@@ -69,14 +69,14 @@ public class DatabaseConnection {
             e.printStackTrace();
             throw new Exception("Lỗi khi truy vấn cơ sở dữ liệu: " + e.getMessage());
         }
-
-        if (!isUserExits) {
+        
+        if (!isUserExits) {   
             throw new Exception("User không tồn tại");
         }
         if (!isPasswordCorrect) {
             throw new Exception("Sai mật khẩu, vui lòng thử lại");
         }
-
+        
         return user;
     }
 
@@ -186,5 +186,9 @@ public class DatabaseConnection {
         }
 
         return response;
+    }
+
+    public static  getPlayerInfoById(){
+        
     }
 }

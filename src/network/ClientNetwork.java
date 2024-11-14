@@ -63,6 +63,10 @@ public class ClientNetwork {
                     responseHandle.handleLoginSuccess((LoginResponse)object);
                 }
 
+                if (object instanceof ErrorResponse){
+                    responseHandle.handleLoginFail((ErrorResponse)object);
+                }
+
                 if (object instanceof RegisterResponse){
                     responseHandle.handleRegisterResponse((RegisterResponse)object);
                 }
@@ -207,6 +211,10 @@ public class ClientNetwork {
 
         if(object instanceof MsgPacket){
             client.sendTCP((MsgPacket)object);
+        }
+
+        if(object instanceof FindGameRequest){
+            client.sendTCP((FindGameRequest)object);
         }
     }
     

@@ -23,5 +23,6 @@ public class PacketsRegester {
         kryo.register(FindGameResponse.class);
         kryo.register(MovePacket.class);
         kryo.register(GameStateResponse.class);
+        kryo.register(ErrorResponse.class);
     }
 }

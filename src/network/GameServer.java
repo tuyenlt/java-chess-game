@@ -13,6 +13,13 @@ import java.net.ServerSocket;
 import java.io.IOException;
 
 
+
+class Player{
+    public String playerid;
+    public int elo;
+    public int connectionId;
+}
+
 public class GameServer{
     private Server server;
     private String[][] broad;
@@ -111,6 +118,14 @@ public class GameServer{
                     handleMoveRequest(connection, object);
                 }
             }
+
+            @Override
+            public void disconnected(Connection connection) {
+                                    
+                super.disconnected(connection);
+            }
+
+            
         });
     }
 
@@ -128,9 +143,12 @@ public class GameServer{
         System.out.println(request);
         broad[request.enX][request.enY] = broad[request.stX][request.stY];
         broad[request.stX][request.stY] = "";
-        MsgPacket response = new MsgPacket();
-        
+        MsgPacket response = new MsgPacket();       
         response.msg = getState();
         connection.sendTCP(response);
+    }
+
+    private void handlePlayerDisconnect(Connection connection){
+
     }
 }
