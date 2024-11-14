@@ -124,5 +124,4 @@ public class SinglePlayerMode extends Application {
         System.out.println("Đã thoát khỏi trò chơi");
         System.exit(0); 
     }
-    
 }

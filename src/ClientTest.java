@@ -10,13 +10,12 @@ class GameClient implements ClientResponseHandle{
     @Override
     public void handleLoginFail(ErrorResponse error) {
         // TODO Auto-generated method stub
-        
+        System.out.println("Login fail");
     }
 
     @Override
     public void handleLoginSuccess(LoginResponse user) {
         // TODO Auto-generated method stub
-        
     }
 
     @Override

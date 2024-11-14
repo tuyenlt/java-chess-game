@@ -10,7 +10,6 @@ import com.esotericsoftware.kryonet.Server;
 import network.database.DatabaseConnection;
 import network.packets.PacketsRegester;
 import network.packets.GeneralPackets.*;
-import network.packets.IngamePackets.*;
 
 public class MainServer {
     private Server server;

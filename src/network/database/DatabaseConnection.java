@@ -5,10 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import network.RequestAndResponse.*;
+import network.packets.*;
+import network.packets.GeneralPackets.*;
 import ui.LoginForm;
 import ui.RegisterForm;
-import network.RequestAndResponse.GeneralConnectionManager.*;
 
 public class DatabaseConnection {
 
