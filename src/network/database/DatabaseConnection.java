@@ -58,7 +58,7 @@ public class DatabaseConnection {
                 if (isPasswordCorrect) {
                     user.userId = resultSet.getInt("id");
                     user.userName = resultSet.getString("username");
-                    user.passwd = resultSet.getString("password");
+                    // user.passwd = resultSet.getString("password");
                     user.elo = resultSet.getInt("elo");
                     user.win = resultSet.getInt("win");
                     user.lose = resultSet.getInt("lose");
@@ -188,14 +188,14 @@ public class DatabaseConnection {
         return response;
     }
 
-    public static Player getPlayerInfoById(int id) throws Exception{
+    public static PlayerData getPlayerInfoById(int id) throws Exception{
         String query = "SELECT id, username, elo, win, lose, draw FROM Users WHERE id = ?";        
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                Player player = new Player(
+                PlayerData player = new PlayerData(
                     resultSet.getInt("id"),
                     resultSet.getString("username"),
                     resultSet.getInt("elo"),
@@ -213,7 +213,7 @@ public class DatabaseConnection {
         }
     }
 
-    public static void updatePlayerToDB(Player player) throws Exception{
+    public static void updatePlayerToDB(PlayerData player) throws Exception{
         String query = "UPDATE Users SET elo = ?, win = ?, lose = ?, draw = ? WHERE id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)){
             statement.setInt(1, player.elo);

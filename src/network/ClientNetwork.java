@@ -15,7 +15,8 @@ public class ClientNetwork {
     private int tcpPort;
     private int udpPort;
     private String serverAddr;
-    public boolean isConnected = false;
+    private boolean isConnected = false;
+    private LoginResponse user = null; 
     private ClientResponseHandle responseHandle;
     private IngameResponseHandler ingameResponseHandler;
 
@@ -60,6 +61,7 @@ public class ClientNetwork {
                 }
 
                 if (object instanceof LoginResponse){
+                    user = (LoginResponse)object;
                     responseHandle.handleLoginSuccess((LoginResponse)object);
                 }
 
@@ -123,10 +125,11 @@ public class ClientNetwork {
 
             public void connected(Connection connection) {
                 isConnected = true;  
-                client.sendTCP(new MsgPacket(side));
+                client.sendTCP(user);
             }
 
-            public void received(Connection connection, Object object) {
+            public void received(Connection connection, Object object) { 
+
                 if (object instanceof MsgPacket) {
                     MsgPacket response = (MsgPacket) object;
                     System.out.println(response.msg);

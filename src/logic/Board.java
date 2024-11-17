@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.List;
 
+
 class Box {
     private Piece piece;
 
@@ -29,6 +30,7 @@ public class Board {
     // Thêm danh sách lịch sử di chuyển của 2 bên để tiện sử dụng sau này
     private List<Move> white_moves = new ArrayList<>();
     private List<Move> black_moves = new ArrayList<>();
+    private List<Move> allMoves = new ArrayList<>();
     
     // Danh sách quân cờ 2 bên
     // public List<Piece> whitePieces = new ArrayList<>();
@@ -100,6 +102,7 @@ public class Board {
     //     }
     // }
 
+
     // Kiểm tra box ở pos có trống không
     public boolean isEmpty(int row, int col){
         return getPiece(row, col)==null;
@@ -149,6 +152,8 @@ public class Board {
         return piece.getSafeMoves(this, startRow, startCol).contains(move); 
     }
 
+    
+
     // Thực hiện di chuyển quân cờ
     public void movePiece(int startRow, int startCol, int endRow,int endCol){
         movePiece(new Move(startRow, startCol, endRow, endCol));
@@ -195,6 +200,7 @@ public class Board {
             black_moves.add(move);
             currentTurn = "w";
         }
+        allMoves.add(move);
     }
          
     // Xử lý riêng phần nhập thành
@@ -236,4 +242,8 @@ public class Board {
         return "draw";
     }
 
+
+    public List<Move> getAllMoves(){
+        return this.allMoves;
+    }
 }

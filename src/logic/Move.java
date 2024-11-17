@@ -52,6 +52,13 @@ public class Move {
         return new Move(endRow, endCol, startRow, startCol);
     }
 
+    public void reverseBoard(){ // bàn cờ người chơi quân đen online sẽ ngược lại;
+        startCol = 7 - startCol;
+        startRow = 7 - startRow;
+        endCol = 7 - endCol;
+        endRow = 7 - endRow;
+    }
+
     // toString để in nước đi dạng chuẩn
     @Override 
     public String toString() { 

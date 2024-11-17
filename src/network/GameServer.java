@@ -5,34 +5,40 @@ import com.esotericsoftware.kryonet.Server;
 import network.packets.*;
 import network.packets.GeneralPackets.*;
 import network.packets.IngamePackets.*;
-import network.database.DatabaseConnection;
-import network.database.Player;
+import logic.Board;
+import logic.Move;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import java.net.ServerSocket;
-
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.io.IOException;
 
 
 
 public class GameServer{
     private Server server;
-    private String[][] broad;
-    private Player whitePlayer;
-    private Player blackPlayer;
+    private PlayerConnection whitePlayer;
+    private PlayerConnection blackPlayer;
     private int tcpPort;
     private int udpPort;
+    private Board board = new Board();
+
+    private ScheduledExecutorService timerExecutor;
+    private int whitePlayerTime = 10 * 60; 
+    private int blackPlayerTime = 10 * 60; 
     
     public GameServer(int whitePlayerId, int blackPlayerId){
-        try{
-            whitePlayer = DatabaseConnection.getPlayerInfoById(whitePlayerId);
-            blackPlayer = DatabaseConnection.getPlayerInfoById(blackPlayerId);
-        }catch (Exception e){
-
-        }
         server = new Server();
         PacketsRegester.register(server);
+        try{
+            whitePlayer = new PlayerConnection(whitePlayerId);
+            blackPlayer = new PlayerConnection(blackPlayerId);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
         try{
             int[] ports = getTwoFreePorts();
             tcpPort = ports[0];
@@ -41,7 +47,6 @@ public class GameServer{
         }catch(IOException ex){
             System.err.println(ex);
         }
-        broadInit();
     }
 
     private int[] getTwoFreePorts() throws IOException {
@@ -61,47 +66,8 @@ public class GameServer{
         return ports;
     }
 
-    void broadInit(){
-        broad = new String[8][8];
-        for(int i=0;i<8;i++){
-            for(int j=0;j<8;j++){
-                broad[i][j] = "";
-            }
-        }
-        for(int i=0;i<8;i++){
-            broad[1][i] = "wP";
-            broad[6][i] = "bP";
-        }
-        broad[0][0] = "wR";
-        broad[0][7] = "wR";
-        broad[0][1] = "wK";
-        broad[0][2] = "wB";
-        broad[0][3] = "wKi";
-        broad[0][4] = "wQ";
-        broad[0][5] = "wB";
-        broad[0][6] = "wK";
-        broad[0][7] = "wR";
-
-
-        broad[7][0] = "bR";
-        broad[7][1] = "bK";
-        broad[7][2] = "bB";
-        broad[7][3] = "bKi";
-        broad[7][4] = "bQ";
-        broad[7][5] = "bB";
-        broad[7][6] = "bK";
-        broad[7][7] = "bR";
-    }
-
-
     public String getState(){
         StringBuilder state = new StringBuilder();
-        for(int i=0;i<8;i++){
-            for(int j=0;j<8;j++){
-                state.append(String.format("%-" + 5 + "s", broad[i][j]));
-            }
-            state.append("\n");
-        }
         return state.toString();
     }
 
@@ -116,6 +82,10 @@ public class GameServer{
             }
 
             public void received (Connection connection, Object object) {
+                if (object instanceof InitPacket){
+                    handlePlayerConnected(connection, (InitPacket)object);
+                }
+
                 if (object instanceof MsgPacket) {
                    handleMsgPacket(connection, object);
                 }
@@ -127,12 +97,40 @@ public class GameServer{
 
             @Override
             public void disconnected(Connection connection) {
-                                    
+                handlePlayerDisconnect(connection); 
                 super.disconnected(connection);
-            }
-
-            
+            } 
         });
+    }
+
+     private void startPlayerTimers() {
+        timerExecutor.scheduleAtFixedRate(() -> {
+            if (board.getCurrentTurn().equals("w")) {
+                whitePlayerTime--;
+                if (whitePlayerTime <= 0) {
+                    handleGameEnd(0); // Black wins
+                }
+            } else {
+                blackPlayerTime--;
+                if (blackPlayerTime <= 0) {
+                    handleGameEnd(1); // White wins
+                }
+            }
+        }, 1, 1, TimeUnit.SECONDS);
+    }
+
+    private void handlePlayerConnected(Connection connection,InitPacket initPacket){
+        if(initPacket.id == whitePlayer.getId()){
+            whitePlayer.setConnection(connection);
+        }
+        if(initPacket.id == blackPlayer.getId()){
+            blackPlayer.setConnection(connection);
+        }
+        if(server.getConnections().length == 2){
+            whitePlayer.connection.sendTCP(new OpponentInfo(blackPlayer.getName(),blackPlayer.getElo()));
+            blackPlayer.connection.sendTCP(new OpponentInfo(whitePlayer.getName(),whitePlayer.getElo()));
+            startPlayerTimers();
+        }
     }
 
     private void handleMsgPacket(Connection connection, Object object){
@@ -146,15 +144,68 @@ public class GameServer{
 
     private void handleMoveRequest(Connection connection, Object object){
         MovePacket request = (MovePacket)object;
-        System.out.println(request);
-        broad[request.enX][request.enY] = broad[request.stX][request.stY];
-        broad[request.stX][request.stY] = "";
-        MsgPacket response = new MsgPacket();       
-        response.msg = getState();
-        connection.sendTCP(response);
+        Move newMove = new Move(request.stX, request.stY, request.enX, request.enY);
+        if(connection.getID() == blackPlayer.connectionId){
+            newMove.reverseBoard();
+        }
+        if(board.isValidMove(request.stX, request.stY, request.enX, request.enY)){
+            board.movePiece(newMove);
+        }else{
+            //TODO  handle player cheating
+        }
+        
+        for(Connection conn : server.getConnections()){
+            conn.sendTCP(request);
+        }
+
+        if(board.gameState().equals("ongoing")){
+            return;
+        }
+
+        
+        if(board.gameState().equals("win")){
+            if(board.getCurrentTurn().equals("w")){
+                handleGameEnd(1);
+            }else{
+                handleGameEnd(0);
+            }
+        }
+
+        if(board.gameState().equals("draw")){
+            handleGameEnd(0.5);
+        }
+
+    }
+
+
+    private void handleGameEnd(double whiteScore){
+        List<Move> allMoves = board.getAllMoves();
+        int whiteEloChange = whitePlayer.gameEndWith(blackPlayer, whiteScore);
+        int blackEloChange = blackPlayer.gameEndWith(whitePlayer, 1 - whiteScore);
+        whitePlayer.connection.sendTCP(new GameEndResponse(
+            whiteScore,
+            allMoves.size(),
+            whiteEloChange
+        ));                
+
+        blackPlayer.connection.sendTCP(new GameEndResponse(
+            1 - whiteScore,
+            allMoves.size(),
+            blackEloChange
+        ));     
+        // TODO save game history
+
+
+        whitePlayer.saveToDatabase();
+        blackPlayer.saveToDatabase();
+        server.stop();
     }
 
     private void handlePlayerDisconnect(Connection connection){
-
+        if(connection.getID() == whitePlayer.connectionId){
+            handleGameEnd(0);            
+        }else{
+            handleGameEnd(1);
+        } 
     }
 }

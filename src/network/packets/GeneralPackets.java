@@ -17,10 +17,9 @@ public class GeneralPackets {
         }  
     }
     
-    public static class LoginResponse {
+    public static class LoginResponse{
         public int userId;
         public String userName;
-        public String passwd;
         public int elo;
         public int win;
         public int lose;
