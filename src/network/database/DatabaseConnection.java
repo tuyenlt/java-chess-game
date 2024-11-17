@@ -187,8 +187,4 @@ public class DatabaseConnection {
 
         return response;
     }
-
-    public static  getPlayerInfoById(){
-        
-    }
 }

@@ -32,9 +32,7 @@ public abstract class Piece {
             }
         }
         return false;
-    }
-
-    
+    }    
 }
 
 
@@ -205,13 +203,18 @@ class King extends Piece {
                 validMoves.add(new Move(startRow, startCol, endRow, endCol));
             }
         }
+        
+        return validMoves;
+    }
+    public List<Move> getSafMoves(Board board, int startRow,int startCol){
+        List<Move> safeMoves = super.getSafeMoves(board, startRow, startCol);
         if (Utils.canCastleLeft(board, startRow, startCol, hasMoved, pieceColor)){
-            validMoves.add(new Move(startRow, startCol, startRow, 2));
+            safeMoves.add(new Move(startRow, startCol, startRow, 2));
         }
         if (Utils.canCastleRight(board, startRow, startCol, hasMoved, pieceColor)) {
-            validMoves.add(new Move(startRow, startCol, startRow, 6));
+            safeMoves.add(new Move(startRow, startCol, startRow, 6));
         }
-        return validMoves;
+        return safeMoves;
     }
     
 }

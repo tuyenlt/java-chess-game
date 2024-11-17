@@ -35,9 +35,6 @@ public class Utils {
 
     // Kiểm tra nếu một nước đi là an toàn cho quân cờ
     static boolean isSafeMove(Board board, String pieceColor, Move move) {
-        // Nếu là nước đi nhập thành thì chắc chắn an toàn
-        if (move.isCastling(board)) return true;
-
         Piece originalPiece = board.getPiece(move.getEndRow(), move.getEndCol());
 
         // Di chuyển giả
@@ -57,9 +54,9 @@ public class Utils {
 
     // Kiểm tra điều kiện nhập thành trái
     static boolean canCastleLeft(Board board, int startRow, int startCol, boolean hasMoved, String pieceColor) {
-        int initialRow = (pieceColor.equals("w") ? 7 : 0);
         if (hasMoved || isCheck(board, pieceColor)) return false;
-        Piece piece = board.getPiece(initialRow, 0);
+        int initialRow = (pieceColor.equals("w") ? 7 : 0);
+        Piece piece = board.getPiece(initialRow, 0);    
         if (!(piece instanceof Rook) || !piece.getpieceColor().equals(pieceColor)) return false;
         Rook rook = (Rook) piece;
         if (rook.isMove()) return false;

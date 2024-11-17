@@ -43,6 +43,7 @@ public class StockfishEngineDemo {
             String line;
             while ((line = stockfishReader.readLine()) != null ) {
                 output.add(line);
+                // System.out.println(line);
                 if(line.startsWith("bestmove"))break;
             }
             return output;
