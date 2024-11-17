@@ -5,6 +5,8 @@ import com.esotericsoftware.kryonet.Server;
 import network.packets.*;
 import network.packets.GeneralPackets.*;
 import network.packets.IngamePackets.*;
+import network.database.DatabaseConnection;
+import network.database.Player;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -14,23 +16,21 @@ import java.io.IOException;
 
 
 
-class Player{
-    public String playerid;
-    public int elo;
-    public int connectionId;
-}
-
 public class GameServer{
     private Server server;
     private String[][] broad;
-    private String WhitePlayerId;
-    private String BlackPlayerId;
+    private Player whitePlayer;
+    private Player blackPlayer;
     private int tcpPort;
     private int udpPort;
     
-    public GameServer(String WhitePlayerId, String BlackPlayerId){
-        this.BlackPlayerId = BlackPlayerId;
-        this.WhitePlayerId = WhitePlayerId;
+    public GameServer(int whitePlayerId, int blackPlayerId){
+        try{
+            whitePlayer = DatabaseConnection.getPlayerInfoById(whitePlayerId);
+            blackPlayer = DatabaseConnection.getPlayerInfoById(blackPlayerId);
+        }catch (Exception e){
+
+        }
         server = new Server();
         PacketsRegester.register(server);
         try{
@@ -108,7 +108,13 @@ public class GameServer{
     public void run(){
         server.start();
         System.out.println("start listening for you guy");
-        server.addListener(new Listener(){
+        server.addListener(new Listener(){  
+            
+            @Override
+            public void connected(Connection connection) {
+                super.connected(connection);
+            }
+
             public void received (Connection connection, Object object) {
                 if (object instanceof MsgPacket) {
                    handleMsgPacket(connection, object);

@@ -20,9 +20,9 @@ public class MainServer {
     class WaitingPlayer{
         public Connection connection;
         public int elo;
-        public String playerId;
+        public int playerId;
 
-        public WaitingPlayer(Connection connection,String playerId,int elo) {
+        public WaitingPlayer(Connection connection,int playerId,int elo) {
             this.connection = connection;
             this.playerId = playerId;
             this.elo = elo;

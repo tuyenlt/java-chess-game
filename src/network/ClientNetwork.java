@@ -116,13 +116,14 @@ public class ClientNetwork {
     //* 
     //* 
     //* game server part ..........................................................................
-    public void connectGameServer(int serverTcpPort, int serverUdpPort) throws IOException {
+    public void connectGameServer(int serverTcpPort, int serverUdpPort, String side) throws IOException {
         isConnected = false;
         client.start();
         client.addListener(new Listener() {
 
             public void connected(Connection connection) {
                 isConnected = true;  
+                client.sendTCP(new MsgPacket(side));
             }
 
             public void received(Connection connection, Object object) {
@@ -176,7 +177,7 @@ public class ClientNetwork {
         try{
             FindGameResponse newServerInfo = (FindGameResponse)object;
             client.close();
-            connectGameServer(newServerInfo.tcpPort, newServerInfo.udpPort);
+            connectGameServer(newServerInfo.tcpPort, newServerInfo.udpPort, newServerInfo.side);
         }catch(IOException ex){
 
         }
@@ -228,7 +229,7 @@ public class ClientNetwork {
         }
     }
 
-    public void findGameRequest(String userId, int elo){
+    public void findGameRequest(int userId, int elo){
         FindGameRequest request = new FindGameRequest();
         request.userId = userId;
         request.elo = elo;
