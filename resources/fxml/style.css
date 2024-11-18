@@ -1,0 +1,71 @@
+/* .root {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0.5, 0, 5);
+    -fx-font-family: 'Courier New';
+}
+
+.button {
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-width: 2;
+}
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(50, 205, 50, 0.5), 10, 0.5, 0, 2);
+    -fx-background-color: #32CD32;
+} */
+
+
+.custom-button {
+    -fx-background-color: #81b64c;
+    /* Gradient màu xanh lá */
+    -fx-background-radius: 10;
+    /* Bo góc */
+    -fx-border-color: #3d813b;
+    /* Màu viền đậm hơn */
+    -fx-border-width: 2;
+    /* Độ rộng viền */
+    -fx-border-radius: 10;
+    /* Bo góc viền */
+    -fx-text-fill: white;
+    -fx-font-size: 22;
+    /* Màu chữ */
+    -fx-font-weight: bold;
+    /* Chữ đậm */
+    -fx-font-family: 'Montserrat';
+    /* Font chữ */
+    -fx-padding: 10 20;
+    /* Khoảng cách trong nút */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);
+    /* Hiệu ứng bóng */
+}
+.button:hover {
+    -fx-background-color: #9ccc60; /* Màu nền khi trỏ chuột (xanh đậm hơn) */
+    -fx-effect: dropshadow(gaussian, #9ccc60, 10, 0, 0, 0); /* Hiệu ứng sáng khi hover */
+    -fx-font-size: 22px;
+}
+.ChessGameText {
+    -fx-fill: white; /* Chỉnh màu chữ */
+    -fx-font-size: 40px;
+    -fx-font-family: "Montserrat";
+}
+.greetingText {
+                 -fx-text-fill: white; /* Chỉnh màu chữ */
+                 -fx-font-size: 30px;
+                 -fx-font-family: "Montserrat";
+}
+.custom-textfield {
+    -fx-background-color: #ffffff; /* Màu nền đen xám */
+    -fx-text-fill: #000000; /* Màu chữ xám nhạt */
+    -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
+    -fx-background-radius: 5; /* Bo góc */
+    -fx-padding: 5 5 5 40; /* Chừa khoảng trống cho icon */
+    -fx-border-color: 5; /* Không cần viền */
+    -fx-font-size: 14px;
+}
+
+/* Thêm icon bên trái */
+.custom-textfield {
+    -fx-background-image: url("image/icon.png"); /* Đường dẫn đến file icon */
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 5 50%; /* Đặt icon bên trái, căn giữa theo chiều dọc */
+}
