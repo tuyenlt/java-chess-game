@@ -1,0 +1,24 @@
+# Ignore Maven build output
+target/
+
+# Ignore IDE-specific files
+.idea/
+*.iml
+.vscode/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Maven Wrapper files (if not using the wrapper)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore dependency directories (if not using local repositories)
+repository/
+
+# Logs and other temporary files
+*.log
+*.tmp
+*.bak
