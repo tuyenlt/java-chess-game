@@ -10,10 +10,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.MediaPlayerController">
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.Controller">
     <!-- Scene chính (main scene) -->
     <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1">
         <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
@@ -36,23 +37,42 @@
                         <Image url="@image/logo.png" />
                     </image>
                 </ImageView>
-                <Button fx:id="toLoginButton" layoutX="25.0" layoutY="309.0" onAction="#logInFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Log In">
+                <Button fx:id="toLoginButton" layoutX="25.0" layoutY="512.0" onAction="#logInFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Log In">
                 </Button>
-                <Button fx:id="returnButton" layoutX="25.0" layoutY="389.0" onAction="#returnToMainMenu" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Return">
+                <Button fx:id="enterRegisterButton" layoutX="25.0" layoutY="389.0" onAction="#logInFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Register">
                 </Button>
                 <Text fill="WHITE" layoutX="95.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
                     <font>
                         <Font size="13.0" />
                     </font>
                 </Text>
-            <TextField fx:id="nameTextField" layoutX="25.0" layoutY="231.0" onAction="#submitName" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="enter your name" styleClass="custom-textfield">
+            <TextField fx:id="usernameTextFieldRegister" layoutX="25.0" layoutY="229.0" onAction="#submitUsernameRegister" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Username" styleClass="user-custom-textfield">
                <font>
                   <Font size="15.0" />
                </font>
             </TextField>
+                <TextField fx:id="passwordTextFieldRegister" layoutX="25.0" layoutY="309.0" onAction="#submitPasswordRegister" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Password" styleClass="password-custom-textfield">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
             <Label fx:id="greetingLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="181.0" prefHeight="26.0" prefWidth="350.0" styleClass="greetingText">
 
             </Label>
+            <Text fill="WHITE" layoutX="131.0" layoutY="483.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Already have an account ?" />
+            <Line endX="100.0" layoutX="23.0" layoutY="479.0" startX="5.0" stroke="WHITE" />
+            <Line endX="100.0" layoutX="272.0" layoutY="478.0" startX="5.0" stroke="WHITE" />
+                <StackPane  alignment="TOP_LEFT">
+                    <!-- Ảnh nền -->
+                    <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@image/return_resized.png"/>
+                        </image>
+                    </ImageView>
+                    <Button fx:id="returnButton" prefHeight="30" prefWidth="30" styleClass="return-button" onAction="#returnToMainMenu" stylesheets="style.css">
+
+                    </Button>
+                </StackPane>
             </children>
         </AnchorPane>
     </AnchorPane>
