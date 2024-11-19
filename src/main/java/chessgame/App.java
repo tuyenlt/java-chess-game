@@ -8,7 +8,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import chessgame.network.database.DatabaseConnection;
+import chessgame.network.ClientNetwork;
+import chessgame.ui.Controller;
 
 /**
  * JavaFX App
@@ -20,9 +21,14 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Tải tệp FXML
-        Parent root = FXMLLoader.load(getClass().getResource("mainScene.fxml"));
-        System.out.println("pass");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScene.fxml"));
+        Parent root = loader.load();
+        ClientNetwork client = new ClientNetwork(5000, 5555, 6666, "localhost");
+        client.setUiResponseHandler(loader.getController());
+        client.connectMainServer();
         Scene scene = new Scene(root);
+        Controller.setClient(client);
+        Controller.setStage(stage);
         stage.setScene(scene);
         stage.show();
     }

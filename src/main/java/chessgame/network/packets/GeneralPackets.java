@@ -27,20 +27,18 @@ public class GeneralPackets {
         public boolean isSuccess;
         public String message;
     }
-    
+
     public static class RegisterRequest {
-        public String fullName;
         public String userName;
-        public String passwd;
+        public String password;
 
         public RegisterRequest(){
 
         }
 
-        public RegisterRequest(String fullName, String userName, String passwd) {
-            this.fullName = fullName;
+        public RegisterRequest(String userName, String password) {
             this.userName = userName;
-            this.passwd = passwd;
+            this.password = password;
         }
         
     }
