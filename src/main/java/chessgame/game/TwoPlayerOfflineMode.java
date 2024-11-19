@@ -1,17 +1,15 @@
-package game;
+package chessgame.game;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import logic.Board;
-import engine.StockfishEngineDemo;
+import chessgame.logic.Board;
 // import logic.Move;
 
-public class SinglePlayerMode extends Application {
+public class TwoPlayerOfflineMode extends Application {
     private Board board = new Board();
-    StockfishEngineDemo stockfish;
     private int [] selectedSquare =null;
     private static final int SQUARE_SIZE = 80;
     private static final int BOARD_SIZE = 8;
@@ -20,18 +18,11 @@ public class SinglePlayerMode extends Application {
 
     public void start(Stage primaryStage){
         gridPane = new GridPane();
-        stockfish = new StockfishEngineDemo();
-
-        // Thử khởi động stocfish, nếu không thành công thông báo lỗi!
-        if(!stockfish.start()){
-            System.out.println("Stockfish đang gặp vấn đề!");
-        }
-
         gameRunning = true;
         drawBoard();
 
         Scene scene = new Scene(gridPane, SQUARE_SIZE * BOARD_SIZE, SQUARE_SIZE * BOARD_SIZE);
-        primaryStage.setTitle("Single Player Chess Game");
+        primaryStage.setTitle("Two Player Chess Game");
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -45,9 +36,7 @@ public class SinglePlayerMode extends Application {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
-                // Vẽ bàn cờ tô màu trắng đen cho các ô vuông(UI)
-                // Vẽ các quân cờ(UI)
-
+                // Vẽ bàn cờ và các quân cờ
                 final int finalRow = row;
                 final int finalCol = col;
 
@@ -69,11 +58,11 @@ public class SinglePlayerMode extends Application {
             if(board.isValidMove(startRow, startCol, row, col)){
                 playturn(startRow, startCol, row, col);
 
+                // Thoát game nếu có người dành chiến thắng
                 if(!gameRunning){
                     exitGame();
                     return;
                 }
-                botTurn();
             }
         }
     }
@@ -99,29 +88,17 @@ public class SinglePlayerMode extends Application {
 
         // Trò chơi kết thúc
         // Giao diện chiến thắng hoặc hòa(UI)
-
-        if(gamestate.equals("draw")) System.out.println("Draw!");       // Chỗ này sẽ thay bằng giao diện cờ hòa(UI)
-        else{
-            // Thay bằng giao diện chiến thắng hoặc thua
-            System.out.println((board.getCurrentTurn().equals("w")) ? "You Lost" : "You Win!");
-        }
+        System.out.println((board.getCurrentTurn().equals("w")) ? "blackPlayer" : "whitePlayer" + gamestate );
         gameRunning =false;
-    }
-
-    // Lượt chơi của máy
-    private void botTurn(){
-        stockfish.setPosition(board.getLastMove());
-        String botMove = stockfish.getBestMove();
-        board.movePiece(botMove);
-        stockfish.setPosition(botMove);
     }
 
     // Thoát game
     private void exitGame() {
-        if (stockfish != null) {
-            stockfish.stop();
-        }
         System.out.println("Đã thoát khỏi trò chơi");
-        System.exit(0);
+        System.exit(0); // Thoát chương trình
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
