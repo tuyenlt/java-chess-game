@@ -77,6 +77,8 @@
                             <options>
                                 <option>--add-reads</option>
                                 <option>chessgame=ALL-UNNAMED</option>
+                                <option>--add-opens</option>
+                                <option>java.base/java.lang=ALL-UNNAMED</option>
                             </options>
                         </configuration>
                     </execution> 

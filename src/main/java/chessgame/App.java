@@ -21,10 +21,12 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Tải tệp FXML
-        Parent root = FXMLLoader.load(getClass().getResource("mainScene.fxml"));
-        Scene scene = new Scene(root);
-        ClientNetwork client = new ClientNetwork(5000, 5555, 6666, "127.0.0.1");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScene.fxml"));
+        Parent root = loader.load();
+        ClientNetwork client = new ClientNetwork(5000, 5555, 6666, "localhost");
+        client.setUiResponseHandler(loader.getController());
         client.connectMainServer();
+        Scene scene = new Scene(root);
         Controller.setClient(client);
         Controller.setStage(stage);
         stage.setScene(scene);

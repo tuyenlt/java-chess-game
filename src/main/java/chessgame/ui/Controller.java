@@ -1,5 +1,6 @@
 package chessgame.ui;
 
+import javafx.application.Platform;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
@@ -161,7 +162,7 @@ public class Controller implements ClientResponseHandle{
 
     }
 
-    public void resgisterSubmit(ActionEvent event){
+    public void registerSubmit(ActionEvent event){
         String userName = usernameTextFieldRegister.getText().trim();
         String passwd = passwordTextFieldRegister.getText().trim();
         client.sendRequest(new RegisterRequest(userName, passwd));
@@ -231,12 +232,14 @@ public class Controller implements ClientResponseHandle{
         if(!response.isSuccess){
             //TODO clear field, display message 
 
-            
+
             System.out.println(response.message);
             return;
         }
         user = new User(response.userId, response.userName,response.elo, response.win, response.lose, response.draw);
-        switchScene("onlineModeScene.fxml");        
+        Platform.runLater(() -> {
+            switchScene("onlineModeScene.fxml");        
+        });
     }
 
     @Override
@@ -258,7 +261,9 @@ public class Controller implements ClientResponseHandle{
             return;
         }
         System.out.println(response.message);
-        switchScene("loginScene.fxml");
+        Platform.runLater(() -> {
+            switchScene("loginScene.fxml");
+        });
     }    
 
 }
