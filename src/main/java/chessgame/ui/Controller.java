@@ -10,12 +10,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button; 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -173,7 +177,7 @@ public class Controller implements ClientResponseHandle{
         switchScene("registerScene.fxml");
     }
 
-    public void onlineModeMenu(ActionEvent event){
+    public void onLoginSubmit(ActionEvent event){
         usernameLogin = usernameTextFieldLogin.getText().trim();
         passwordLogin = passwordTextFieldLogin.getText().trim();
 
@@ -181,8 +185,6 @@ public class Controller implements ClientResponseHandle{
 
         usernameTextFieldLogin.clear();
         passwordTextFieldLogin.clear();
-
-        // switchScene("onlineModeScene.fxml", greetingLabelOnline);
     }
     
     public void offlineModeMenu(ActionEvent event){
@@ -230,13 +232,14 @@ public class Controller implements ClientResponseHandle{
     @Override
     public void handleLoginResponse(LoginResponse response) {
         if(!response.isSuccess){
-            //TODO clear field, display message 
-
-
+            Platform.runLater(() -> {
+                showPopup(response.message);
+            });
             System.out.println(response.message);
             return;
         }
         user = new User(response.userId, response.userName,response.elo, response.win, response.lose, response.draw);
+        System.out.println(user);
         Platform.runLater(() -> {
             switchScene("onlineModeScene.fxml");        
         });
@@ -257,7 +260,7 @@ public class Controller implements ClientResponseHandle{
     @Override
     public void handleRegisterResponse(RegisterResponse response) {
         if(!response.isSuccess){
-            //TODO clear field, display message 
+            showPopup(response.message);
             return;
         }
         System.out.println(response.message);
@@ -266,4 +269,8 @@ public class Controller implements ClientResponseHandle{
         });
     }    
 
+
+    private void showPopup(String msg) { // TODO làm 1 cái popup thật đẹp ở đây
+        System.out.println(msg);
+    }
 }
