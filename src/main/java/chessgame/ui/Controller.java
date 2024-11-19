@@ -35,7 +35,7 @@ public class Controller implements ClientResponseHandle{
     private Scene scene;
     private Parent root;
 
-    private User user;
+    private User user; 
     private static ClientNetwork client;
 
 
@@ -254,13 +254,14 @@ public class Controller implements ClientResponseHandle{
     @Override
     public void handleRankingList(RankingListResponse response) {
         // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void handleRegisterResponse(RegisterResponse response) {
         if(!response.isSuccess){
-            showPopup(response.message);
+            Platform.runLater(() -> {
+                showPopup(response.message);
+            });
             return;
         }
         System.out.println(response.message);
