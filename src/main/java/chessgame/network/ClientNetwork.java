@@ -62,11 +62,7 @@ public class ClientNetwork {
 
                 if (object instanceof LoginResponse){
                     user = (LoginResponse)object;
-                    responseHandle.handleLoginSuccess((LoginResponse)object);
-                }
-
-                if (object instanceof ErrorResponse){
-                    responseHandle.handleLoginFail((ErrorResponse)object);
+                    responseHandle.handleLoginResponse((LoginResponse)object);
                 }
 
                 if (object instanceof RegisterResponse){

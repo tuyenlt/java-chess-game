@@ -1,15 +1,14 @@
-package chessgame.network.database;
+package chessgame.network;
 
-public class PlayerData{
+public class User{
     public int playerId;
     public String name;
     public int elo;
     public int win; 
     public int lose;
     public int draw;
-    public int connectionId;
     
-    public PlayerData(int playerId, String name, int elo, int win, int lose, int draw) {
+    public User(int playerId, String name, int elo, int win, int lose, int draw) {
         this.playerId = playerId;
         this.name = name;
         this.elo = elo;

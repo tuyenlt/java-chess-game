@@ -9,7 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Button; 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -20,10 +20,19 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
-public class Controller {
-    private Stage stage;
+import chessgame.network.ClientNetwork;
+import chessgame.network.ClientResponseHandle;
+import chessgame.network.User;
+import chessgame.network.packets.GeneralPackets.*;
+
+public class Controller implements ClientResponseHandle{
+    private static Stage stage;
     private Scene scene;
     private Parent root;
+
+    private User user;
+    private static ClientNetwork client;
+
 
     private String usernameRegister = "";
     private String passwordRegister = "";
@@ -70,11 +79,15 @@ public class Controller {
 
 
 
+    public static void setClient(ClientNetwork clientNetwork){
+        client = clientNetwork;
+    }
+
+    public static void setStage(Stage newStage){
+        stage = newStage;
+    }
 
     public void initialize() {
-
-
-
         if (secondaryAnchorPane != null && !AppState.isSecondaryPaneOpened()) {
             AppState.setSecondaryPaneOpened(true);
             FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), secondaryAnchorPane);
@@ -85,79 +98,98 @@ public class Controller {
 
     }
 
-    public void logOut(ActionEvent event) throws IOException {
+    public void logOut(ActionEvent event){
         AppState.setSecondaryPaneOpened(false);
         usernameLogin = "";
         passwordLogin = "";
-        switchScene(event, "mainScene.fxml");
+        user = null;
+        switchScene("mainScene.fxml");
     }
 
     public void quit(ActionEvent event) {
         System.exit(0);
     }
 
-    public void switchScene(ActionEvent event, String fxmlFile) throws IOException {
-        // Tải tệp FXML mới
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
-        Parent root = loader.load();
-
-
-        // Lấy đối tượng Stage từ sự kiện
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        // Tạo Scene mới từ root FXML và đặt vào Stage
-        scene = new Scene(root);
-        stage.setScene(scene);
-
-        // Hiển thị Scene mới
-        stage.show();
+    public void switchScene(String fxmlFile){
+        try {
+            
+            // Tải tệp FXML mới
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
+            Parent root = loader.load();
+            
+            // Tạo Scene mới từ root FXML và đặt vào Stage
+            scene = new Scene(root);
+            stage.setScene(scene);
+            
+            // Hiển thị Scene mới
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
-    public void switchScene(ActionEvent event, String fxmlFile, Label label) throws IOException {
-        // Tải tệp FXML mới
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
-        Parent root = loader.load();
 
-        Controller newController = loader.getController();
-        newController.setGreetingLabel(label);
+    public void switchScene(String fxmlFile, Label label){
+        try {
+            // Tải tệp FXML mới
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
+            Parent root = loader.load();
 
-        // Lấy đối tượng Stage từ sự kiện
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Controller newController = loader.getController();
+            newController.setGreetingLabel(label);
+            // Tạo Scene mới từ root FXML và đặt vào Stage
+            scene = new Scene(root);
+            stage.setScene(scene);
 
-        // Tạo Scene mới từ root FXML và đặt vào Stage
-        scene = new Scene(root);
-        stage.setScene(scene);
-
-        // Hiển thị Scene mới
-        stage.show();
+            // Hiển thị Scene mới
+            stage.show();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
-    public void logInFormController(ActionEvent event) throws IOException {
-            switchScene(event, "logInScene.fxml", greetingLabelLogin);
 
+    public void logInFormController(ActionEvent event){
+        switchScene("logInScene.fxml", greetingLabelLogin);
     }
-    public void toLogInFormController(ActionEvent event) throws IOException {
+
+
+    public void toLogInFormController(ActionEvent event){
         usernameRegister = usernameTextFieldRegister.getText().trim();
         usernameTextFieldRegister.clear();
         passwordRegister = passwordTextFieldRegister.getText().trim();
         passwordTextFieldRegister.clear();
-        switchScene(event, "logInScene.fxml", greetingLabelLogin);
+        switchScene("logInScene.fxml", greetingLabelLogin);
 
     }
-    public void registerFormController(ActionEvent event) throws IOException {
-        switchScene(event, "registerScene.fxml");
+
+    public void resgisterSubmit(ActionEvent event){
+        String userName = usernameTextFieldRegister.getText().trim();
+        String passwd = passwordTextFieldRegister.getText().trim();
+        client.sendRequest(new RegisterRequest(userName, passwd));
+        System.out.println("register with username:" + userName + ", pass:" + passwd);
     }
-    public void onlineModeMenu(ActionEvent event) throws IOException {
+
+    public void registerFormController(ActionEvent event){
+        switchScene("registerScene.fxml");
+    }
+
+    public void onlineModeMenu(ActionEvent event){
         usernameLogin = usernameTextFieldLogin.getText().trim();
-        usernameTextFieldLogin.clear();
         passwordLogin = passwordTextFieldLogin.getText().trim();
-        passwordTextFieldLogin.clear();
-        switchScene(event, "onlineModeScene.fxml", greetingLabelOnline);
 
+        client.sendRequest(new LoginRequest(usernameLogin, passwordLogin));
+
+        usernameTextFieldLogin.clear();
+        passwordTextFieldLogin.clear();
+
+        // switchScene("onlineModeScene.fxml", greetingLabelOnline);
     }
-    public void offlineModeMenu(ActionEvent event) throws IOException {
-        switchScene(event, "offlineModeScene.fxml", greetingLabelOffline);
+    
+    public void offlineModeMenu(ActionEvent event){
+        switchScene("offlineModeScene.fxml", greetingLabelOffline);
     }
-    public void returnToMainMenu(ActionEvent event) throws IOException {
-        switchScene(event, "mainScene.fxml", greetingLabelMain);
+
+    public void returnToMainMenu(ActionEvent event){
+        switchScene("mainScene.fxml", greetingLabelMain);
     }
 
 
@@ -184,5 +216,49 @@ public class Controller {
             }
         }
     }
+
+
+    // xử lý dữ liệu server trả về
+
+    @Override
+    public void handleHistoryGame(HistoryGameResponse response) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void handleLoginResponse(LoginResponse response) {
+        if(!response.isSuccess){
+            //TODO clear field, display message 
+
+            
+            System.out.println(response.message);
+            return;
+        }
+        user = new User(response.userId, response.userName,response.elo, response.win, response.lose, response.draw);
+        switchScene("onlineModeScene.fxml");        
+    }
+
+    @Override
+    public void handleProfileView(ProfileViewResponse response) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void handleRankingList(RankingListResponse response) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void handleRegisterResponse(RegisterResponse response) {
+        if(!response.isSuccess){
+            //TODO clear field, display message 
+            return;
+        }
+        System.out.println(response.message);
+        switchScene("loginScene.fxml");
+    }    
 
 }

@@ -37,9 +37,9 @@
                         <Image url="@image/logo.png" />
                     </image>
                 </ImageView>
-                <Button fx:id="toLoginButton" layoutX="25.0" layoutY="512.0" onAction="#logInFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Log In">
+                <Button fx:id="toLoginButton" layoutX="25.0" layoutY="512.0" onAction="#registerSubmit" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Log In">
                 </Button>
-                <Button fx:id="enterRegisterButton" defaultButton="true" layoutX="25.0" layoutY="389.0" onAction="#logInFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Register">
+                <Button fx:id="enterRegisterButton" defaultButton="true" layoutX="25.0" layoutY="389.0" onAction="#registerSubmit" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Register">
                 </Button>
                 <Text fill="WHITE" layoutX="95.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
                     <font>
