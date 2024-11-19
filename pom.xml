@@ -42,7 +42,7 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>23</release>
-                     <compilerArgs>
+                    <compilerArgs>
                         <arg>--add-reads</arg>
                         <arg>chessgame=ALL-UNNAMED</arg>
                     </compilerArgs>
@@ -60,7 +60,8 @@
                         <configuration>
                             <mainClass>chessgame.App</mainClass>
                         </configuration>
-                    </execution>
+                    </execution> 
+
                 </executions>
             </plugin>
         </plugins>

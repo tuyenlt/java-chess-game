@@ -24,8 +24,10 @@ public class GeneralPackets {
         public int win;
         public int lose;
         public int draw;
+        public boolean isSuccess;
+        public String message;
     }
-
+    
     public static class RegisterRequest {
         public String fullName;
         public String userName;

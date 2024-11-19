@@ -72,6 +72,8 @@ public class MediaPlayerController {
         // Hiển thị Scene mới
         stage.show();
     }
+
+    
     public void logInFormController(ActionEvent event) throws IOException {
         if(AppState.isValidNameUser()) {
         switchScene(event, "logInScene.fxml");}
