@@ -131,14 +131,25 @@ public class Controller {
         stage.show();
     }
     public void logInFormController(ActionEvent event) throws IOException {
-
             switchScene(event, "logInScene.fxml", greetingLabelLogin);
+
+    }
+    public void toLogInFormController(ActionEvent event) throws IOException {
+        usernameRegister = usernameTextFieldRegister.getText().trim();
+        usernameTextFieldRegister.clear();
+        passwordRegister = passwordTextFieldRegister.getText().trim();
+        passwordTextFieldRegister.clear();
+        switchScene(event, "logInScene.fxml", greetingLabelLogin);
 
     }
     public void registerFormController(ActionEvent event) throws IOException {
         switchScene(event, "registerScene.fxml");
     }
     public void onlineModeMenu(ActionEvent event) throws IOException {
+        usernameLogin = usernameTextFieldLogin.getText().trim();
+        usernameTextFieldLogin.clear();
+        passwordLogin = passwordTextFieldLogin.getText().trim();
+        passwordTextFieldLogin.clear();
         switchScene(event, "onlineModeScene.fxml", greetingLabelOnline);
 
     }
@@ -149,24 +160,8 @@ public class Controller {
         switchScene(event, "mainScene.fxml", greetingLabelMain);
     }
 
-    public void submitUsernameRegister(ActionEvent event) {
-        usernameRegister = usernameTextFieldRegister.getText().trim();
-//        checkValidName();
-        usernameTextFieldRegister.clear();
-    }
-    public void submitPasswordRegister(ActionEvent event) {
-        passwordRegister = passwordTextFieldRegister.getText().trim();
-        passwordTextFieldRegister.clear();
-    }
-    public void submitUsernameLogin(ActionEvent event) {
-        usernameLogin = usernameTextFieldLogin.getText().trim();
-//        checkValidName();
-        usernameTextFieldLogin.clear();
-    }
-    public void submitPasswordLogin(ActionEvent event) {
-        passwordLogin = passwordTextFieldLogin.getText().trim();
-        passwordTextFieldLogin.clear();
-    }
+
+
 //    public void checkValidName() {
 //        if (usernameRegister.isEmpty() || !usernameRegister.matches("[a-zA-Z0-9 ]+")) {
 //            greetingLabel.setText("Name is invalid!");

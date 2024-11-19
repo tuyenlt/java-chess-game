@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="chessgame.ui.Controller">
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.Controller">
     <!-- Scene chính (main scene) -->
     <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22.0.1">
         <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
@@ -39,15 +39,15 @@
                 <Label fx:id="greetingLabelLogin" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="181.0" prefHeight="26.0" prefWidth="350.0" styleClass="greetingText">
 
                 </Label>
-                <Button fx:id="loginButton" layoutX="25.0" layoutY="389.0" onAction="#onlineModeMenu" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Log In">
+                <Button fx:id="loginButton" defaultButton="true" layoutX="25.0" layoutY="389.0" onAction="#onlineModeMenu" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Log In">
                 </Button>
 <!--                <Button fx:id="returnButton" layoutX="25.0" layoutY="309.0" onAction="#returnToMainMenu" prefHeight="54.0" prefWidth="350.0"-->
 <!--                        styleClass="custom-button" stylesheets="@style.css" text="Return">-->
 <!--                </Button>-->
-                <TextField fx:id="usernameTextFieldLogin" layoutX="25.0" layoutY="229.0" onAction="#submitUsernameLogin" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Username" styleClass="user-custom-textfield">
+                <TextField fx:id="usernameTextFieldLogin" layoutX="25.0" layoutY="229.0" onAction="#onlineModeMenu" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Username" styleClass="user-custom-textfield">
 
                 </TextField>
-                <TextField fx:id="passwordTextFieldLogin" layoutX="25.0" layoutY="309.0" onAction="#submitPasswordLogin" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Password" styleClass="password-custom-textfield">
+                <TextField fx:id="passwordTextFieldLogin" layoutX="25.0" layoutY="309.0" onAction="#onlineModeMenu" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Password" styleClass="password-custom-textfield">
 
                 </TextField>
                 <Text fill="WHITE" layoutX="95.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
@@ -56,15 +56,15 @@
                 <Text fill="WHITE" layoutX="131.0" layoutY="483.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doesn't have an account ?" />
                 <Line endX="100.0" layoutX="23.0" layoutY="479.0" startX="5.0" stroke="WHITE" />
                 <Line endX="100.0" layoutX="272.0" layoutY="478.0" startX="5.0" stroke="WHITE" />
-            <Button fx:id="toLoginButton" layoutX="25.0" layoutY="512.0" onAction="#registerFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Register" />
-                <StackPane  alignment="TOP_LEFT">
+            <Button fx:id="toControllerFormButton" layoutX="25.0" layoutY="512.0" onAction="#registerFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Register" />
+                <StackPane alignment="TOP_LEFT">
                     <!-- Ảnh nền -->
                     <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@image/return_resized.png"/>
+                            <Image url="@image/return_resized.png" />
                         </image>
                     </ImageView>
-                    <Button fx:id="returnButton" prefHeight="30" prefWidth="30" styleClass="return-button" onAction="#returnToMainMenu" stylesheets="style.css">
+                    <Button fx:id="returnButton" onAction="#returnToMainMenu" prefHeight="30" prefWidth="30" styleClass="return-button" stylesheets="style.css">
 
                     </Button>
                 </StackPane>
