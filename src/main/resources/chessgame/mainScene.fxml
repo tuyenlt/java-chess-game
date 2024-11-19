@@ -31,11 +31,17 @@
                 <HBox alignment="CENTER" layoutX="120" layoutY="520" />
                 <Button fx:id="onlineModeButton" layoutX="25.0" layoutY="229.0" onAction="#logInFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Play Online">
                 </Button>
-                <ImageView fitHeight="100" fitWidth="100" layoutX="25.0" layoutY="81.0">
+                <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="25.0" layoutY="103.0">
                     <image>
                         <Image url="@image/logo.png" />
                     </image>
                 </ImageView>
+                <Text fill="WHITE" layoutX="95.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Text>
                 <Label fx:id="greetingLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="181.0" prefHeight="26.0" prefWidth="350.0" styleClass="greetingText">
 
                 </Label>
@@ -43,11 +49,7 @@
                 </Button>
                 <Button fx:id="playOfflineButton" layoutX="25.0" layoutY="309.0" onAction = "#offlineModeMenu" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Play Offline">
                 </Button>
-                <Text fill="WHITE" layoutX="95.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Text>
+
                 <Label fx:id="isValidNameUserLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="181.0" prefHeight="26.0" prefWidth="350.0" styleClass="greetingText">
 
                 </Label>

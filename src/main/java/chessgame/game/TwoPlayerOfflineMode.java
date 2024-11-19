@@ -1,28 +1,37 @@
-package chessgame.game;
+package game;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import chessgame.logic.Board;
+import logic.Board;
+import engine.StockfishEngineDemo;
 // import logic.Move;
 
-public class TwoPlayerOfflineMode extends Application {
+public class SinglePlayerMode extends Application {
     private Board board = new Board();
+    StockfishEngineDemo stockfish;
     private int [] selectedSquare =null;
     private static final int SQUARE_SIZE = 80;
     private static final int BOARD_SIZE = 8;
     private GridPane gridPane;
     private boolean gameRunning;
-    
+
     public void start(Stage primaryStage){
         gridPane = new GridPane();
+        stockfish = new StockfishEngineDemo();
+
+        // Thử khởi động stocfish, nếu không thành công thông báo lỗi!
+        if(!stockfish.start()){
+            System.out.println("Stockfish đang gặp vấn đề!");
+        }
+
         gameRunning = true;
         drawBoard();
 
         Scene scene = new Scene(gridPane, SQUARE_SIZE * BOARD_SIZE, SQUARE_SIZE * BOARD_SIZE);
-        primaryStage.setTitle("Two Player Chess Game");
+        primaryStage.setTitle("Single Player Chess Game");
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -36,8 +45,10 @@ public class TwoPlayerOfflineMode extends Application {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
-                // Vẽ bàn cờ và các quân cờ
-                final int finalRow = row;  
+                // Vẽ bàn cờ tô màu trắng đen cho các ô vuông(UI)
+                // Vẽ các quân cờ(UI)
+
+                final int finalRow = row;
                 final int finalCol = col;
 
                 // lắng nghe sự kiện click chuột
@@ -53,16 +64,16 @@ public class TwoPlayerOfflineMode extends Application {
             selectPiece(row, col);
         }else{
             int startRow = selectedSquare[0];
-            int startCol = selectedSquare[1];   
+            int startCol = selectedSquare[1];
 
             if(board.isValidMove(startRow, startCol, row, col)){
                 playturn(startRow, startCol, row, col);
-                
-                // Thoát game nếu có người dành chiến thắng
+
                 if(!gameRunning){
                     exitGame();
                     return;
                 }
+                botTurn();
             }
         }
     }
@@ -79,7 +90,7 @@ public class TwoPlayerOfflineMode extends Application {
 
         // Di chuyển quân cờ(logic)
         board.movePiece(startRow, startCol, endRow, endCol);
-        
+
         // Biến kiểm tra trạng thái của game
         String gamestate = board.gameState();
 
@@ -88,17 +99,29 @@ public class TwoPlayerOfflineMode extends Application {
 
         // Trò chơi kết thúc
         // Giao diện chiến thắng hoặc hòa(UI)
-        System.out.println((board.getCurrentTurn().equals("w")) ? "blackPlayer" : "whitePlayer" + gamestate );
+
+        if(gamestate.equals("draw")) System.out.println("Draw!");       // Chỗ này sẽ thay bằng giao diện cờ hòa(UI)
+        else{
+            // Thay bằng giao diện chiến thắng hoặc thua
+            System.out.println((board.getCurrentTurn().equals("w")) ? "You Lost" : "You Win!");
+        }
         gameRunning =false;
+    }
+
+    // Lượt chơi của máy
+    private void botTurn(){
+        stockfish.setPosition(board.getLastMove());
+        String botMove = stockfish.getBestMove();
+        board.movePiece(botMove);
+        stockfish.setPosition(botMove);
     }
 
     // Thoát game
     private void exitGame() {
+        if (stockfish != null) {
+            stockfish.stop();
+        }
         System.out.println("Đã thoát khỏi trò chơi");
-        System.exit(0); // Thoát chương trình
-    }
-    
-    public static void main(String[] args) {
-        launch(args);
+        System.exit(0);
     }
 }
