@@ -16,4 +16,8 @@ public class User{
         this.lose = lose;
         this.draw = draw;
     }
+
+    public String toString(){
+        return name + " " + elo + " " + win + " " + lose + " "  + draw + " ";
+    }
 }
