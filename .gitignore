@@ -1,82 +1,24 @@
-# Compiled class files
-*.class
-
-# Log files
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.war
-*.nar
-*.ear
-
-# Virtual machine crash logs, core dumps, and other files
-hs_err_pid*
-replay_pid*
-javacore.*
-core.*
-*.snap
-*.pid
-*.hprof
-
-# Eclipse project files
-.project
-.classpath
-.settings/
-
-# NetBeans project files
-nbproject/
-build/
-nbbuild/
-dist/
-nbdist/
-netbeans-*/ 
-
-# IntelliJ IDEA project files
-.idea/
-*.iws
-*.iml
-*.ipr
-out/
-
-# VS Code project files
-.vscode/
-
-# Maven target directory
+# Ignore Maven build output
 target/
 
-# Gradle build directory
-build/
+# Ignore IDE-specific files
+.idea/
+*.iml
+.vscode/
 
-# Gradle cache files
-.gradle/
-!gradle-wrapper.jar
-
-# OS-specific files
+# Ignore OS-specific files
 .DS_Store
 Thumbs.db
 
-# Temporary files
+# Ignore Maven Wrapper files (if not using the wrapper)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore dependency directories (if not using local repositories)
+repository/
+
+# Logs and other temporary files
+*.log
 *.tmp
-*.temp
-*.swp
-
-# JUnit and test result files
-test-output/
-surefire-reports/
-
-
-#env
-*.env
-src/game/ChessGame.java
-
-
-src/game/Test.java
-
-
-/bin/
+*.bak

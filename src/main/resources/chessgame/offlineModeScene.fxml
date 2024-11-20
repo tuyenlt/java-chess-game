@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns="http://javafx.com/javafx/22.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.Controller">
+    <!-- Scene chính (main scene) -->
+    <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1">
+        <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@image/resized_image.png" />
+            </image>
+        </ImageView>
+
+        <AnchorPane fx:id="registerForm" layoutX="440.0" layoutY="60.0" prefHeight="600" prefWidth="400" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
+            <effect>
+                <DropShadow color="#000000" offsetX="5" offsetY="5" radius="10" />
+            </effect>
+            <children>
+                <VBox alignment="CENTER" layoutX="140" layoutY="20" />
+                <VBox layoutX="50.0" layoutY="300.0" prefWidth="300" spacing="10" />
+                <HBox alignment="CENTER" layoutX="120" layoutY="520" />
+
+                <ImageView fitHeight="100" fitWidth="100" layoutX="25.0" layoutY="81.0">
+                    <image>
+                        <Image url="@image/logo.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="greetingLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="181.0" prefHeight="26.0" prefWidth="350.0" styleClass="greetingText">
+
+                </Label>
+                <Button fx:id="twoPlayerButton" onAction = "#twoPlayerMode" layoutX="25.0" layoutY="229.0"  prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
+                </Button>
+                <Button fx:id="singlePlayerButton" layoutX="25.0" layoutY="309.0"  prefHeight="54.0" prefWidth="350.0"
+                        styleClass="custom-button" stylesheets="@style.css" text="Single Player" >
+                </Button>
+                <Button fx:id="quitButton" layoutX="25.0" layoutY="389.0" onAction="#quit" prefHeight="54.0" prefWidth="350.0"
+                        styleClass="quit-button" stylesheets="@style.css" text="Quit">
+                </Button>
+                <Text fill="WHITE" layoutX="95.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Text>
+                <StackPane  alignment="TOP_LEFT">
+                    <!-- Ảnh nền -->
+                    <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@image/return_resized.png"/>
+                        </image>
+                    </ImageView>
+                    <Button fx:id="returnButton" prefHeight="30" prefWidth="30" styleClass="return-button" onAction="#returnToMainMenu" stylesheets="style.css">
+
+                    </Button>
+                </StackPane>
+
+            </children>
+        </AnchorPane>
+    </AnchorPane>
+</StackPane>

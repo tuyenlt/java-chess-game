@@ -1,0 +1,101 @@
+
+
+.custom-button {
+    -fx-background-color: #81b64c;
+    /* Gradient màu xanh lá */
+    -fx-background-radius: 10;
+    /* Bo góc */
+    -fx-border-color: #3d813b;
+    /* Màu viền đậm hơn */
+    -fx-border-width: 2;
+    /* Độ rộng viền */
+    -fx-border-radius: 10;
+    /* Bo góc viền */
+    -fx-text-fill: white;
+    -fx-font-size: 22;
+    /* Màu chữ */
+    -fx-font-weight: bold;
+    /* Chữ đậm */
+    -fx-font-family: 'Montserrat';
+    /* Font chữ */
+    -fx-padding: 10 20;
+    /* Khoảng cách trong nút */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);
+    /* Hiệu ứng bóng */
+}
+.custom-button:hover {
+    -fx-background-color: #9ccc60; /* Màu nền khi trỏ chuột (xanh đậm hơn) */
+    -fx-effect: dropshadow(gaussian, #9ccc60, 10, 0, 0, 0); /* Hiệu ứng sáng khi hover */
+    -fx-font-size: 22px;
+}
+.quit-button {
+    -fx-background-color: #eb2d2f;
+    /* Gradient màu xanh lá */
+    -fx-background-radius: 10;
+    /* Bo góc */
+    -fx-border-color: #ff0000;
+    /* Màu viền đậm hơn */
+    -fx-border-width: 2;
+    /* Độ rộng viền */
+    -fx-border-radius: 10;
+    /* Bo góc viền */
+    -fx-text-fill: white;
+    -fx-font-size: 22;
+    /* Màu chữ */
+    -fx-font-weight: bold;
+    /* Chữ đậm */
+    -fx-font-family: 'Montserrat';
+    /* Font chữ */
+    -fx-padding: 10 20;
+    /* Khoảng cách trong nút */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);
+    /* Hiệu ứng bóng */
+}
+.quit-button:hover {
+    -fx-background-color: #990000; /* Màu nền khi trỏ chuột (xanh đậm hơn) */
+    -fx-effect: dropshadow(gaussian, #990000, 10, 0, 0, 0); /* Hiệu ứng sáng khi hover */
+    -fx-font-size: 22px;
+}
+.ChessGameText {
+    -fx-fill: white; /* Chỉnh màu chữ */
+    -fx-font-size: 40px;
+    -fx-font-family: "Montserrat";
+}
+.greetingText {
+    -fx-text-fill: white; /* Chỉnh màu chữ */
+    -fx-font-size: 30px;
+    -fx-font-family: "Montserrat";
+}
+.user-custom-textfield {
+    -fx-background-color: #ffffff; /* Màu nền đen xám */
+    -fx-text-fill: #000000; /* Màu chữ xám nhạt */
+    -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
+    -fx-background-radius: 5; /* Bo góc */
+    -fx-padding: 5 5 5 40; /* Chừa khoảng trống cho icon */
+    -fx-border-color: None; /* Không cần viền */
+    -fx-font-size: 17px;
+    -fx-background-image: url("image/icon.png"); /* Đường dẫn đến file icon */
+        -fx-background-repeat: no-repeat;
+        -fx-background-position: 5 50%; /* Đặt icon bên trái, căn giữa theo chiều dọc */
+}
+
+/* Thêm icon bên trái */
+.password-custom-textfield {
+-fx-background-color: #ffffff; /* Màu nền đen xám */
+    -fx-text-fill: #000000; /* Màu chữ xám nhạt */
+    -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
+    -fx-background-radius: 5; /* Bo góc */
+    -fx-padding: 5 5 5 40; /* Chừa khoảng trống cho icon */
+    -fx-border-color: None; /* Không cần viền */
+    -fx-font-size: 17px;
+    -fx-background-image: url("image/pass_resized.png"); /* Đường dẫn đến file icon */
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 5 50%; /* Đặt icon bên trái, căn giữa theo chiều dọc */
+}
+
+.return-button {
+    -fx-background-color: transparent; /* Nền trong suốt */
+    -fx-border-color: transparent; /* Không viền */
+    -fx-cursor: hand; /* Trỏ chuột khi hover */
+}
+
