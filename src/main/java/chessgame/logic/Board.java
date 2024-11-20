@@ -19,7 +19,7 @@ class Box {
         this.piece = piece;
     }
 
-    public Piece getPiece() {
+    public Piece getPiece() { 
         return piece;
     }
 }
@@ -28,9 +28,9 @@ public class Board {
     private Box[][] board;
     
     // Thêm danh sách lịch sử di chuyển của 2 bên để tiện sử dụng sau này
-    private List<Move> white_moves = new ArrayList<>();
-    private List<Move> black_moves = new ArrayList<>();
-    private List<Move> allMoves = new ArrayList<>();
+    private List<String> white_moves = new ArrayList<>();
+    private List<String> black_moves = new ArrayList<>();
+    private List<String> allMoves = new ArrayList<>();
     
     // Danh sách quân cờ 2 bên
     // public List<Piece> whitePieces = new ArrayList<>();
@@ -90,6 +90,21 @@ public class Board {
         initialBoard[7][7] = new Box(new Rook("w"));
 
         return initialBoard;
+    }
+
+
+    public String[][] getBoardState(){
+        String[][] broadState = new String[8][8];
+        for(int i=0; i<8; i++){
+            for(int j=0; j<8; j++){
+                if(board[i][j].getPiece() != null){
+                    broadState[i][j] = board[i][j].getPiece().getName();
+                }else{
+                    broadState[i][j] = " ";
+                }
+            }
+        }
+        return broadState;
     }
     
     // Tạo danh sách các quân cờ 2 bên nếu cần
@@ -171,9 +186,10 @@ public class Board {
     public void movePiece(Move move, boolean isFakeMove){
         //Thực hiện di chuyển
         Piece piece = getPiece(move.getStartRow(), move.getStartCol());
+
         setPiece(move.getEndRow(), move.getEndCol(), piece);
         setPiece(move.getStartRow(), move.getStartCol(), null);
-        
+
         //Đánh dấu trạng thái di chuyển của King và Rook
         if(piece instanceof King){
             setKing_pos(piece.getpieceColor(), move.getEndRow(), move.getEndCol());
@@ -194,13 +210,13 @@ public class Board {
         //Thêm phép di chuyển vào danh sách
         if(isFakeMove) return;
         if(currentTurn.equals("w")){
-            white_moves.add(move);
+            white_moves.add(move.toString());
             currentTurn = "b";
         }else{
-            black_moves.add(move);
+            black_moves.add(move.toString());
             currentTurn = "w";
         }
-        allMoves.add(move);
+        allMoves.add(move.toString());
     }
          
     // Xử lý riêng phần nhập thành
@@ -221,6 +237,9 @@ public class Board {
     // Kiểm tra xem quân cờ đã chọn có đang đi đi đúng lượt hay không?
     public boolean isCorrectTurn(int row, int col){
         Piece piece = getPiece(row, col);
+        if(piece == null){
+            return false;
+        }
         return piece.getpieceColor().equals(currentTurn);
     }
 
@@ -243,7 +262,13 @@ public class Board {
     }
 
 
-    public List<Move> getAllMoves(){
+    public List<String> getMoves(String side){
+        if(side.equals("b")){
+            return this.black_moves;
+        }
+        if(side.equals("w")){
+            return this.white_moves;
+        }
         return this.allMoves;
     }
 }

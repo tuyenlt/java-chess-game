@@ -36,7 +36,7 @@ public class Controller implements ClientResponseHandle{
     private Parent root;
 
     private User user; 
-    private static ClientNetwork client;
+    private static ClientNetwork client = null;
 
 
     private String usernameRegister = "";
@@ -193,6 +193,10 @@ public class Controller implements ClientResponseHandle{
 
     public void returnToMainMenu(ActionEvent event){
         switchScene("mainScene.fxml", greetingLabelMain);
+    }
+
+    public void twoPlayerMode(ActionEvent event){
+        switchScene("gameScene.fxml");
     }
 
 

@@ -62,9 +62,9 @@
     -fx-font-family: "Montserrat";
 }
 .greetingText {
-                 -fx-text-fill: white; /* Chỉnh màu chữ */
-                 -fx-font-size: 30px;
-                 -fx-font-family: "Montserrat";
+    -fx-text-fill: white; /* Chỉnh màu chữ */
+    -fx-font-size: 30px;
+    -fx-font-family: "Montserrat";
 }
 .user-custom-textfield {
     -fx-background-color: #ffffff; /* Màu nền đen xám */
@@ -72,7 +72,7 @@
     -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
     -fx-background-radius: 5; /* Bo góc */
     -fx-padding: 5 5 5 40; /* Chừa khoảng trống cho icon */
-    -fx-border-color: 5; /* Không cần viền */
+    -fx-border-color: None; /* Không cần viền */
     -fx-font-size: 17px;
     -fx-background-image: url("image/icon.png"); /* Đường dẫn đến file icon */
         -fx-background-repeat: no-repeat;
@@ -86,7 +86,7 @@
     -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
     -fx-background-radius: 5; /* Bo góc */
     -fx-padding: 5 5 5 40; /* Chừa khoảng trống cho icon */
-    -fx-border-color: 5; /* Không cần viền */
+    -fx-border-color: None; /* Không cần viền */
     -fx-font-size: 17px;
     -fx-background-image: url("image/pass_resized.png"); /* Đường dẫn đến file icon */
     -fx-background-repeat: no-repeat;

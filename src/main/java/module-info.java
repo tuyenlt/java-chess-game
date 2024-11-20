@@ -4,6 +4,7 @@ module chessgame {
     requires java.sql;
     requires kryo;
     requires kryonet;
+    requires javafx.graphics;
 
     opens chessgame.ui to javafx.fxml;
     exports chessgame;

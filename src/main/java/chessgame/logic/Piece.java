@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public abstract class Piece {
 
-    protected String pieceColor; 
+    protected String pieceColor;
+    protected String name = "p"; 
 
     public Piece(String pieceColor) {
         this.pieceColor = pieceColor;
@@ -32,13 +33,18 @@ public abstract class Piece {
             }
         }
         return false;
-    }    
+    }
+    
+    public String getName(){
+        return pieceColor + name.toUpperCase();
+    }
 }
 
 
 class Pawn extends Piece {
     public Pawn(String pieceColor) {
         super(pieceColor);
+        name = "p";
     }
 
     @Override
@@ -71,6 +77,7 @@ class Rook extends Piece {
     
     public Rook(String pieceColor) {
         super(pieceColor);
+        name = "r";
     }
     
     public boolean isMove() {
@@ -106,6 +113,7 @@ class Rook extends Piece {
 class Knight extends Piece {
     public Knight(String pieceColor) {
         super(pieceColor);
+        name = "n";
     }
 
     @Override
@@ -127,6 +135,7 @@ class Knight extends Piece {
 class Bishop extends Piece {
     public Bishop(String pieceColor) {
         super(pieceColor);
+        name = "b";
     }
 
     @Override
@@ -153,6 +162,7 @@ class Bishop extends Piece {
 class Queen extends Piece {
     public Queen(String pieceColor) {
         super(pieceColor);
+        name = "q";
     }
 
     @Override
@@ -181,6 +191,7 @@ class King extends Piece {
 
     public King(String pieceColor) {
         super(pieceColor);
+        name = "k";
     }
 
     public boolean isMove() {

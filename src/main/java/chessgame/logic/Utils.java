@@ -35,7 +35,8 @@ public class Utils {
 
     // Kiểm tra nếu một nước đi là an toàn cho quân cờ
     static boolean isSafeMove(Board board, String pieceColor, Move move) {
-        Piece originalPiece = board.getPiece(move.getEndRow(), move.getEndCol());
+        Piece originalPiece = board.getPiece(move.getStartRow(), move.getStartCol());
+        Piece targetPiece = board.getPiece(move.getEndRow(), move.getEndCol());
 
         // Di chuyển giả
         board.movePiece(move, true);
@@ -44,6 +45,7 @@ public class Utils {
         // Khôi phục lại
         board.movePiece(move.getReverseMove(), true);
         board.setPiece(move.getStartRow(), move.getStartCol(), originalPiece);
+        board.setPiece(move.getEndRow(), move.getEndCol(), targetPiece);
 
         if (move.isPromotion(board)) {
             board.setPiece(move.getStartRow(), move.getStartCol(), new Pawn(pieceColor));

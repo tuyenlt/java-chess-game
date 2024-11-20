@@ -1,6 +1,7 @@
 package chessgame.engine;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,11 +13,15 @@ public class StockfishEngineDemo {
     private Process stockfishProcess;
     private BufferedReader stockfishReader;
     private OutputStreamWriter stockfishWriter;
-    private final String stockfishPath = "stockfish\\stockfish.exe"; 
+    private String stockfishPath = "/stockfish/stockfish.exe"; 
     
     // Khởi chạy Stockfish
     public boolean start() {
         try {
+            stockfishPath = StockfishEngineDemo.class
+                .getResource("/chessgame/stockfish/stockfish.exe")
+                .getPath();
+            stockfishPath = new File(stockfishPath).getAbsolutePath();
             stockfishProcess = new ProcessBuilder(stockfishPath).start();
             stockfishReader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
             stockfishWriter = new OutputStreamWriter(stockfishProcess.getOutputStream());
@@ -83,25 +88,6 @@ public class StockfishEngineDemo {
             stockfishProcess.destroy();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-    
-    //Demo chơi với bot dưới dạng dòng lệnh
-    public static void main(String[] args) {
-        StockfishEngineDemo client = new StockfishEngineDemo();
-        if (client.start()) {
-            
-            // Chơi với bot dưới dạng dòng lệnh
-            Scanner sc = new Scanner(System.in);
-            String move = sc.nextLine().trim();
-            while(!move.equals("end")){
-                client.setPosition(move);
-                String bestMove = client.getBestMove();
-                System.out.println("Best move: " + bestMove);
-                client.setPosition(bestMove);
-                move = sc.nextLine().trim();
-            }
-            client.stop();
         }
     }
 }

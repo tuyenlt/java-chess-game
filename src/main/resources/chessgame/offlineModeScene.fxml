@@ -39,10 +39,10 @@
                 <Label fx:id="greetingLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="181.0" prefHeight="26.0" prefWidth="350.0" styleClass="greetingText">
 
                 </Label>
-                <Button fx:id="twoPlayerButton" layoutX="25.0" layoutY="229.0"  prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
+                <Button fx:id="twoPlayerButton" onAction = "#twoPlayerMode" layoutX="25.0" layoutY="229.0"  prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
                 </Button>
                 <Button fx:id="singlePlayerButton" layoutX="25.0" layoutY="309.0"  prefHeight="54.0" prefWidth="350.0"
-                        styleClass="custom-button" stylesheets="@style.css" text="Single Player">
+                        styleClass="custom-button" stylesheets="@style.css" text="Single Player" >
                 </Button>
                 <Button fx:id="quitButton" layoutX="25.0" layoutY="389.0" onAction="#quit" prefHeight="54.0" prefWidth="350.0"
                         styleClass="quit-button" stylesheets="@style.css" text="Quit">
