@@ -28,8 +28,8 @@ public class Board {
     private Box[][] board;
     
     // Thêm danh sách lịch sử di chuyển của 2 bên để tiện sử dụng sau này
-    private List<String> white_moves = new ArrayList<>();
-    private List<String> black_moves = new ArrayList<>();
+    private List<String> whiteMoves = new ArrayList<>();
+    private List<String> blackMoves = new ArrayList<>();
     private List<String> allMoves = new ArrayList<>();
     
     // Danh sách quân cờ 2 bên
@@ -176,7 +176,9 @@ public class Board {
 
     // Di chuyển quân cờ theo dạng chuỗi
     public void movePiece(String stringMove){
+        // System.out.println(stringMove);
         movePiece(new Move(stringMove));
+        allMoves.add(stringMove);                               
     }
 
     public void movePiece(Move move){
@@ -204,19 +206,19 @@ public class Board {
             Castling(move);
         }
         if(move.isPromotion(this)){
-            Promotion(move.getEndRow(),move.getEndCol(),piece.getpieceColor());
+            Promotion(move.getEndRow(),move.getEndCol(),piece.getpieceColor(), move.getPromotedPieceType());
         }
 
         //Thêm phép di chuyển vào danh sách
         if(isFakeMove) return;
         if(currentTurn.equals("w")){
-            white_moves.add(move.toString());
+            whiteMoves.add(move.toString());
             currentTurn = "b";
         }else{
-            black_moves.add(move.toString());
+            blackMoves.add(move.toString());
             currentTurn = "w";
         }
-        allMoves.add(move.toString());
+        if(!move.isTurnBot())allMoves.add(move.toString());
     }
          
     // Xử lý riêng phần nhập thành
@@ -230,8 +232,16 @@ public class Board {
 
     // Xử lý riêng phần phong hậu
     // Phần này nếu muốn có thể nâng cấp lên thành chon 1 trong 4 quân xe, mã, tịnh, hậu.
-    private void Promotion (int row, int col, String pieceColor){
-        setPiece(row,col,new Queen(pieceColor));
+    private void Promotion (int row, int col, String pieceColor, String pieceType){
+        if (pieceType.equals("q")){
+            setPiece(row,col,new Queen(pieceColor));
+        }else if(pieceType.equals("r")){
+            setPiece(row, col, new Rook(pieceColor));
+        }else if(pieceType.equals("n")){
+            setPiece(row, col, new Bishop(pieceColor));
+        }else {
+            setPiece(row, col, new Knight(pieceColor));
+        }
     }
 
     // Kiểm tra xem quân cờ đã chọn có đang đi đi đúng lượt hay không?
@@ -245,7 +255,7 @@ public class Board {
 
     //Trả về nước đi cuối cùng dạng chuỗi (phục vụ cho chế độ 1 người chơi)
     public String getLastMove(){
-        return white_moves.getLast().toString();
+        return whiteMoves.getLast().toString();
     }
 
     // Kiểm tra trạng thái trò chơi ongoing , draw, win
@@ -264,10 +274,10 @@ public class Board {
 
     public List<String> getMoves(String side){
         if(side.equals("b")){
-            return this.black_moves;
+            return this.blackMoves;
         }
         if(side.equals("w")){
-            return this.white_moves;
+            return this.whiteMoves;
         }
         return this.allMoves;
     }

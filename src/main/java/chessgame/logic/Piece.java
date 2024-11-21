@@ -202,6 +202,10 @@ class King extends Piece {
         this.hasMoved = hasMoved;
     }
 
+    public boolean getHasMoved(){
+        return hasMoved;
+    }
+
     @Override
     public List<Move> getValidMoves(Board board, int startRow, int startCol) {        
         List<Move> validMoves = new ArrayList<>();
@@ -214,10 +218,9 @@ class King extends Piece {
                 validMoves.add(new Move(startRow, startCol, endRow, endCol));
             }
         }
-        
         return validMoves;
     }
-    public List<Move> getSafMoves(Board board, int startRow,int startCol){
+    public List<Move> getSafeMoves(Board board, int startRow,int startCol){
         List<Move> safeMoves = super.getSafeMoves(board, startRow, startCol);
         if (Utils.canCastleLeft(board, startRow, startCol, hasMoved, pieceColor)){
             safeMoves.add(new Move(startRow, startCol, startRow, 2));

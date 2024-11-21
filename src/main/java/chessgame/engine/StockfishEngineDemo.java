@@ -73,6 +73,7 @@ public class StockfishEngineDemo {
         List<String> output = readOutput();
         for (String line : output) {
             if (line.startsWith("bestmove")) {
+                System.out.println(line);
                 return line.split(" ")[1];
             }
         }
