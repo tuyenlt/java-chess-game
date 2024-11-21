@@ -4,6 +4,9 @@ public class Utils {
 
     // Kiểm tra trạng thái của ô
     static boolean isEmpty(Board board, int row, int col) {
+        if(row > 7 || row < 0 || col > 7 || col < 0){
+            return false;
+        }
         return board.isEmpty(row, col);
     }
 

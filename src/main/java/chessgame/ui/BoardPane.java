@@ -31,6 +31,9 @@ public class BoardPane extends Pane{
     private String localPlayerSide = "w";
     private Consumer<String> onMovePiece;
     private boolean isBoardReverse = false;
+    private PromotionSelect promotionSelectTop;
+    private PromotionSelect promotionSelectBot;
+    private Pane blockingPane = new Pane();
 
 
 
@@ -63,6 +66,19 @@ public class BoardPane extends Pane{
         setPrefSize(TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
         createBoard();
         initPiece();
+        promotionSelectInit();
+
+        blockingPane = new Pane();
+        blockingPane.setPrefSize(getPrefWidth(), getPrefHeight());
+        blockingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);");
+        blockingPane.setVisible(false);
+
+        // Intercept all mouse events
+        blockingPane.setOnMouseClicked(event -> event.consume());
+        blockingPane.setOnMousePressed(event -> event.consume());
+        blockingPane.setOnMouseDragged(event -> event.consume());
+
+        getChildren().add(blockingPane);
     }
     
 
@@ -160,6 +176,45 @@ public class BoardPane extends Pane{
         }
     }
 
+    private void promotionSelectInit(){
+        String topSide = "w";
+        String botSide = "b";
+        if(isBoardReverse){
+            topSide = "b";
+            botSide = "w";
+        }
+        promotionSelectTop = new PromotionSelect(topSide, !isBoardReverse, TILE_SIZE);
+        promotionSelectTop.setLayoutX(0);
+        promotionSelectTop.setLayoutY(0);
+        promotionSelectTop.setOnFinish((name) -> {
+            Move promotionMove = promotionSelectTop.getPromotionMove();
+            promotionMove.setPromotedPieceType(name.substring(1));
+            board.movePiece(promotionMove);
+            onMovePiece.accept(board.getCurrentTurn());
+            getChildren().remove(draggedPiece);
+            addPiece(name, promotionMove.getEndCol(), promotionMove.getEndRow());
+            draggedPiece = null;
+            blockingPane.setVisible(false);
+            System.out.println(name);
+        });
+        
+        promotionSelectBot = new PromotionSelect(botSide, isBoardReverse, TILE_SIZE);
+        promotionSelectBot.setLayoutX(0);
+        promotionSelectBot.setLayoutY(4 * TILE_SIZE);
+        promotionSelectBot.setOnFinish((name) -> {
+            Move promotionMove = promotionSelectBot.getPromotionMove();
+            promotionMove.setPromotedPieceType(name.substring(1));
+            board.movePiece(promotionMove);
+            onMovePiece.accept(board.getCurrentTurn());
+            getChildren().remove(draggedPiece);
+            addPiece(name, promotionMove.getEndCol(), promotionMove.getEndRow());
+            draggedPiece = null;
+            blockingPane.setVisible(false);
+            System.out.println(name);
+        });
+        getChildren().addAll(promotionSelectTop, promotionSelectBot);
+    }
+
     private void onPiecePressed(MouseEvent event) {
         int row = (int) (event.getSceneY() / TILE_SIZE);
         int col = (int) (event.getSceneX() / TILE_SIZE);
@@ -173,6 +228,7 @@ public class BoardPane extends Pane{
             draggedPiece = null;
             return;
         }
+        System.out.println("chossing:" + row + " " + col);
 
         draggedPiece = (ImageView) event.getSource();
         draggedPiece.setViewOrder(-1);
@@ -181,9 +237,9 @@ public class BoardPane extends Pane{
         draggedPiece.setCursor(Cursor.HAND);
 
         resetState();
+        chossingBox = new Pair(col, row);
         hightlightMove(row, col);
         boxHightlightRect.setVisible(true);
-        chossingBox = new Pair(col, row);
         System.out.println("chossing box: "+ chossingBox.col + " " + chossingBox.row);
     }
 
@@ -264,26 +320,53 @@ public class BoardPane extends Pane{
         }
         resetState();
         chossingBox = null;
+        System.out.println("move to: " + endRow + " " + endCol);
         Move newMove = new Move(startRow, startCol, endRow, endCol);
         Piece chossingPiece = board.getPiece(startRow, startCol);
         for(Move move : chossingPiece.getSafeMoves(board, startRow, startCol)){
             if(move.equals(newMove)){
-                board.movePiece(newMove);
-                onMovePiece.accept(board.getCurrentTurn());
                 if(piecesImage[endRow][endCol] != null){
                     getChildren().remove(piecesImage[endRow][endCol]);
                 }
+                if(newMove.isCastling(board)){
+                    handleCasleMove(newMove);
+                }
+                if(newMove.isPromotion(board)){
+                    blockingPane.setVisible(true);
+                    if(promotionSelectTop.getColor().equals(board.getCurrentTurn())){
+                        promotionSelectTop.setVisible(true);
+                        promotionSelectTop.setLayoutX(endCol * TILE_SIZE);
+                        promotionSelectTop.setPromotionMove(newMove);
+                    }else{
+                        promotionSelectBot.setVisible(true);
+                        promotionSelectBot.setLayoutX(endCol * TILE_SIZE);
+                        promotionSelectBot.setPromotionMove(newMove);
+                    }
+                    return true;
+                }
+                board.movePiece(newMove);
+                onMovePiece.accept(board.getCurrentTurn());
+
                 piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
                 if(piecesImage[endRow][endCol] != null){
                     piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
                     piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
                 }
                 piecesImage[startRow][startCol] = null;
-                System.out.println("move to: " + endRow + " " + endCol);
                 return true;
             }
         }
         return false;
+    }
+
+    private void handleCasleMove(Move move){
+        System.out.println("pass");
+        int rookEndCol = move.getEndCol() + (move.getEndCol() < move.getStartCol() ? 1 : -1);
+        int rookStartCol = (move.getEndCol() < move.getStartCol() ? 0 : 7);
+        piecesImage[move.getEndRow()][rookEndCol] = piecesImage[move.getEndRow()][rookStartCol];
+        piecesImage[move.getEndRow()][rookEndCol].setX(rookEndCol * TILE_SIZE);
+        piecesImage[move.getEndRow()][rookEndCol].setY(move.getEndRow() * TILE_SIZE);
+        piecesImage[move.getEndRow()][rookStartCol] = null;
     }
 
     public String getGameState(){

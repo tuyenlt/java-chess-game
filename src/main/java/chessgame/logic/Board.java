@@ -188,8 +188,13 @@ public class Board {
     public void movePiece(Move move, boolean isFakeMove){
         //Thực hiện di chuyển
         Piece piece = getPiece(move.getStartRow(), move.getStartCol());
-
+        if(move.isCastling(this)){
+            Castling(move);
+        }
         setPiece(move.getEndRow(), move.getEndCol(), piece);
+        if(move.isPromotion(this)){
+            Promotion(move.getEndRow(),move.getEndCol(),piece.getpieceColor(), move.getPromotedPieceType());
+        }
         setPiece(move.getStartRow(), move.getStartCol(), null);
 
         //Đánh dấu trạng thái di chuyển của King và Rook
@@ -201,14 +206,6 @@ public class Board {
             if(!isFakeMove)((Rook)piece).setHasMoved(true);
         }
         
-        //Phép xử lý các nước đi đặc biệt
-        if(move.isCastling(this)){
-            Castling(move);
-        }
-        if(move.isPromotion(this)){
-            Promotion(move.getEndRow(),move.getEndCol(),piece.getpieceColor(), move.getPromotedPieceType());
-        }
-
         //Thêm phép di chuyển vào danh sách
         if(isFakeMove) return;
         if(currentTurn.equals("w")){
@@ -223,6 +220,7 @@ public class Board {
          
     // Xử lý riêng phần nhập thành
     private void Castling (Move move){
+        System.out.println("casle");
         if(move.getEndCol() == 2){
             movePiece(new Move(move.getStartRow(),0,move.getEndRow(),3),true);
         }else{
@@ -233,11 +231,16 @@ public class Board {
     // Xử lý riêng phần phong hậu
     // Phần này nếu muốn có thể nâng cấp lên thành chon 1 trong 4 quân xe, mã, tịnh, hậu.
     private void Promotion (int row, int col, String pieceColor, String pieceType){
-        if (pieceType.equals("q")){
+        if(pieceType.equals("")){
+            return;
+        }
+        System.out.println("promotion call:" + pieceColor + " " + pieceType);
+        if (pieceType.equals("Q")){
+            System.out.println("promotion to queen");
             setPiece(row,col,new Queen(pieceColor));
-        }else if(pieceType.equals("r")){
+        }else if(pieceType.equals("R")){
             setPiece(row, col, new Rook(pieceColor));
-        }else if(pieceType.equals("n")){
+        }else if(pieceType.equals("B")){
             setPiece(row, col, new Bishop(pieceColor));
         }else {
             setPiece(row, col, new Knight(pieceColor));
@@ -282,3 +285,7 @@ public class Board {
         return this.allMoves;
     }
 }
+
+
+// TODO handle when other player promotion
+// TODO make reverse broad

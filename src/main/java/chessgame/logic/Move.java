@@ -4,7 +4,7 @@ public class Move {
     private int startRow, startCol;
     private int endRow, endCol;
     private boolean isTurnBot = false;
-    private String promotedPieceType = "q";
+    private String promotedPieceType = "";
 
     // Khởi tạo nước đi từ chuỗi
     public Move(String moveString) {
@@ -28,7 +28,7 @@ public class Move {
     // Khởi tạo nước đi với quân được phong
     public Move(int startRow, int startCol, int endRow, int endCol, String promotedPieceType ) {
         this(startRow, startCol, endRow, endCol);
-        this.promotedPieceType =promotedPieceType;
+        this.promotedPieceType = promotedPieceType;
     }
 
     public int getStartRow() {
@@ -89,7 +89,7 @@ public class Move {
         char endColChar = (char) ('a' + endCol);
         int startRowNum = 8 - startRow;
         int endRowNum = 8 - endRow;
-        return "" + startColChar + startRowNum + endColChar + endRowNum;
+        return "" + startColChar + startRowNum + endColChar + endRowNum + promotedPieceType;
     }
     @Override
     public boolean equals(Object obj){
