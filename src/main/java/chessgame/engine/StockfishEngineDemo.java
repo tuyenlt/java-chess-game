@@ -88,6 +88,7 @@ public class StockfishEngineDemo {
 
     // Trả về điểm số của nước đi cuối cùng
     // Dương có lợi cho trắng, âm có lợi cho đen
+    // 100 điểm tương đương với lợi thế 1 con tốt
     public String getMovesScore(List<String> allMoves){
         setPosition(allMoves);
         sendCommand("go depth "+depth);                 // Phân tích với độ sâu depth mặc định là 20
