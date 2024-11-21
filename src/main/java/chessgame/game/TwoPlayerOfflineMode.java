@@ -15,7 +15,7 @@ public class TwoPlayerOfflineMode extends Application {
     private static final int BOARD_SIZE = 8;
     private GridPane gridPane;
     private boolean gameRunning;
-    
+
     public void start(Stage primaryStage){
         gridPane = new GridPane();
         gameRunning = true;
@@ -37,7 +37,7 @@ public class TwoPlayerOfflineMode extends Application {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
                 // Vẽ bàn cờ và các quân cờ
-                final int finalRow = row;  
+                final int finalRow = row;
                 final int finalCol = col;
 
                 // lắng nghe sự kiện click chuột
@@ -53,11 +53,11 @@ public class TwoPlayerOfflineMode extends Application {
             selectPiece(row, col);
         }else{
             int startRow = selectedSquare[0];
-            int startCol = selectedSquare[1];   
+            int startCol = selectedSquare[1];
 
             if(board.isValidMove(startRow, startCol, row, col)){
                 playturn(startRow, startCol, row, col);
-                
+
                 // Thoát game nếu có người dành chiến thắng
                 if(!gameRunning){
                     exitGame();
@@ -79,7 +79,7 @@ public class TwoPlayerOfflineMode extends Application {
 
         // Di chuyển quân cờ(logic)
         board.movePiece(startRow, startCol, endRow, endCol);
-        
+
         // Biến kiểm tra trạng thái của game
         String gamestate = board.gameState();
 
@@ -97,7 +97,7 @@ public class TwoPlayerOfflineMode extends Application {
         System.out.println("Đã thoát khỏi trò chơi");
         System.exit(0); // Thoát chương trình
     }
-    
+
     public static void main(String[] args) {
         launch(args);
     }

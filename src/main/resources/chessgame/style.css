@@ -99,3 +99,52 @@
     -fx-cursor: hand; /* Trỏ chuột khi hover */
 }
 
+#loadingArc {
+    -fx-stroke: #32CD32; /* Màu xanh lá cây */
+    -fx-stroke-width: 6; /* Độ dày của vòng cung */
+    -fx-fill: null;      /* Không có màu nền */
+}
+
+.progress-indicator {
+    -fx-rotate: 0;
+    -fx-progress-color: #32CD32; /* Màu xanh lá */
+    -fx-size: 50px; /* Kích thước ban đầu */
+    animation: rotateAnimation 1s infinite linear, scaleAnimation 1s infinite alternate;
+}
+
+@keyframes rotateAnimation {
+    0% {
+        -fx-rotate: 0;
+    }
+    100% {
+        -fx-rotate: 360deg;
+    }
+}
+
+@keyframes scaleAnimation {
+    0% {
+        -fx-scale-x: 1;
+        -fx-scale-y: 1;
+    }
+    100% {
+        -fx-scale-x: 1.5;
+        -fx-scale-y: 1.5;
+    }
+}
+.image-view-round {
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 5;
+    -fx-background-color: white;
+    -fx-shape: 'M 0,0 A 150,150 0 1,1 300,0 A 150,150 0 1,1 0,0 Z';
+}
+.image-view-border {
+    -fx-border-color: black; /* Màu viền */
+    -fx-border-width: 5;    /* Độ dày viền */
+    -fx-border-radius: 10; /* Bo góc viền */
+    -fx-background-radius: 10; /* Bo góc nền (nếu có) */
+}
+.propertiesText {
+    -fx-fill: white; /* Chỉnh màu chữ */
+    -fx-font-size: 15px;
+    -fx-font-family: "Montserrat";
+}
