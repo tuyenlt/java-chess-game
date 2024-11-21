@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.LoadingController">
+    <!-- Scene chính (main scene) -->
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0">
+        <AnchorPane layoutX="440.0" layoutY="60.0" prefHeight="600" prefWidth="400" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
+            <effect>
+                <DropShadow color="#000000" offsetX="5" offsetY="5" radius="10" />
+            </effect>
+            <children>
+                <Canvas fx:id="loadingCanvas" height="50" layoutX="175.0" layoutY="391.0" width="50" />
+            </children>
+        </AnchorPane>
+    </AnchorPane>
+</StackPane>
