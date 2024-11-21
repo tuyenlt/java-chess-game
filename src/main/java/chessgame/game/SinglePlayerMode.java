@@ -17,7 +17,7 @@ public class SinglePlayerMode extends Application {
     private static final int BOARD_SIZE = 8;
     private GridPane gridPane;
     private boolean gameRunning;
-    
+
     public void start(Stage primaryStage){
         gridPane = new GridPane();
         stockfish = new StockfishEngineDemo();
@@ -48,7 +48,7 @@ public class SinglePlayerMode extends Application {
                 // Vẽ bàn cờ tô màu trắng đen cho các ô vuông(UI)
                 // Vẽ các quân cờ(UI)
 
-                final int finalRow = row;  
+                final int finalRow = row;
                 final int finalCol = col;
 
                 // lắng nghe sự kiện click chuột
@@ -64,11 +64,11 @@ public class SinglePlayerMode extends Application {
             selectPiece(row, col);
         }else{
             int startRow = selectedSquare[0];
-            int startCol = selectedSquare[1];   
+            int startCol = selectedSquare[1];
 
             if(board.isValidMove(startRow, startCol, row, col)){
                 playturn(startRow, startCol, row, col);
-                
+
                 if(!gameRunning){
                     exitGame();
                     return;
@@ -83,23 +83,23 @@ public class SinglePlayerMode extends Application {
             // Thực hiện highlight quân cờ
         }
     }
-    
+
     private void playturn(int startRow, int startCol, int endRow, int endCol){
         // Bỏ highlight
         // Di chuyển quân cờ(UI)
-        
+
         // Di chuyển quân cờ(logic)
         board.movePiece(startRow, startCol, endRow, endCol);
-        
+
         // Biến kiểm tra trạng thái của game
         String gamestate = board.gameState();
-        
+
         // Trò chơi tiếp tục
         if(gamestate.equals("ongoing")) return;
-        
+
         // Trò chơi kết thúc
         // Giao diện chiến thắng hoặc hòa(UI)
-        
+
         if(gamestate.equals("draw")) System.out.println("Draw!");       // Chỗ này sẽ thay bằng giao diện cờ hòa(UI)
         else{
             // Thay bằng giao diện chiến thắng hoặc thua
@@ -119,9 +119,9 @@ public class SinglePlayerMode extends Application {
     // Thoát game
     private void exitGame() {
         if (stockfish != null) {
-            stockfish.stop();  
+            stockfish.stop();
         }
         System.out.println("Đã thoát khỏi trò chơi");
-        System.exit(0); 
+        System.exit(0);
     }
 }
