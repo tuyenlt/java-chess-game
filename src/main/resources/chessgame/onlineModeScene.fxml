@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -12,7 +11,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.Controller">
+
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.MainController">
     <!-- Scene chính (main scene) -->
     <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1">
         <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
@@ -20,8 +20,38 @@
                 <Image url="@image/resized_image.png" />
             </image>
         </ImageView>
-      <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(38, 36, 33, 0.8);" />
-        <AnchorPane fx:id="registerForm" layoutY="88.0" prefHeight="632.0" prefWidth="400" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
+        <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(38, 36, 33, 0.8);" stylesheets="style.css">
+            <children>
+                <ImageView fitHeight="632.0" fitWidth="635.0" layoutX="401.0" layoutY="88.0" opacity="0.77" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@image/board.png" />
+                    </image>
+                </ImageView>
+                <AnchorPane fx:id="propertiesAnchorPane" prefHeight="88.0" prefWidth="1280.0">
+                    <children>
+                        <StackPane layoutX="14.0" layoutY="9.0" prefHeight="71" prefWidth="71" style="-fx-background-color: white; -fx-background-radius: 35.5; -fx-border-radius: 35.5; -fx-padding: 1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+                            <children>
+                                <ImageView fx:id="imageView" fitHeight="70.0" fitWidth="70.0" layoutX="14.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" styleClass="image-view-border" />
+                            </children>
+                        </StackPane>
+                        <StackPane layoutX="77.0" layoutY="64.0" prefHeight="20" prefWidth="20" style="-fx-background-color: rgba(0, 0, 0, 0);">
+                            <children>
+                                <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@image/upload2.png" />
+                                    </image>
+                                </ImageView>
+                                <Button fx:id="loadImageButton" layoutX="77.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleImageUpload" opacity="0.0" prefHeight="20" prefWidth="20" />
+                            </children>
+                        </StackPane>
+                  <Label fx:id="usernameDisplayLabel" layoutX="107.0" layoutY="27.0" textFill="#fffdfd" style="-fx-fill: white;-fx-font-size: 20px; -fx-font-family: Constantia"/>
+                  <Label fx:id="eloDisplayLabel" layoutX="107.0" layoutY="55.0" textFill="WHITE" style="-fx-fill: white;-fx-font-size: 20px; -fx-font-family: Constantia"/>
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+        <AnchorPane fx:id="registerForm" layoutY="88.0" prefHeight="632.0" prefWidth="400.0" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
             <effect>
                 <DropShadow color="#000000" offsetX="5" offsetY="5" radius="10" />
             </effect>
@@ -44,7 +74,7 @@
                 </Button>
                 <Button fx:id="historyGameButton" layoutX="25.0" layoutY="304.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="History Game">
                 </Button>
-                <Button fx:id="twoPlayerButton" layoutX="25.0" layoutY="385.0" onAction="#returnToMainMenu" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
+                <Button fx:id="twoPlayerButton" layoutX="25.0" layoutY="385.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
                 </Button>
                 <Text fill="WHITE" layoutX="71.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
                     <font>
@@ -57,22 +87,17 @@
 
                 <StackPane alignment="TOP_LEFT">
                     <!-- Ảnh nền -->
-                    <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                    <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" layoutX = "5" layoutY = "5" preserveRatio="true">
                         <image>
-                            <Image url="@image/return_resized.png" />
+                            <Image url="@image/return.png" />
                         </image>
                     </ImageView>
-                    <Button fx:id="returnButton" onAction="#returnToMainMenu" prefHeight="30" prefWidth="30" styleClass="return-button" stylesheets="style.css">
+                    <Button fx:id="returnButton" onAction="#returnToMainMenu" prefHeight="50" layoutX = "5" layoutY = "5" prefWidth="50" styleClass="return-button" stylesheets="style.css">
 
                     </Button>
                 </StackPane>
 
             </children>
         </AnchorPane>
-        <ImageView fitHeight="632.0" fitWidth="632.0" layoutX="400.0" layoutY="88.0" opacity="0.77" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@image/board.png" />
-            </image>
-        </ImageView>
     </AnchorPane>
 </StackPane>
