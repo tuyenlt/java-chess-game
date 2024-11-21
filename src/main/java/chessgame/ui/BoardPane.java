@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import chessgame.logic.Board;
 import chessgame.logic.Move;
 import chessgame.logic.Piece;
+import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -26,8 +27,10 @@ public class BoardPane extends Pane{
     private ImageView[][] piecesImage = new ImageView[8][8];
     private Rectangle boxHightlightRect;
     private Pair chossingBox;
-    private boolean isTwoPlayerMode = true;
-    private Consumer<Boolean> onMovePiece;
+    private String gameMode = "singlePlayer";
+    private String localPlayerSide = "w";
+    private Consumer<String> onMovePiece;
+    private boolean isBoardReverse = false;
 
 
 
@@ -43,8 +46,16 @@ public class BoardPane extends Pane{
         }
     }
 
-    public void setOnMovePiece(Consumer<Boolean> onMovePiece){
+    public void setOnMovePiece(Consumer<String> onMovePiece){
         this.onMovePiece = onMovePiece;
+    }
+
+    public void setGameMode(String gameMode){
+        this.gameMode = gameMode;
+    }
+
+    public void setLocalPlayerSide(String localPlayerSide){
+        this.localPlayerSide = localPlayerSide;
     }
 
     public BoardPane() {
@@ -108,13 +119,16 @@ public class BoardPane extends Pane{
         boxHightlightRect.setStrokeWidth(5);
         getChildren().add(boxHightlightRect);
     }
-
     private void initPiece(){
         String[][] broadState = board.getBoardState();
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
-                if(broadState[i][j] != " "){
-                    addPiece(broadState[i][j], j, i);
+                if(!broadState[i][j].equals(" ")){
+                    if(isBoardReverse){
+                        addPiece(broadState[i][j], 7 - j, 7 - i);
+                    }else{
+                        addPiece(broadState[i][j], j, i);
+                    }
                 }
             }
         }
@@ -138,7 +152,7 @@ public class BoardPane extends Pane{
             piece.setOnMousePressed(event -> onPiecePressed(event));
             piece.setOnMouseDragged(event -> onPieceDragged(event));
             piece.setOnMouseReleased(event -> onPieceReleased(event));
-
+            piece.setOnMouseEntered(event -> piece.setCursor(Cursor.HAND));
 
             getChildren().add(piece);
         } catch (Exception e) {
@@ -155,10 +169,17 @@ public class BoardPane extends Pane{
             }
             return;
         }
+        if(!gameMode.equals("twoPlayer") && !board.getCurrentTurn().equals(localPlayerSide)){
+            draggedPiece = null;
+            return;
+        }
+
         draggedPiece = (ImageView) event.getSource();
         draggedPiece.setViewOrder(-1);
         draggedPiece.setX(event.getSceneX() - TILE_SIZE / 2);
         draggedPiece.setY(event.getSceneY() - TILE_SIZE / 2);
+        draggedPiece.setCursor(Cursor.HAND);
+
         resetState();
         hightlightMove(row, col);
         boxHightlightRect.setVisible(true);
@@ -169,6 +190,7 @@ public class BoardPane extends Pane{
 
     private void onPieceDragged(MouseEvent event) {
         if (draggedPiece != null) {
+            draggedPiece.setCursor(Cursor.CLOSED_HAND);
             draggedPiece.setX(event.getSceneX() - TILE_SIZE / 2);
             draggedPiece.setY(event.getSceneY() - TILE_SIZE / 2);
             boxHightlightRect.setX((int)(event.getSceneX() / TILE_SIZE) * TILE_SIZE);
@@ -179,6 +201,7 @@ public class BoardPane extends Pane{
     private void onPieceReleased(MouseEvent event) {
         if (draggedPiece != null) {
             draggedPiece.setViewOrder(0);
+            draggedPiece.setCursor(Cursor.DEFAULT);
             int endRow = (int) (event.getSceneY() / TILE_SIZE);
             int endCol = (int) (event.getSceneX() / TILE_SIZE);
             boxHightlightRect.setVisible(false);
@@ -192,6 +215,10 @@ public class BoardPane extends Pane{
     }
 
     private void hightlightMove(int row, int col){
+        if(isBoardReverse){
+            row = 7 - row;
+            col = 7 - col;
+        }
         Piece chossingPiece = board.getPiece(row, col);
         if(chossingPiece == null){
             return;
@@ -201,6 +228,10 @@ public class BoardPane extends Pane{
         for(Move move : moves){
             int endRow = move.getEndRow();
             int endCol = move.getEndCol();
+            if(isBoardReverse){
+                endRow = 7 - endRow;
+                endCol = 7 - endCol;
+            }
             if(board.getPiece(endRow, endCol) != null){
                 takeableHightLight[endRow][endCol].setVisible(true);
             }else{
@@ -229,6 +260,8 @@ public class BoardPane extends Pane{
         if(startCol == endCol && startRow == endRow){
             return false;
         }
+        if(isBoardReverse){
+        }
         resetState();
         chossingBox = null;
         Move newMove = new Move(startRow, startCol, endRow, endCol);
@@ -236,33 +269,21 @@ public class BoardPane extends Pane{
         for(Move move : chossingPiece.getSafeMoves(board, startRow, startCol)){
             if(move.equals(newMove)){
                 board.movePiece(newMove);
-                onMovePiece.accept(true);
-                draggedPiece.setX(endCol * TILE_SIZE);
-                draggedPiece.setY(endRow * TILE_SIZE);
+                onMovePiece.accept(board.getCurrentTurn());
                 if(piecesImage[endRow][endCol] != null){
                     getChildren().remove(piecesImage[endRow][endCol]);
                 }
                 piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
+                if(piecesImage[endRow][endCol] != null){
+                    piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
+                    piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
+                }
                 piecesImage[startRow][startCol] = null;
                 System.out.println("move to: " + endRow + " " + endCol);
                 return true;
             }
         }
         return false;
-    }
-
-    public void otherMovePiece(int startRow, int startCol, int endRow, int endCol){
-        board.movePiece(new Move(startRow, startCol, endRow, endCol));
-        if(piecesImage[endRow][endCol] != null){
-            getChildren().remove(piecesImage[endRow][endCol]);
-        }
-        piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
-        if(piecesImage[endRow][endCol] != null){
-            piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
-            piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
-        }
-        piecesImage[startRow][startCol] = null;
-        System.out.println("move to: " + endRow + " " + endCol);
     }
 
     public String getGameState(){

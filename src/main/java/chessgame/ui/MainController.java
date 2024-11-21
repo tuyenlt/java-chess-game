@@ -238,6 +238,13 @@ public class MainController implements ClientResponseHandle {
         switchScene("mainScene.fxml");
     }
 
+    public void singlePlayerMode(ActionEvent event){
+        switchScene("gameScene.fxml");
+    }
+    public void twoPlayerMode(ActionEvent event){
+        switchScene("gameScene.fxml");
+    }
+
 
 
 
@@ -311,6 +318,7 @@ public class MainController implements ClientResponseHandle {
         if (file != null) {
             Image image = new Image(file.toURI().toString());
 
+            
             // Lấy min(width, height) và crop ảnh
             Image croppedImage = cropToSquare(image);
 
