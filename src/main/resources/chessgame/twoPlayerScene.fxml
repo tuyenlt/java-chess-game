@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import chessgame.ui.BoardPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" prefWidth="1280" prefHeight="720" fx:controller="chessgame.ui.GameController">
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" prefWidth="1280" prefHeight="720" fx:controller="chessgame.game.TwoPlayerOfflineMode">
 
     <!-- Chess Board -->
     <BoardPane fx:id="boardPane" layoutX="0" layoutY="0" prefWidth="720" prefHeight="720" />

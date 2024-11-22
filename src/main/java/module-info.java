@@ -7,6 +7,7 @@ module chessgame {
     requires javafx.graphics;
 
     opens chessgame.ui to javafx.fxml;
+    opens chessgame.game to javafx.fxml;
     exports chessgame;
     exports chessgame.network.packets;
 }

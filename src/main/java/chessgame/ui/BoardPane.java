@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import chessgame.logic.Board;
 import chessgame.logic.Move;
 import chessgame.logic.Piece;
+import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -26,8 +27,13 @@ public class BoardPane extends Pane{
     private ImageView[][] piecesImage = new ImageView[8][8];
     private Rectangle boxHightlightRect;
     private Pair chossingBox;
-    private boolean isTwoPlayerMode = true;
-    private Consumer<Boolean> onMovePiece;
+    private String gameMode = "singlePlayer";
+    private String localPlayerSide = "w";
+    private Consumer<String> onMovePiece;
+    private boolean isBoardReverse = true;
+    private PromotionSelect promotionSelectTop;
+    private PromotionSelect promotionSelectBot;
+    private Pane blockingPane = new Pane();
 
 
 
@@ -43,17 +49,50 @@ public class BoardPane extends Pane{
         }
     }
 
-    public void setOnMovePiece(Consumer<Boolean> onMovePiece){
+    public void setOnMovePiece(Consumer<String> onMovePiece){
         this.onMovePiece = onMovePiece;
     }
 
-    public BoardPane() {
-        // this.isTwoPlayerMode = isTwoPlayerMode;
-        setPrefSize(TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
-        createBoard();
+    public void setGameMode(String gameMode){
+        this.gameMode = gameMode;
+    }
+
+
+    public void start(){
+        if(isBoardReverse){
+            onMovePiece.accept(board.getCurrentTurn());
+        }
+    }
+
+    public void setReverse(Boolean isBoardReverse){
+        this.isBoardReverse = isBoardReverse;
+        board.setReverse(isBoardReverse);
+        if(isBoardReverse){
+            localPlayerSide = "b";
+        }
         initPiece();
     }
-    
+
+    public BoardPane() {
+        setPrefSize(TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
+        createBoard();
+        promotionSelectInit();
+
+
+        blockingPane = new Pane();
+        blockingPane.setPrefSize(getPrefWidth(), getPrefHeight());
+        blockingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);");
+        blockingPane.setVisible(false);
+
+        // Intercept all mouse events
+        blockingPane.setOnMouseClicked(event -> event.consume());
+        blockingPane.setOnMousePressed(event -> event.consume());
+        blockingPane.setOnMouseDragged(event -> event.consume());
+
+        getChildren().add(blockingPane);
+    }
+
+
 
     private void createBoard() {
         for (int row = 0; row < BOARD_SIZE; row++) {
@@ -89,9 +128,13 @@ public class BoardPane extends Pane{
                 takeableHightlightCircle.setStrokeWidth(8);
                 takeableHightLight[row][col] = takeableHightlightCircle;                 
 
-                moveHightlightCircle.setOnMouseClicked(tile::fireEvent);
+                moveHightlightCircle.setOnMouseClicked(event->{
+                    tile.fireEvent(event);
+                });
 
-                takeableHightlightCircle.setOnMouseClicked(tile::fireEvent);
+                takeableHightlightCircle.setOnMouseClicked(event->{
+                    tile.fireEvent(event);
+                });
                 getChildren().add(tile);
                 getChildren().add(moveHightlightCircle);
                 getChildren().add(takeableHightlightCircle);
@@ -104,13 +147,16 @@ public class BoardPane extends Pane{
         boxHightlightRect.setStrokeWidth(5);
         getChildren().add(boxHightlightRect);
     }
-
     private void initPiece(){
         String[][] broadState = board.getBoardState();
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
-                if(broadState[i][j].equals(" ") ){
-                    addPiece(broadState[i][j], j, i);
+                if(!broadState[i][j].equals(" ")){
+                    if(isBoardReverse){
+                        addPiece(broadState[i][j], 7 - j, 7 - i);
+                    }else{
+                        addPiece(broadState[i][j], j, i);
+                    }
                 }
             }
         }
@@ -131,15 +177,38 @@ public class BoardPane extends Pane{
             });
 
             piecesImage[row][col] = piece;            
-            piece.setOnMousePressed(this::onPiecePressed);
-            piece.setOnMouseDragged(this::onPieceDragged);
-            piece.setOnMouseReleased(this::onPieceReleased);
-
+            piece.setOnMousePressed(event -> onPiecePressed(event));
+            piece.setOnMouseDragged(event -> onPieceDragged(event));
+            piece.setOnMouseReleased(event -> onPieceReleased(event));
+            piece.setOnMouseEntered(event -> piece.setCursor(Cursor.HAND));
 
             getChildren().add(piece);
         } catch (Exception e) {
             System.err.println("Could not load image: " + pieceName + ".png");
         }
+    }
+
+    private void promotionSelectInit(){
+        String topSide = "w";
+        String botSide = "b";
+        if(isBoardReverse){
+            topSide = "b";
+            botSide = "w";
+        }
+        promotionSelectTop = new PromotionSelect(topSide, !isBoardReverse, TILE_SIZE);
+        promotionSelectTop.setLayoutX(0);
+        promotionSelectTop.setLayoutY(0);
+        promotionSelectTop.setOnFinish((name) -> {
+            handlePromotionMove(promotionSelectTop.getPromotionMove(), name);
+        });
+
+        promotionSelectBot = new PromotionSelect(botSide, isBoardReverse, TILE_SIZE);
+        promotionSelectBot.setLayoutX(0);
+        promotionSelectBot.setLayoutY(4 * TILE_SIZE);
+        promotionSelectBot.setOnFinish((name) -> {
+            handlePromotionMove(promotionSelectBot.getPromotionMove(), name);
+        });
+        getChildren().addAll(promotionSelectTop, promotionSelectBot);
     }
 
     private void onPiecePressed(MouseEvent event) {
@@ -151,20 +220,29 @@ public class BoardPane extends Pane{
             }
             return;
         }
+        if(!gameMode.equals("twoPlayer") && !board.getCurrentTurn().equals(localPlayerSide)){
+            draggedPiece = null;
+            return;
+        }
+        System.out.println("chossing:" + row + " " + col);
+
         draggedPiece = (ImageView) event.getSource();
         draggedPiece.setViewOrder(-1);
         draggedPiece.setX(event.getSceneX() - TILE_SIZE / 2);
         draggedPiece.setY(event.getSceneY() - TILE_SIZE / 2);
+        draggedPiece.setCursor(Cursor.HAND);
+
         resetState();
+        chossingBox = new Pair(col, row);
         hightlightMove(row, col);
         boxHightlightRect.setVisible(true);
-        chossingBox = new Pair(col, row);
         System.out.println("chossing box: "+ chossingBox.col + " " + chossingBox.row);
     }
 
 
     private void onPieceDragged(MouseEvent event) {
         if (draggedPiece != null) {
+            draggedPiece.setCursor(Cursor.CLOSED_HAND);
             draggedPiece.setX(event.getSceneX() - TILE_SIZE / 2);
             draggedPiece.setY(event.getSceneY() - TILE_SIZE / 2);
             boxHightlightRect.setX((int)(event.getSceneX() / TILE_SIZE) * TILE_SIZE);
@@ -175,6 +253,7 @@ public class BoardPane extends Pane{
     private void onPieceReleased(MouseEvent event) {
         if (draggedPiece != null) {
             draggedPiece.setViewOrder(0);
+            draggedPiece.setCursor(Cursor.DEFAULT);
             int endRow = (int) (event.getSceneY() / TILE_SIZE);
             int endCol = (int) (event.getSceneX() / TILE_SIZE);
             boxHightlightRect.setVisible(false);
@@ -188,16 +267,23 @@ public class BoardPane extends Pane{
     }
 
     private void hightlightMove(int row, int col){
+        tiles[row][col].setFill(Color.web("#F5F682"));
+        if(isBoardReverse){
+            row = 7 - row;
+            col = 7 - col;
+        }
         Piece chossingPiece = board.getPiece(row, col);
         if(chossingPiece == null){
             return;
         }
-        tiles[row][col].setFill(Color.web("#F5F682"));
         List<Move> moves = chossingPiece.getSafeMoves(board, row, col);
         for(Move move : moves){
+            if(isBoardReverse){
+                move.reverseBoard();
+            }
             int endRow = move.getEndRow();
             int endCol = move.getEndCol();
-            if(board.getPiece(endRow, endCol) != null){
+            if(piecesImage[endRow][endCol] != null){
                 takeableHightLight[endRow][endCol].setVisible(true);
             }else{
                 moveHightLight[endRow][endCol].setVisible(true);
@@ -221,48 +307,110 @@ public class BoardPane extends Pane{
         }
     }
 
+    public boolean movePiece(Move move){
+        if(isBoardReverse){
+            move.reverseBoard();
+        }
+        return movePiece(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), move.getPromotedPieceType());
+    }
+
     public boolean movePiece(int startRow, int startCol, int endRow, int endCol){
+        return movePiece(startRow, startCol, endRow, endCol, "");
+    }
+
+    public boolean movePiece(int startRow, int startCol, int endRow, int endCol, String promotionType){
         if(startCol == endCol && startRow == endRow){
             return false;
         }
         resetState();
         chossingBox = null;
         Move newMove = new Move(startRow, startCol, endRow, endCol);
-        Piece chossingPiece = board.getPiece(startRow, startCol);
-        for(Move move : chossingPiece.getSafeMoves(board, startRow, startCol)){
+        if(!promotionType.equals("")){
+            newMove.setPromotedPieceType(promotionType);
+        }
+        if(isBoardReverse){
+            newMove.reverseBoard();
+        }
+        Piece chossingPiece = board.getPiece(newMove.getStartRow(), newMove.getStartCol());
+        for(Move move : chossingPiece.getSafeMoves(board, newMove.getStartRow(), newMove.getStartCol())){
             if(move.equals(newMove)){
-                board.movePiece(newMove);
-                onMovePiece.accept(true);
-                draggedPiece.setX(endCol * TILE_SIZE);
-                draggedPiece.setY(endRow * TILE_SIZE);
                 if(piecesImage[endRow][endCol] != null){
                     getChildren().remove(piecesImage[endRow][endCol]);
                 }
+                if(newMove.isCastling(board)){
+                    handleCasleMove(newMove);
+                }
+                if(newMove.isPromotion(board)){
+                    if(!board.getCurrentTurn().equals(localPlayerSide) && !gameMode.equals("twoPlayer")){
+                        handlePromotionMove(newMove, promotionType);
+                        return true;
+                    }
+                    blockingPane.setVisible(true);
+                    if(promotionSelectTop.getColor().equals(board.getCurrentTurn())){
+                        promotionSelectTop.setVisible(true);
+                        promotionSelectTop.setLayoutX(endCol * TILE_SIZE);
+                        promotionSelectTop.setPromotionMove(newMove);
+                    }else{
+                        promotionSelectBot.setVisible(true);
+                        promotionSelectBot.setLayoutX(endCol * TILE_SIZE);
+                        promotionSelectBot.setPromotionMove(newMove);
+                    }
+                    return true;
+                }
+                if(move.isEnPassant()){
+                    newMove.setEnPassant(true);
+                }
+                board.movePiece(newMove);
+                onMovePiece.accept(board.getCurrentTurn());
+
                 piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
+                if(piecesImage[endRow][endCol] != null){
+                    piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
+                    piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
+                }
                 piecesImage[startRow][startCol] = null;
-                System.out.println("move to: " + endRow + " " + endCol);
+                cleanNullPiece();
                 return true;
             }
         }
         return false;
     }
 
-    public void otherMovePiece(int startRow, int startCol, int endRow, int endCol){
-        board.movePiece(new Move(startRow, startCol, endRow, endCol));
-        if(piecesImage[endRow][endCol] != null){
-            getChildren().remove(piecesImage[endRow][endCol]);
+    private void handleCasleMove(Move move){
+        System.out.println("pass");
+        int rookEndCol = move.getEndCol() + (move.getEndCol() < move.getStartCol() ? 1 : -1);
+        int rookStartCol = (move.getEndCol() < move.getStartCol() ? 0 : 7);
+        piecesImage[move.getEndRow()][rookEndCol] = piecesImage[move.getEndRow()][rookStartCol];
+        piecesImage[move.getEndRow()][rookEndCol].setX(rookEndCol * TILE_SIZE);
+        piecesImage[move.getEndRow()][rookEndCol].setY(move.getEndRow() * TILE_SIZE);
+        piecesImage[move.getEndRow()][rookStartCol] = null;
+    }
+
+    private void handlePromotionMove(Move promotionMove, String pieceName){
+        if(promotionMove.getPromotedPieceType().equals("")){
+            promotionMove.setPromotedPieceType(pieceName);
         }
-        piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
-        if(piecesImage[endRow][endCol] != null){
-            piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
-            piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
+        String pieceImageName = board.getCurrentTurn() + pieceName.toUpperCase();
+        addPiece(pieceImageName, promotionMove.getEndCol(), promotionMove.getEndRow());
+        board.movePiece(promotionMove);
+        onMovePiece.accept(board.getCurrentTurn());
+        getChildren().remove(draggedPiece);
+        draggedPiece = null;
+        blockingPane.setVisible(false);
+    }
+
+    private void cleanNullPiece(){
+        for(int row=0;row<8;row++){
+            for(int col=0; col<8; col++){
+                if(board.getPiece(row, col) == null && piecesImage[row][col] != null){
+                    getChildren().remove(piecesImage[row][col]);
+                }
+            }
         }
-        piecesImage[startRow][startCol] = null;
-        System.out.println("move to: " + endRow + " " + endCol);
     }
 
     public String getGameState(){
-        return board.gameState();
+        return "ongoing";
     }
 
     public List<String> getMove(String side){
@@ -272,4 +420,7 @@ public class BoardPane extends Pane{
     public String getCurrentTurn(){
         return board.getCurrentTurn();
     }
+
+
+
 }

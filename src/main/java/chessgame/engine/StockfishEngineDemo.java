@@ -7,13 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class StockfishEngineDemo {
     private Process stockfishProcess;
     private BufferedReader stockfishReader;
     private OutputStreamWriter stockfishWriter;
     private String stockfishPath = "/stockfish/stockfish.exe"; 
+    private int depth =20;
     
     // Khởi chạy Stockfish
     public boolean start() {
@@ -30,6 +30,12 @@ public class StockfishEngineDemo {
             return false;
         }
         return true;
+    }
+
+    // Độ sâu phân tích tối đa là 30.
+    // Tôi nghĩ lên để 3 mức là 10,20,30 tương ứng với dễ, trung bình khó.
+    public void setDepth(int depth){
+        this.depth=depth;
     }
     
     // Gửi lệnh tới Stockfish
@@ -69,12 +75,40 @@ public class StockfishEngineDemo {
     
     // Lấy nước đi tốt nhất từ vị trí hiện tại
     public String getBestMove() {
-        sendCommand("go movetime 1000");  // Phân tích trong 1 giây
+        sendCommand("go depth "+ depth);  
         List<String> output = readOutput();
         for (String line : output) {
             if (line.startsWith("bestmove")) {
+                System.out.println(line);
                 return line.split(" ")[1];
             }
+        }
+        return null;
+    }
+
+    // Trả về điểm số của nước đi cuối cùng
+    // Dương có lợi cho trắng, âm có lợi cho đen
+    // 100 điểm tương đương với lợi thế 1 con tốt
+    public String getMovesScore(List<String> allMoves){
+        setPosition(allMoves);
+        sendCommand("go depth "+depth);                 // Phân tích với độ sâu depth mặc định là 20
+        List<String> output = readOutput();
+        for (String line : output) {
+            if(line.startsWith("info depth " + depth)){
+                if (line.contains("score cp")) {
+                    // Điểm dựa trên vật chất (centipawn)
+                    String[] parts = line.split("score cp ");
+                    int score = Integer.parseInt(parts[1].split(" ")[0]);
+                    if (allMoves.size() %2 ==0 ) score = -score;
+                    return "Score: "+ score;
+                } else if (line.contains("score mate")) {
+                    // Điểm khi có thể chiếu bí
+                    String[] parts = line.split("score mate ");
+                    String moves = parts[1].split(" ")[0];
+                    // Mate in là trạng thái chắc chắn bị chiếu hết(nếu đánh chuẩn chỉ) sau moves lượt
+                    return "Mate in: " + moves + " moves";
+                }
+            } 
         }
         return null;
     }

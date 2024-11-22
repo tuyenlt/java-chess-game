@@ -207,6 +207,7 @@ public class MainController implements ClientResponseHandle {
             stage.show();
         } catch (IOException e) {
             System.out.println(e);
+            System.out.println(e.getCause());
         }
     }
 
@@ -231,7 +232,7 @@ public class MainController implements ClientResponseHandle {
 //            onlineModeForm.setVisible(false);
 
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -264,6 +265,7 @@ public class MainController implements ClientResponseHandle {
             newController.eloDisplayLabel.setLayoutX(labelWidth);
         } catch (IOException e) {
             System.out.println(e);
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -319,6 +321,13 @@ public class MainController implements ClientResponseHandle {
 
     public void returnToMainMenu(ActionEvent event) {
         switchScene("mainScene.fxml");
+    }
+
+    public void singlePlayerMode(ActionEvent event){
+        switchScene("singlePlayerScene.fxml");
+    }
+    public void twoPlayerMode(ActionEvent event){
+        switchScene("twoPlayerScene.fxml");
     }
 
 
@@ -412,6 +421,7 @@ public class MainController implements ClientResponseHandle {
         if (file != null) {
             Image image = new Image(file.toURI().toString());
 
+            
             // Lấy min(width, height) và crop ảnh
             Image croppedImage = cropToSquare(image);
 

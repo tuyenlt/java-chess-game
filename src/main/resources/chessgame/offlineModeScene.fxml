@@ -47,7 +47,7 @@
                 </Label>
                 <Button fx:id="twoPlayerButton" onAction = "#twoPlayerMode" layoutX="25.0" layoutY="229.0"  prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
                 </Button>
-                <Button fx:id="singlePlayerButton" layoutX="25.0" layoutY="309.0"  prefHeight="54.0" prefWidth="350.0"
+                <Button fx:id="singlePlayerButton" layoutX="25.0" onAction = "#singlePlayerMode" layoutY="309.0"  prefHeight="54.0" prefWidth="350.0"
                         styleClass="custom-button" stylesheets="@style.css" text="Single Player" >
                 </Button>
                 <Button fx:id="quitButton" layoutX="25.0" layoutY="389.0" onAction="#quit" prefHeight="54.0" prefWidth="350.0"
