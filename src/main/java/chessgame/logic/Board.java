@@ -42,6 +42,7 @@ public class Board {
 
     // Đánh dấu lượt của người chơi hiện tại
     private String currentTurn;
+    private boolean isBoardReverse = false;
     
     public Board() {
         board = createBoard();
@@ -92,6 +93,9 @@ public class Board {
         return initialBoard;
     }
 
+    public void setReverse(Boolean isBoardReverse){
+        this.isBoardReverse = isBoardReverse;
+    }
 
     public String[][] getBoardState(){
         String[][] broadState = new String[8][8];
@@ -241,12 +245,12 @@ public class Board {
             return;
         }
         System.out.println("promotion call:" + pieceColor + " " + pieceType);
-        if (pieceType.equals("Q")){
+        if (pieceType.equals("q")){
             System.out.println("promotion to queen");
             setPiece(row,col,new Queen(pieceColor));
-        }else if(pieceType.equals("R")){
+        }else if(pieceType.equals("r")){
             setPiece(row, col, new Rook(pieceColor));
-        }else if(pieceType.equals("B")){
+        }else if(pieceType.equals("b")){
             setPiece(row, col, new Bishop(pieceColor));
         }else {
             setPiece(row, col, new Knight(pieceColor));
@@ -255,6 +259,10 @@ public class Board {
 
     // Kiểm tra xem quân cờ đã chọn có đang đi đi đúng lượt hay không?
     public boolean isCorrectTurn(int row, int col){
+        if(isBoardReverse){
+            row = 7 - row;
+            col = 7 - col;
+        }
         Piece piece = getPiece(row, col);
         if(piece == null){
             return false;
