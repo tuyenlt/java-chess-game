@@ -2,6 +2,9 @@ package chessgame.logic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 
 
 class Box {
@@ -29,12 +32,15 @@ public class Board {
     
     // Thêm danh sách lịch sử di chuyển của 2 bên để tiện sử dụng sau này
     private List<String> whiteMoves = new ArrayList<>();
-    private List<String> blackMoves = new ArrayList<>();
+    private List<String> blackMoves =new ArrayList<>();
     private List<String> allMoves = new ArrayList<>();
+
+    // Danh sách thế cờ(theo dạng String) sau mỗi nước đi
+    private LinkedHashSet<String> boardPositions = new LinkedHashSet<>();
     
-    // Danh sách quân cờ 2 bên
-    // public List<Piece> whitePieces = new ArrayList<>();
-    // public List<Piece> blackPieces = new ArrayList<>();
+    //Danh sách số lượng quân cờ 2 bên
+    HashMap<Character,Integer> whitePieces;
+    HashMap<Character,Integer> blackPieces;
     
     // Vị trí quân vua của 2 bên
     private int wK_row, wK_col;
@@ -46,7 +52,8 @@ public class Board {
     
     public Board() {
         board = createBoard();
-        // createPieceList();
+        whitePieces = createPieceList();
+        blackPieces = createPieceList();
         wK_row = 7;
         wK_col = 4;
         bK_row = 0;
@@ -112,14 +119,16 @@ public class Board {
     }
     
     // Tạo danh sách các quân cờ 2 bên nếu cần
-    // void createPieceList(){
-    //     for(int i = 0; i < 8; i++){
-    //         blackPieces.add(board[0][i].getPiece());
-    //         blackPieces.add(board[1][i].getPiece());
-    //         whitePieces.add(board[6][i].getPiece());
-    //         whitePieces.add(board[7][i].getPiece());
-    //     }
-    // }
+    HashMap<Character,Integer> createPieceList(){
+        HashMap<Character,Integer> pieces = new HashMap<>();
+        pieces.put('P', 8);
+        pieces.put('R', 2);
+        pieces.put('N', 2);
+        pieces.put('B', 2);
+        pieces.put('Q', 1);
+        pieces.put('K', 1);
+        return pieces; 
+    }
 
 
     // Kiểm tra box ở pos có trống không
@@ -134,7 +143,13 @@ public class Board {
 
     // Thiết lập quân cờ
     public void setPiece(int row, int col, Piece piece){
+        if (!isEmpty(row, col)){
+            popPiece(getPiece(row, col).getName());
+        }
         board[row][col].setPiece(piece);
+        if (piece != null){
+            addPiece(piece.getName());
+        }
     }
 
     // Lấy thông tin vị trí của King
@@ -201,8 +216,6 @@ public class Board {
         }
         setPiece(move.getStartRow(), move.getStartCol(), null);
         
-        
-        
         //Đánh dấu trạng thái di chuyển của King và Rook
         if(piece instanceof King){
             setKing_pos(piece.getpieceColor(), move.getEndRow(), move.getEndCol());
@@ -212,14 +225,14 @@ public class Board {
             if(!isFakeMove)((Rook)piece).setHasMoved(true);
         }
         
-        //Thêm phép di chuyển vào danh sách
-        if(isFakeMove) return;
         
+        if(isFakeMove) return;
         // Tốt qua đường
         if(move.isEnPassant()){
             setPiece(move.getStartRow(), move.getEndCol(),null);
         }
-
+        
+        //Thêm phép di chuyển vào danh sách
         if(currentTurn.equals("w")){
             whiteMoves.add(move.toString());
             currentTurn = "b";
@@ -228,8 +241,10 @@ public class Board {
             currentTurn = "w";
         }
         if(!move.isTurnBot())allMoves.add(move.toString());
-        // System.out.println(allMoves.getLast());
-        // System.out.println(""+move.getStartRow()+move.getStartCol()+move.getEndRow()+move.getEndCol());
+
+        // Thêm thế cờ mới
+        boardPositions.add(toString());
+        System.out.println(this);
     }
          
     // Xử lý riêng phần nhập thành
@@ -283,20 +298,6 @@ public class Board {
         return new Move(allMoves.getLast());
     }
 
-    // Kiểm tra trạng thái trò chơi ongoing , draw, win
-    public String gameState(){
-        for(int row = 0; row < 8; row++){
-            for(int col = 0; col < 8; col++){
-                Piece piece = getPiece(row, col);
-                if(piece == null || piece.getpieceColor().equals(currentTurn)) continue;
-                if(!piece.getValidMoves(this, row, col).isEmpty()) return "ongoing";
-            }
-        }
-        if(Utils.isCheck(this, currentTurn)) return "win";
-        return "draw";
-    }
-
-
     public List<String> getMoves(String side){
         if(side.equals("b")){
             return this.blackMoves;
@@ -305,6 +306,61 @@ public class Board {
             return this.whiteMoves;
         }
         return this.allMoves;
+    }
+
+    // Kiểm tra trạng thái bị chiếu bí của người chơi hiện tại
+    public boolean isCheckMate(){
+        if(!Utils.isCheck(this, currentTurn)) return false;
+        for(int row = 0; row < 8; row ++){
+            for(int col = 0 ;col <8; col++){
+                Piece piece = getPiece(row, col);
+                if(piece == null || !piece.getpieceColor().equals(currentTurn)) continue;
+                if(!piece.getSafeMoves(this, row, col).isEmpty()) return false; 
+            }
+        }
+        System.out.println(((currentTurn.equals("w")) ? "Black" : "White") +" Player win!");
+        return true;
+    } 
+
+    // Kiểm tra trạng thái hòa
+    public boolean isDraw(){
+        if (Utils.isStaleMate(this, currentTurn)) return true;
+        if (Utils.isInsufficientMaterial(whitePieces,blackPieces)) return true;
+        return false;
+    }
+
+    private void popPiece(String namePiece){
+        char pieceType = namePiece.charAt(1);
+        if(namePiece.charAt(0) == 'w'){
+            whitePieces.put(pieceType, whitePieces.get(pieceType)-1);
+        }else{
+            blackPieces.put(pieceType, whitePieces.get(pieceType)-1);
+        }
+    }
+
+    private void addPiece(String namePiece){
+        char pieceType = namePiece.charAt(1);
+        if(namePiece.charAt(0) == 'w'){
+            whitePieces.put(pieceType, whitePieces.get(pieceType)+1);
+        }else{
+            blackPieces.put(pieceType, whitePieces.get(pieceType)+1);
+        }
+    }
+
+    @Override
+    public String toString() {
+        String output = "------------------------" +'\n';
+        for(int row = 0; row <8; row++ ){
+            String line ="";
+            for(int col = 0 ; col<8; col++){
+                Piece piece = getPiece(row, col);
+                if (piece !=null) line += (getPiece(row, col).getName() +" ");
+                else line +=("-- ");
+            }
+            output += (line +'\n');
+        }
+        output += "------------------------";
+        return output;
     }
 }
 

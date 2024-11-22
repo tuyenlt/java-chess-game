@@ -396,7 +396,7 @@ public class BoardPane extends Pane{
     }
 
     public String getGameState(){
-        return board.gameState();
+        return "ongoing";
     }
 
     public List<String> getMove(String side){
