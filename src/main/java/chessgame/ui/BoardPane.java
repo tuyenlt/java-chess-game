@@ -89,13 +89,9 @@ public class BoardPane extends Pane{
                 takeableHightlightCircle.setStrokeWidth(8);
                 takeableHightLight[row][col] = takeableHightlightCircle;                 
 
-                moveHightlightCircle.setOnMouseClicked(event->{
-                    tile.fireEvent(event);
-                });
+                moveHightlightCircle.setOnMouseClicked(tile::fireEvent);
 
-                takeableHightlightCircle.setOnMouseClicked(event->{
-                    tile.fireEvent(event);
-                });
+                takeableHightlightCircle.setOnMouseClicked(tile::fireEvent);
                 getChildren().add(tile);
                 getChildren().add(moveHightlightCircle);
                 getChildren().add(takeableHightlightCircle);
@@ -113,7 +109,7 @@ public class BoardPane extends Pane{
         String[][] broadState = board.getBoardState();
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
-                if(broadState[i][j] != " "){
+                if(broadState[i][j].equals(" ") ){
                     addPiece(broadState[i][j], j, i);
                 }
             }
@@ -135,9 +131,9 @@ public class BoardPane extends Pane{
             });
 
             piecesImage[row][col] = piece;            
-            piece.setOnMousePressed(event -> onPiecePressed(event));
-            piece.setOnMouseDragged(event -> onPieceDragged(event));
-            piece.setOnMouseReleased(event -> onPieceReleased(event));
+            piece.setOnMousePressed(this::onPiecePressed);
+            piece.setOnMouseDragged(this::onPieceDragged);
+            piece.setOnMouseReleased(this::onPieceReleased);
 
 
             getChildren().add(piece);

@@ -59,12 +59,12 @@
             <Button fx:id="toControllerFormButton" layoutX="25.0" layoutY="512.0" onAction="#registerFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Register" />
                 <StackPane alignment="TOP_LEFT">
                     <!-- Ảnh nền -->
-                    <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" layoutX = "5" layoutY = "5" preserveRatio="true">
+                    <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true"  preserveRatio="true">
                         <image>
                             <Image url="@image/return.png" />
                         </image>
                     </ImageView>
-                    <Button fx:id="returnButton" onAction="#returnToMainMenu" prefHeight="50" layoutX = "5" layoutY = "5" prefWidth="50" styleClass="return-button" stylesheets="style.css">
+                    <Button fx:id="returnButton" onAction="#returnToMainMenu" prefHeight="50"  prefWidth="50" styleClass="return-button" stylesheets="style.css">
 
                     </Button>
                 </StackPane>

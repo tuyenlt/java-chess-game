@@ -27,7 +27,7 @@ public class App extends Application {
         Parent root = loader.load();
         ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "3.27.120.232");
         client.setUiResponseHandler(loader.getController());
-        // client.connectMainServer();
+        client.connectMainServer();
         Scene scene = new Scene(root);
         MainController mainController = loader.getController();
         MainController.setClient(client);

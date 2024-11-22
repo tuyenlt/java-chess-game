@@ -148,3 +148,58 @@
     -fx-font-size: 15px;
     -fx-font-family: "Montserrat";
 }
+.scroll-pane {
+    -fx-background-color: transparent; /* Nền trong suốt */
+    -fx-padding: 10; /* Căn lề bên trong */
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #262522; /* Màu nền nhẹ bên trong viewport */
+}
+
+/* ScrollBar styles */
+.scroll-bar:vertical {
+    -fx-background-color: rgba(255, 255, 255, 0.5); /* Nền scrollbar mờ màu xanh */
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #81b64c; /* Màu thanh kéo scrollbar */
+    -fx-border-color: rgba(0, 0, 0, 0.2); /* Đường viền nhẹ cho thanh kéo */
+    -fx-border-radius: 4; /* Bo góc cho thanh kéo */
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: rgba(0, 0, 0, 0.05); /* Màu nền track scrollbar */
+}
+
+/* VBox styles */
+.vbox {
+    -fx-background-color: transparent; /* Nền trong suốt */
+    -fx-spacing: 10; /* Khoảng cách giữa các phần tử */
+}
+
+/* HBox styles */
+.hbox {
+    -fx-background-color: black; /* Nền màu đen */
+    -fx-opacity: 0.5; /* Độ trong suốt */
+    -fx-padding: 10; /* Căn lề bên trong */
+}
+
+/* Label styles */
+.label {
+    -fx-font-family: roboto; /* Font chữ */
+    -fx-font-size: 16px; /* Kích thước chữ */
+    -fx-font-weight: bold; /* Đậm chữ */
+    -fx-text-fill: #c3c2c1; /* Màu chữ */
+}
+
+
+
+/* Line styles */
+.line {
+    -fx-stroke: black; /* Màu đường kẻ */
+    -fx-stroke-width: 1; /* Độ dày đường kẻ */
+    -fx-opacity: 0.3; /* Độ trong suốt */
+    -fx-start-margin: 10; /* Dịch vào từ trái */
+    -fx-end-margin: 10; /* Dịch vào từ phải */
+}

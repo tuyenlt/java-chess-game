@@ -2,7 +2,8 @@ package chessgame.ui;
 
 public class AppState {
     private static boolean isSecondaryPaneOpened = false;
-    private static boolean validNameUser = false;
+
+    private static boolean isSuccessfulRegistered = false;
 
     public static boolean isSecondaryPaneOpened() {
         return isSecondaryPaneOpened;
@@ -12,12 +13,12 @@ public class AppState {
         isSecondaryPaneOpened = opened;
     }
 
-    public static boolean isValidNameUser() {
-        return validNameUser;
+    public static boolean isSuccessfulRegistered() {
+        return isSuccessfulRegistered;
     }
 
-    public static void setValidNameUser(boolean checkValid) {
-        validNameUser = checkValid;
+    public static void setSuccessfulRegistered(boolean successful) {
+        isSuccessfulRegistered = successful;
     }
 
 }
