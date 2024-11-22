@@ -357,15 +357,19 @@ public class BoardPane extends Pane{
                     }
                     return true;
                 }
+                if(move.isEnPassant()){
+                    newMove.setEnPassant(true);
+                }
                 board.movePiece(newMove);
                 onMovePiece.accept(board.getCurrentTurn());
-
+                
                 piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
                 if(piecesImage[endRow][endCol] != null){
                     piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
                     piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
                 }
                 piecesImage[startRow][startCol] = null;
+                cleanNullPiece();
                 return true;
             }
         }
@@ -395,6 +399,16 @@ public class BoardPane extends Pane{
         blockingPane.setVisible(false);
     }
 
+    private void cleanNullPiece(){
+        for(int row=0;row<8;row++){
+            for(int col=0; col<8; col++){
+                if(board.getPiece(row, col) == null && piecesImage[row][col] != null){
+                    getChildren().remove(piecesImage[row][col]);
+                }
+            }
+        }
+    }
+
     public String getGameState(){
         return board.gameState();
     }
@@ -406,6 +420,7 @@ public class BoardPane extends Pane{
     public String getCurrentTurn(){
         return board.getCurrentTurn();
     }
-    //TODO handle other player promotion
-    //TODO handle reverse board
+
+
+
 }
