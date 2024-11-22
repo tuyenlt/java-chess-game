@@ -88,4 +88,15 @@ public class Utils {
         }
         return true;
     }
+    static Move canEnPassant(Board board, String color, int startRow, int startCol){
+        if (startRow != ((color.equals("w")) ? 3 : 4)) return null;
+        Move move = board.getLastMove();
+        int endRow = move.getEndRow();
+        int endCol = move.getEndCol();
+        if (!(board.getPiece(endRow,endCol) instanceof Pawn)) return null;
+        if (endRow != startRow || Math.abs(endCol - startCol)!=1) return null;
+        Move enPassantMove = new Move(startRow, startCol,((startRow == 3) ? 2:5) , endCol);
+        enPassantMove.setEnPassant(true);
+        return new Move(startRow, startCol, endRow, endCol);
+    }
 }

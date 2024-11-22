@@ -5,6 +5,11 @@ public class Move {
     private int endRow, endCol;
     private boolean isTurnBot = false;
     private String promotedPieceType = "";
+    private boolean isEnPassant = false;
+
+    
+
+    
 
     // Khởi tạo nước đi từ chuỗi
     public Move(String moveString) {
@@ -55,6 +60,9 @@ public class Move {
         return isTurnBot;
     }
 
+    public boolean isEnPassant() {
+        return isEnPassant;
+    }
     // Kiểm tra nước đi có phải nhập thành hoặc phong hậu không?
     public boolean isCastling(Board board) {
         Piece piece = board.getPiece(startRow, startCol);
@@ -68,6 +76,10 @@ public class Move {
 
     public void setPromotedPieceType(String promotedPieceType){
         this.promotedPieceType = promotedPieceType; 
+    }
+
+    public void setEnPassant(boolean isEnPassant) {
+        this.isEnPassant = isEnPassant;
     }
 
     // Lấy nước đi ngược lại

@@ -68,6 +68,12 @@ class Pawn extends Piece {
             }
         }
 
+        // logic tốt qua đường
+        Move enPassantMove = Utils.canEnPassant(board, pieceColor, startRow, startCol);
+        if(enPassantMove != null){
+            validMoves.add(enPassantMove);
+        }
+
         return validMoves; 
     }
 }

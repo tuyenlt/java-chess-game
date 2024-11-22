@@ -196,7 +196,11 @@ public class Board {
             Promotion(move.getEndRow(),move.getEndCol(),piece.getpieceColor(), move.getPromotedPieceType());
         }
         setPiece(move.getStartRow(), move.getStartCol(), null);
-
+        
+        // Tốt qua đường
+        if(move.isEnPassant()){
+            setPiece(move.getStartRow(), move.getEndCol(),null);
+        }
         //Đánh dấu trạng thái di chuyển của King và Rook
         if(piece instanceof King){
             setKing_pos(piece.getpieceColor(), move.getEndRow(), move.getEndCol());
@@ -216,6 +220,8 @@ public class Board {
             currentTurn = "w";
         }
         if(!move.isTurnBot())allMoves.add(move.toString());
+        // System.out.println(allMoves.getLast());
+        System.out.println(""+move.getStartRow()+move.getStartCol()+move.getEndRow()+move.getEndCol());
     }
          
     // Xử lý riêng phần nhập thành
@@ -257,8 +263,12 @@ public class Board {
     }
 
     //Trả về nước đi cuối cùng dạng chuỗi (phục vụ cho chế độ 1 người chơi)
-    public String getLastMove(){
+    public String getLastMoveString(){
         return whiteMoves.getLast().toString();
+    }
+
+    public Move getLastMove(){
+        return new Move(allMoves.getLast());
     }
 
     // Kiểm tra trạng thái trò chơi ongoing , draw, win
