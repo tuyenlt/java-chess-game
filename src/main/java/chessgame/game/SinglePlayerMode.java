@@ -20,11 +20,10 @@ public class SinglePlayerMode {
     private Label timerLabelBottom;
     
     @FXML
-    private BoardPane boardPane;
+    private BoardPane singleBoardPane;
     
     @FXML
     public void initialize() {
-        // Example: Add pieces dynamically when the controller is initialized
         stockfish.start(); 
         countdownTimerTop = new CountdownTimer(10 * 60);
         countdownTimerTop.setLabel(timerLabelTop);
@@ -32,12 +31,11 @@ public class SinglePlayerMode {
         countdownTimerBottom = new CountdownTimer(10 * 60);
         countdownTimerBottom.setLabel(timerLabelBottom);
         countdownTimerBottom.start();
-        // boardPane.setGameMode("twoPlayer");
-        // boardPane.setR
-        boardPane.setReverse(false);
-        boardPane.setOnMovePiece((tmp) -> {
+        // singleBoardPane.setGameMode("twoPlayer");
+        singleBoardPane.setReverse(false);
+        singleBoardPane.setOnMovePiece((tmp) -> {
             new Thread(() -> {
-                if(boardPane.getCurrentTurn().equals("w")) {
+                if(singleBoardPane.getCurrentTurn().equals("w")) {
                     countdownTimerTop.stop();
                     countdownTimerBottom.start();
                     return;
@@ -45,12 +43,12 @@ public class SinglePlayerMode {
                 countdownTimerTop.start();
                 countdownTimerBottom.stop();
 
-                stockfish.setPosition(boardPane.getMove("all"));
+                stockfish.setPosition(singleBoardPane.getMove("all"));
                 Move bestMove = new Move(stockfish.getBestMove());
                 System.out.println(bestMove);
             
                 Platform.runLater(() -> {
-                    boardPane.movePiece(bestMove);
+                    singleBoardPane.movePiece(bestMove);
                     System.out.println(
                         bestMove.getStartRow() + " " + bestMove.getStartCol() + " " +
                         bestMove.getEndRow() + " " + bestMove.getEndCol()
@@ -59,6 +57,6 @@ public class SinglePlayerMode {
             }).start();
         });
 
-        boardPane.start();
+        singleBoardPane.start();
     }
 }

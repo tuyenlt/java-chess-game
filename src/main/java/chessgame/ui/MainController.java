@@ -139,6 +139,7 @@ public class MainController implements ClientResponseHandle {
             stage.show();
         } catch (IOException e) {
             System.out.println(e);
+            System.out.println(e.getCause());
         }
     }
 
@@ -164,7 +165,7 @@ public class MainController implements ClientResponseHandle {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -187,6 +188,7 @@ public class MainController implements ClientResponseHandle {
             stage.show();
         } catch (IOException e) {
             System.out.println(e);
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -239,10 +241,10 @@ public class MainController implements ClientResponseHandle {
     }
 
     public void singlePlayerMode(ActionEvent event){
-        switchScene("gameScene.fxml");
+        switchScene("singlePlayerScene.fxml");
     }
     public void twoPlayerMode(ActionEvent event){
-        switchScene("gameScene.fxml");
+        switchScene("twoPlayerScene.fxml");
     }
 
 
