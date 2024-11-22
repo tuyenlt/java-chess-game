@@ -1,6 +1,5 @@
 package chessgame;
 
-import chessgame.ui.LoginController;
 import chessgame.ui.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,10 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 import chessgame.network.ClientNetwork;
-import chessgame.ui.MainController;
 
 /**
  * JavaFX App
@@ -29,7 +25,7 @@ public class App extends Application {
         client.setUiResponseHandler(loader.getController());
         // client.connectMainServer();
         Scene scene = new Scene(root);
-        MainController mainController = loader.getController();
+        // MainController mainController = loader.getController();
         MainController.setClient(client);
         MainController.setStage(stage);
         stage.setScene(scene);

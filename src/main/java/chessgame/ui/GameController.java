@@ -17,18 +17,26 @@ public class GameController {
     private Label timerLabelTop;
     @FXML
     private Label timerLabelBottom;
-
+    
     @FXML
     private BoardPane boardPane;
-
+    
     @FXML
     public void initialize() {
         // Example: Add pieces dynamically when the controller is initialized
         stockfish.start(); 
-        boardPane.setGameMode("twoPlayer");
+        countdownTimerTop = new CountdownTimer(10 * 60);
+        countdownTimerTop.setLabel(timerLabelTop);
+        
+        countdownTimerBottom = new CountdownTimer(10 * 60);
+        countdownTimerBottom.setLabel(timerLabelBottom);
+        countdownTimerBottom.start();
+        // boardPane.setGameMode("twoPlayer");
+        // boardPane.setR
+        boardPane.setReverse(false);
         boardPane.setOnMovePiece((tmp) -> {
             new Thread(() -> {
-                if (boardPane.getCurrentTurn().equals("w")) {
+                if(boardPane.getCurrentTurn().equals("w")) {
                     countdownTimerTop.stop();
                     countdownTimerBottom.start();
                     return;
@@ -36,30 +44,20 @@ public class GameController {
                 countdownTimerTop.start();
                 countdownTimerBottom.stop();
 
-                // stockfish.setPosition(boardPane.getMove("a"));
-                // Move bestMove = new Move(stockfish.getBestMove());
-                // System.out.println(bestMove);
+                stockfish.setPosition(boardPane.getMove("all"));
+                Move bestMove = new Move(stockfish.getBestMove());
+                System.out.println(bestMove);
             
-                // Platform.runLater(() -> {
-                //     boardPane.movePiece(
-                //         bestMove.getStartRow(), 
-                //         bestMove.getStartCol(), 
-                //         bestMove.getEndRow(), 
-                //         bestMove.getEndCol()
-                //     );
-                //     System.out.println(
-                //         bestMove.getStartRow() + " " + bestMove.getStartCol() + " " +
-                //         bestMove.getEndRow() + " " + bestMove.getEndCol()
-                //     );
-                // });
+                Platform.runLater(() -> {
+                    boardPane.movePiece(bestMove);
+                    System.out.println(
+                        bestMove.getStartRow() + " " + bestMove.getStartCol() + " " +
+                        bestMove.getEndRow() + " " + bestMove.getEndCol()
+                    );
+                });
             }).start();
         });
 
-        countdownTimerTop = new CountdownTimer(10 * 60);
-        countdownTimerTop.setLabel(timerLabelTop);
-        
-        countdownTimerBottom = new CountdownTimer(10 * 60);
-        countdownTimerBottom.setLabel(timerLabelBottom);
-        countdownTimerBottom.start();
+        boardPane.start();
     }
 }

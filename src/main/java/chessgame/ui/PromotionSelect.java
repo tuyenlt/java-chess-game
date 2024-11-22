@@ -58,7 +58,7 @@ public class PromotionSelect extends VBox{
         pieceImage.setStyle("-fx-effect: dropshadow(gaussian, transparent, 0, 0, 0, 0);");
 
         pieceImage.setOnMouseClicked(event -> {
-            onFinish.accept(name);
+            onFinish.accept(name.substring(1).toLowerCase());
             setVisible(false);
         });
 

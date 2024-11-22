@@ -30,7 +30,7 @@ public class BoardPane extends Pane{
     private String gameMode = "singlePlayer";
     private String localPlayerSide = "w";
     private Consumer<String> onMovePiece;
-    private boolean isBoardReverse = false;
+    private boolean isBoardReverse = true;
     private PromotionSelect promotionSelectTop;
     private PromotionSelect promotionSelectBot;
     private Pane blockingPane = new Pane();
@@ -57,16 +57,27 @@ public class BoardPane extends Pane{
         this.gameMode = gameMode;
     }
 
-    public void setLocalPlayerSide(String localPlayerSide){
-        this.localPlayerSide = localPlayerSide;
+
+    public void start(){
+        if(isBoardReverse){
+            onMovePiece.accept(board.getCurrentTurn());
+        }
+    }
+
+    public void setReverse(Boolean isBoardReverse){
+        this.isBoardReverse = isBoardReverse;
+        board.setReverse(isBoardReverse);
+        if(isBoardReverse){
+            localPlayerSide = "b";
+        }
+        initPiece();
     }
 
     public BoardPane() {
-        // this.isTwoPlayerMode = isTwoPlayerMode;
         setPrefSize(TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
         createBoard();
-        initPiece();
         promotionSelectInit();
+
 
         blockingPane = new Pane();
         blockingPane.setPrefSize(getPrefWidth(), getPrefHeight());
@@ -80,6 +91,7 @@ public class BoardPane extends Pane{
 
         getChildren().add(blockingPane);
     }
+    
     
 
     private void createBoard() {
@@ -187,30 +199,14 @@ public class BoardPane extends Pane{
         promotionSelectTop.setLayoutX(0);
         promotionSelectTop.setLayoutY(0);
         promotionSelectTop.setOnFinish((name) -> {
-            Move promotionMove = promotionSelectTop.getPromotionMove();
-            promotionMove.setPromotedPieceType(name.substring(1));
-            board.movePiece(promotionMove);
-            onMovePiece.accept(board.getCurrentTurn());
-            getChildren().remove(draggedPiece);
-            addPiece(name, promotionMove.getEndCol(), promotionMove.getEndRow());
-            draggedPiece = null;
-            blockingPane.setVisible(false);
-            System.out.println(name);
+            handlePromotionMove(promotionSelectTop.getPromotionMove(), name);
         });
         
         promotionSelectBot = new PromotionSelect(botSide, isBoardReverse, TILE_SIZE);
         promotionSelectBot.setLayoutX(0);
         promotionSelectBot.setLayoutY(4 * TILE_SIZE);
         promotionSelectBot.setOnFinish((name) -> {
-            Move promotionMove = promotionSelectBot.getPromotionMove();
-            promotionMove.setPromotedPieceType(name.substring(1));
-            board.movePiece(promotionMove);
-            onMovePiece.accept(board.getCurrentTurn());
-            getChildren().remove(draggedPiece);
-            addPiece(name, promotionMove.getEndCol(), promotionMove.getEndRow());
-            draggedPiece = null;
-            blockingPane.setVisible(false);
-            System.out.println(name);
+            handlePromotionMove(promotionSelectBot.getPromotionMove(), name);
         });
         getChildren().addAll(promotionSelectTop, promotionSelectBot);
     }
@@ -271,6 +267,7 @@ public class BoardPane extends Pane{
     }
 
     private void hightlightMove(int row, int col){
+        tiles[row][col].setFill(Color.web("#F5F682"));
         if(isBoardReverse){
             row = 7 - row;
             col = 7 - col;
@@ -279,16 +276,14 @@ public class BoardPane extends Pane{
         if(chossingPiece == null){
             return;
         }
-        tiles[row][col].setFill(Color.web("#F5F682"));
         List<Move> moves = chossingPiece.getSafeMoves(board, row, col);
         for(Move move : moves){
+            if(isBoardReverse){
+                move.reverseBoard();
+            }
             int endRow = move.getEndRow();
             int endCol = move.getEndCol();
-            if(isBoardReverse){
-                endRow = 7 - endRow;
-                endCol = 7 - endCol;
-            }
-            if(board.getPiece(endRow, endCol) != null){
+            if(piecesImage[endRow][endCol] != null){
                 takeableHightLight[endRow][endCol].setVisible(true);
             }else{
                 moveHightLight[endRow][endCol].setVisible(true);
@@ -312,18 +307,32 @@ public class BoardPane extends Pane{
         }
     }
 
+    public boolean movePiece(Move move){
+        if(isBoardReverse){
+            move.reverseBoard();
+        }
+        return movePiece(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), move.getPromotedPieceType());
+    }
+
     public boolean movePiece(int startRow, int startCol, int endRow, int endCol){
+        return movePiece(startRow, startCol, endRow, endCol, "");
+    }
+
+    public boolean movePiece(int startRow, int startCol, int endRow, int endCol, String promotionType){
         if(startCol == endCol && startRow == endRow){
             return false;
         }
-        if(isBoardReverse){
-        }
         resetState();
         chossingBox = null;
-        System.out.println("move to: " + endRow + " " + endCol);
         Move newMove = new Move(startRow, startCol, endRow, endCol);
-        Piece chossingPiece = board.getPiece(startRow, startCol);
-        for(Move move : chossingPiece.getSafeMoves(board, startRow, startCol)){
+        if(!promotionType.equals("")){
+            newMove.setPromotedPieceType(promotionType);
+        }
+        if(isBoardReverse){
+            newMove.reverseBoard();
+        }
+        Piece chossingPiece = board.getPiece(newMove.getStartRow(), newMove.getStartCol());
+        for(Move move : chossingPiece.getSafeMoves(board, newMove.getStartRow(), newMove.getStartCol())){
             if(move.equals(newMove)){
                 if(piecesImage[endRow][endCol] != null){
                     getChildren().remove(piecesImage[endRow][endCol]);
@@ -332,6 +341,10 @@ public class BoardPane extends Pane{
                     handleCasleMove(newMove);
                 }
                 if(newMove.isPromotion(board)){
+                    if(!board.getCurrentTurn().equals(localPlayerSide) && !gameMode.equals("twoPlayer")){
+                        handlePromotionMove(newMove, promotionType);
+                        return true;
+                    }
                     blockingPane.setVisible(true);
                     if(promotionSelectTop.getColor().equals(board.getCurrentTurn())){
                         promotionSelectTop.setVisible(true);
@@ -369,6 +382,19 @@ public class BoardPane extends Pane{
         piecesImage[move.getEndRow()][rookStartCol] = null;
     }
 
+    private void handlePromotionMove(Move promotionMove, String pieceName){
+        if(promotionMove.getPromotedPieceType().equals("")){
+            promotionMove.setPromotedPieceType(pieceName);
+        }
+        String pieceImageName = board.getCurrentTurn() + pieceName.toUpperCase();
+        addPiece(pieceImageName, promotionMove.getEndCol(), promotionMove.getEndRow());
+        board.movePiece(promotionMove);
+        onMovePiece.accept(board.getCurrentTurn());
+        getChildren().remove(draggedPiece);
+        draggedPiece = null;
+        blockingPane.setVisible(false);
+    }
+
     public String getGameState(){
         return board.gameState();
     }
@@ -380,4 +406,6 @@ public class BoardPane extends Pane{
     public String getCurrentTurn(){
         return board.getCurrentTurn();
     }
+    //TODO handle other player promotion
+    //TODO handle reverse board
 }
