@@ -38,6 +38,7 @@ public class Utils {
 
     // Kiểm tra nếu một nước đi là an toàn cho quân cờ
     static boolean isSafeMove(Board board, String pieceColor, Move move) {
+        if(move.isEnPassant()) return true;
         Piece originalPiece = board.getPiece(move.getStartRow(), move.getStartCol());
         Piece targetPiece = board.getPiece(move.getEndRow(), move.getEndCol());
 
@@ -97,6 +98,7 @@ public class Utils {
         if (endRow != startRow || Math.abs(endCol - startCol)!=1) return null;
         Move enPassantMove = new Move(startRow, startCol,((startRow == 3) ? 2:5) , endCol);
         enPassantMove.setEnPassant(true);
-        return new Move(startRow, startCol, endRow, endCol);
+        System.out.println(""+enPassantMove.getStartRow()+move.getStartCol()+move.getEndRow()+move.getEndCol());
+        return enPassantMove;
     }
 }

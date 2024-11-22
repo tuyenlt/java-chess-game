@@ -201,10 +201,8 @@ public class Board {
         }
         setPiece(move.getStartRow(), move.getStartCol(), null);
         
-        // Tốt qua đường
-        if(move.isEnPassant()){
-            setPiece(move.getStartRow(), move.getEndCol(),null);
-        }
+        
+        
         //Đánh dấu trạng thái di chuyển của King và Rook
         if(piece instanceof King){
             setKing_pos(piece.getpieceColor(), move.getEndRow(), move.getEndCol());
@@ -216,6 +214,12 @@ public class Board {
         
         //Thêm phép di chuyển vào danh sách
         if(isFakeMove) return;
+        
+        // Tốt qua đường
+        if(move.isEnPassant()){
+            setPiece(move.getStartRow(), move.getEndCol(),null);
+        }
+
         if(currentTurn.equals("w")){
             whiteMoves.add(move.toString());
             currentTurn = "b";
@@ -225,7 +229,7 @@ public class Board {
         }
         if(!move.isTurnBot())allMoves.add(move.toString());
         // System.out.println(allMoves.getLast());
-        System.out.println(""+move.getStartRow()+move.getStartCol()+move.getEndRow()+move.getEndCol());
+        // System.out.println(""+move.getStartRow()+move.getStartCol()+move.getEndRow()+move.getEndCol());
     }
          
     // Xử lý riêng phần nhập thành
