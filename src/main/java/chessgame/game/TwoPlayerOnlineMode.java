@@ -31,7 +31,4 @@ public class TwoPlayerOnlineMode implements IngameResponseHandler{
         // TODO Auto-generated method stub
         
     }
-
-
-    
 }

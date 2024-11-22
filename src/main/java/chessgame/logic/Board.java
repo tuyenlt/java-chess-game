@@ -225,14 +225,16 @@ public class Board {
             if(!isFakeMove)((Rook)piece).setHasMoved(true);
         }
         
+        //Thêm phép di chuyển vào danh sách
         
-        if(isFakeMove) return;
         // Tốt qua đường
         if(move.isEnPassant()){
+            System.out.println("pass");
             setPiece(move.getStartRow(), move.getEndCol(),null);
         }
         
-        //Thêm phép di chuyển vào danh sách
+        if(isFakeMove) return;
+
         if(currentTurn.equals("w")){
             whiteMoves.add(move.toString());
             currentTurn = "b";
@@ -363,7 +365,3 @@ public class Board {
         return output;
     }
 }
-
-
-// TODO handle when other player promotion
-// TODO make reverse broad
