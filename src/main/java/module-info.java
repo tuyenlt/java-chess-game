@@ -5,6 +5,7 @@ module chessgame {
     requires kryo;
     requires kryonet;
     requires javafx.graphics;
+    requires javafx.media;
 
     opens chessgame.ui to javafx.fxml;
     opens chessgame.game to javafx.fxml;

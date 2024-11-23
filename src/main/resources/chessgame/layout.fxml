@@ -1,0 +1,15 @@
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="chessgame.ui.MyController">
+    <!-- Một AnchorPane mà sẽ được ẩn/hiện -->
+    <AnchorPane fx:id="firstAnchorPane" layoutX="100" layoutY="100" prefWidth="200" prefHeight="200" styleClass="myAnchorPane">
+        <Button text="Click me to hide" layoutX="50" layoutY="50" onAction="#handleButtonClick"/>
+    </AnchorPane>
+
+    <!-- Một AnchorPane khác sẽ được điều khiển -->
+    <AnchorPane fx:id="secondAnchorPane" layoutX="400" layoutY="100" prefWidth="200" prefHeight="200" styleClass="myAnchorPane">
+        <Button text="Click me to show first AnchorPane" layoutX="50" layoutY="50" onAction="#showFirstAnchorPane"/>
+    </AnchorPane>
+</AnchorPane>
+

@@ -91,8 +91,8 @@ public class BoardPane extends Pane{
 
         getChildren().add(blockingPane);
     }
-    
-    
+
+
 
     private void createBoard() {
         for (int row = 0; row < BOARD_SIZE; row++) {
@@ -208,7 +208,7 @@ public class BoardPane extends Pane{
         promotionSelectTop.setOnFinish((name) -> {
             handlePromotionMove(promotionSelectTop.getPromotionMove(), name);
         });
-        
+
         promotionSelectBot = new PromotionSelect(botSide, isBoardReverse, TILE_SIZE);
         promotionSelectBot.setLayoutX(0);
         promotionSelectBot.setLayoutY(4 * TILE_SIZE);
