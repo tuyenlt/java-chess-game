@@ -247,7 +247,9 @@ public class MainController implements ClientResponseHandle {
         switchScene("twoPlayerScene.fxml");
     }
 
-
+    public void showRankingList(ActionEvent event){
+        client.sendRequest(new RankingListRequest("a"));
+    }
 
 
     // xử lý dữ liệu server trả về
@@ -287,7 +289,9 @@ public class MainController implements ClientResponseHandle {
     @Override
     public void handleRankingList(RankingListResponse response) {
         // TODO Auto-generated method stub
-
+        for(UserRank rank : response.rankingList){
+            System.out.println(rank.userName + " " + rank.elo);
+        }
     }
 
     @Override
@@ -301,7 +305,14 @@ public class MainController implements ClientResponseHandle {
             switchScene("loginScene.fxml");
         });
     }
+    
+    
 
+    @Override
+    public void handleNewGameResonse(FindGameResponse response) {
+        // TODO Auto-generated method stub
+        
+    }
 
     private void showPopup(String msg) { // TODO làm 1 cái popup thật đẹp ở đây
         System.out.println(msg);
@@ -309,6 +320,7 @@ public class MainController implements ClientResponseHandle {
 
     @FXML
     private ImageView imageView;
+
 
     public void handleImageUpload() {
         FileChooser fileChooser = new FileChooser();

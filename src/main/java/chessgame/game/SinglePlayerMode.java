@@ -3,45 +3,42 @@ package chessgame.game;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import chessgame.engine.StockfishEngineDemo;
 import chessgame.logic.Move;
 import chessgame.ui.BoardPane;
 import chessgame.ui.CountdownTimer;
+import chessgame.ui.PlayerSection;
 
 public class SinglePlayerMode {
     private StockfishEngineDemo stockfish = new StockfishEngineDemo();
     
-    private CountdownTimer countdownTimerTop;
-    private CountdownTimer countdownTimerBottom;
-
-    @FXML
-    private Label timerLabelTop;
-    @FXML
-    private Label timerLabelBottom;
-    
     @FXML
     private BoardPane singleBoardPane;
+
+    @FXML
+    private VBox rightSection;
     
     @FXML
     public void initialize() {
         stockfish.start(); 
-        countdownTimerTop = new CountdownTimer(10 * 60);
-        countdownTimerTop.setLabel(timerLabelTop);
-        
-        countdownTimerBottom = new CountdownTimer(10 * 60);
-        countdownTimerBottom.setLabel(timerLabelBottom);
-        countdownTimerBottom.start();
-        // singleBoardPane.setGameMode("twoPlayer");
+        PlayerSection playerSectionTop = new PlayerSection("StockFish Bot", "???", 600, "b");
+        PlayerSection playerSectionBottom = new PlayerSection("Player 1", "200", 600, "w");
+        rightSection.getChildren().addAll(playerSectionTop);
+        rightSection.getChildren().addAll(playerSectionBottom);
         singleBoardPane.setReverse(false);
         singleBoardPane.setOnMovePiece((tmp) -> {
             new Thread(() -> {
                 if(singleBoardPane.getCurrentTurn().equals("w")) {
-                    countdownTimerTop.stop();
-                    countdownTimerBottom.start();
+                    playerSectionTop.stopTimer();
+                    playerSectionBottom.startTimer();
+                }else{
+                    playerSectionTop.startTimer();
+                    playerSectionBottom.stopTimer();
+                }
+                if(singleBoardPane.getCurrentTurn().equals("w")){
                     return;
                 }
-                countdownTimerTop.start();
-                countdownTimerBottom.stop();
 
                 stockfish.setPosition(singleBoardPane.getMove("all"));
                 Move bestMove = new Move(stockfish.getBestMove());

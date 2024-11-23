@@ -2,26 +2,29 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import chessgame.ui.BoardPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" prefWidth="1280" prefHeight="720" fx:controller="chessgame.game.SinglePlayerMode">
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" prefWidth="1280" prefHeight="720" fx:controller="chessgame.game.SinglePlayerMode">
 
-    <!-- Chess Board -->
-    <BoardPane fx:id="singleBoardPane" layoutX="0" layoutY="0" prefWidth="720" prefHeight="720" />
+    <!-- Background Image -->
+    <AnchorPane prefWidth="1280" prefHeight="720">
+        <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@image/resized_image.png" />
+            </image>
+        </ImageView>
+    </AnchorPane>
 
-    <!-- Sidebar -->
-    <VBox layoutX="720" layoutY="0" prefWidth="560" prefHeight="720" spacing="0">
-        <!-- Top Section -->
-        <VBox fx:id="topSection" prefHeight="360" style="-fx-background-color: lightgray;" alignment="CENTER">
-            <Label text="Top Section" />
-            <!-- Timer Label -->
-            <Label fx:id="timerLabelTop" text="10:00" style="-fx-font-size: 24px; -fx-text-fill: black;" />
+    <!-- Content Layer -->
+    <AnchorPane prefWidth="1280" prefHeight="720">
+        <!-- Chess Board -->
+        <BoardPane fx:id="singleBoardPane" layoutX="0" layoutY="0" prefWidth="720" prefHeight="720" />
+
+        <!-- Sidebar with background image -->
+        <VBox fx:id="rightSection" layoutX="720" layoutY="0" prefWidth="560" prefHeight="720" spacing="0"
+              style="-fx-background-image: url('chessgame/image/bg.png'); -fx-background-size: cover; -fx-background-repeat: no-repeat; -fx-background-position: center;">
         </VBox>
+    </AnchorPane>
 
-        <!-- Bottom Section -->
-        <VBox prefHeight="360" style="-fx-background-color: darkgray;" alignment="CENTER">
-            <Label text="Bottom Section" />
-            <!-- Add content for the bottom section -->
-            <Label fx:id="timerLabelBottom" text="10:00" style="-fx-font-size: 24px; -fx-text-fill: black;" />
-        </VBox>
-    </VBox>
-</AnchorPane>
+</StackPane>

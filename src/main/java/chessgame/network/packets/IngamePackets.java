@@ -24,22 +24,13 @@ public class IngamePackets {
     }
 
     public static class MovePacket{
-        public int stX;
-        public int stY;
-        public int enX;
-        public int enY;
-
-        public MovePacket(){
-            
-        }
-
-        public MovePacket(int stX, int stY, int enX, int enY) {
-            this.stX = stX;
-            this.stY = stY;
-            this.enX = enX;
-            this.enY = enY;
+        public String move;
+        public MovePacket(){}
+        public MovePacket(String move){
+            this.move = move;
         }
     }
+
 
     public static class GameEndResponse{
         public double state;

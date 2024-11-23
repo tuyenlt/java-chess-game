@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 
 public class CountdownTimer {
     private int timeRemaining;
-    private Label timerLabel; // Label to display the countdown
+    private Label timerLabel;
     private Thread timerThread;
     private volatile boolean running = false;
 

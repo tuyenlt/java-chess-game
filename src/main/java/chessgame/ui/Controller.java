@@ -274,6 +274,14 @@ public class Controller implements ClientResponseHandle{
         });
     }    
 
+    
+
+
+    @Override
+    public void handleNewGameResonse(FindGameResponse response) {
+        // TODO Auto-generated method stub
+        
+    }
 
     private void showPopup(String msg) { // TODO làm 1 cái popup thật đẹp ở đây
         System.out.println(msg);
