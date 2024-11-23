@@ -5,21 +5,28 @@ import chessgame.network.ClientResponseHandle;
 import chessgame.network.User;
 import chessgame.network.packets.GeneralPackets.*;
 import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -32,13 +39,32 @@ public class MainController implements ClientResponseHandle {
     private Scene scene;
     private Parent root;
 
+    LoadingController loadingcontroller;
+    MainController newController;
+
     private User user;
     private static ClientNetwork client;
-    private Parent overlay;
+
+    private double angle = 0; // Độ dài vòng cung
+    private double rotation = 0; // Góc xoay
+    private String currentUsername;
 
 
     private String usernameRegister = "";
     private String passwordRegister = "";
+    private String currentElo;
+    @FXML
+    private Canvas loadingCanvas;
+    @FXML
+    private ImageView triangle;
+    @FXML
+    private ImageView boardImageView;
+    @FXML
+    private ScrollPane rankingScrollPane;
+    @FXML
+    private Label notifyLabelLogin;
+    @FXML
+    private VBox playerList;
 
     @FXML
     private TextField usernameTextFieldRegister;
@@ -49,6 +75,7 @@ public class MainController implements ClientResponseHandle {
     @FXML
     private Label warningLabel;
 
+
     private String usernameLogin = "";
     private String passwordLogin = "";
 
@@ -58,41 +85,11 @@ public class MainController implements ClientResponseHandle {
     private TextField passwordTextFieldLogin;
 
     @FXML
-    private Button submitButton;
-    @FXML
-    private AnchorPane mainAnchorPane;
-    @FXML
-    private Label greetingLabel;
-    @FXML
-    private Label greetingLabelOnline;
-    @FXML
-    private Label greetingLabelOffline;
-    @FXML
-    private Label greetingLabelLogin;
-    @FXML
-    private Label greetingLabelMain;
-    @FXML
-    private Label isValidNameUserLabel;
-
-
-    @FXML
     private AnchorPane secondaryAnchorPane;
-
-    @FXML
-    private AnchorPane logInForm;
-
-    @FXML
-    private AnchorPane registerForm;
-
-    @FXML
-    private AnchorPane loadingAnchorPane;
-
-
     @FXML
     private Label usernameDisplayLabel;
     @FXML
     private Label eloDisplayLabel;
-
     public static void setClient(ClientNetwork clientNetwork) {
         client = clientNetwork;
     }
@@ -100,28 +97,52 @@ public class MainController implements ClientResponseHandle {
     public static void setStage(Stage newStage) {
         stage = newStage;
     }
+    @FXML
+    private Label notifyLabelRegister;
 
     public void initialize() {
         if (secondaryAnchorPane != null && !AppState.isSecondaryPaneOpened()) {
             AppState.setSecondaryPaneOpened(true);
-            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), secondaryAnchorPane);
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1.5), secondaryAnchorPane);
             fadeTransition.setFromValue(0.0);
             fadeTransition.setToValue(1.0);
-            fadeTransition.play();
-        }
 
+            ScaleTransition scaleTransition = new ScaleTransition();
+
+            scaleTransition.setDuration(Duration.seconds(1.5)); // Thời gian là 1 giây
+            scaleTransition.setNode(secondaryAnchorPane); // Áp dụng cho anchorPane
+            scaleTransition.setFromX(0.8);
+            scaleTransition.setFromY(0.8);
+            scaleTransition.setToX(1.0);
+            scaleTransition.setToY(1.0);
+            secondaryAnchorPane.setScaleX(0.5);
+            secondaryAnchorPane.setScaleY(0.5);
+
+            ParallelTransition parallelTransition = new ParallelTransition(fadeTransition, scaleTransition);
+            parallelTransition.play();
+        }
+        try {
+            FXMLLoader loadingLoader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            root = loadingLoader.load();
+            loadingcontroller = loadingLoader.getController();
+            loadingcontroller.loadingStackPane.setVisible(false);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void quit(ActionEvent event) {
+        System.exit(0);
     }
 
     public void logOut(ActionEvent event) {
         AppState.setSecondaryPaneOpened(false);
         usernameLogin = "";
         passwordLogin = "";
+//        currentUsername = "";
+//        currentElo = "";
         user = null;
         switchScene("mainScene.fxml");
-    }
-
-    public void quit(ActionEvent event) {
-        System.exit(0);
     }
 
     public void switchScene(String fxmlFile) {
@@ -129,8 +150,7 @@ public class MainController implements ClientResponseHandle {
 
             // Tải tệp FXML mới
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
-            Parent root = loader.load();
-
+            root = loader.load();
             // Tạo Scene mới từ root FXML và đặt vào Stage
             scene = new Scene(root);
             stage.setScene(scene);
@@ -143,27 +163,21 @@ public class MainController implements ClientResponseHandle {
         }
     }
 
-    public void switchScene(String sceneFile, String loadingIcon) {
+    public void switchScene(String startScene, String addScene, double x, double y, double width, double height) {
         try {
             // Nạp scene chính
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + sceneFile));
-            Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + startScene));
+            root = loader.load();
 
-            // Nạp overlay
-            FXMLLoader overlayLoader = new FXMLLoader(getClass().getResource("/chessgame/" + loadingIcon));
-            overlay = overlayLoader.load();
-            overlay.setVisible(false);
-
-
-            // Ép kiểu root và overlay thành Pane để sử dụng getChildren()
-            if (root instanceof Pane) {
-                ((Pane) root).getChildren().add(overlay);  // Thêm overlay vào root
-            }
-
-            // Tạo và hiển thị Scene mới
-            Scene scene = new Scene(root);
+            scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+            loadingcontroller.loadingStackPane.setVisible(true);
+            System.out.println(loadingcontroller.loadingStackPane.isVisible());
+            loadingcontroller.loadingStackPane.setLayoutX(x);
+            loadingcontroller.loadingStackPane.setLayoutY(y);
+            loadingcontroller.loadingStackPane.setPrefWidth(width);
+            loadingcontroller.loadingStackPane.setPrefHeight(height);
         } catch (IOException e) {
             System.out.println(e.getStackTrace());
         }
@@ -171,37 +185,41 @@ public class MainController implements ClientResponseHandle {
 
     public void switchScene(String fxmlFile, String username, String elo) {
         try {
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
-            Parent root = loader.load();
-
-            MainController newController = loader.getController();
+            root = loader.load();
+            newController = loader.getController();
 //            newController.setGreetingLabel(label, text);
-
+            if (username.length() > 16) {
+                username = username.substring(0, 16) + "...";
+            }
             newController.usernameDisplayLabel.setText("Username : " + username);
             newController.eloDisplayLabel.setText("Elo : " + elo);
 
+            newController.rankingScrollPane.setVisible(false);
+            newController.triangle.setVisible(false);
+
             scene = new Scene(root);
             stage.setScene(scene);
-
-
             stage.show();
+            double labelWidth = 1195.0 - newController.usernameDisplayLabel.getWidth();
+            if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
+
+            newController.usernameDisplayLabel.setLayoutX(labelWidth);
+            newController.eloDisplayLabel.setLayoutX(labelWidth);
         } catch (IOException e) {
-            System.out.println(e);
             System.out.println(e.getStackTrace());
         }
     }
 
-
     public void logInFormController(ActionEvent event) {
-        switchScene("logInScene.fxml", "loadingIcon.fxml");
+        switchScene("logInScene.fxml");
     }
 
     public void registerSubmit(ActionEvent event) {
         String userName = usernameTextFieldRegister.getText().trim();
         String passwd = passwordTextFieldRegister.getText();
         String confirmPasswd = warningTextFieldRegister.getText();
-        if (passwd.contains(" ") || passwd.isEmpty() || passwd.length() < 8) {
+        if (passwd.contains(" ") || passwd.length() < 8) {
             passwordTextFieldRegister.clear();
             warningTextFieldRegister.clear();
             warningLabel.setText("Password must have at least 8 characters.");
@@ -210,10 +228,9 @@ public class MainController implements ClientResponseHandle {
             warningTextFieldRegister.clear();
 
         } else {
-        client.sendRequest(new RegisterRequest(userName, passwd));
-            if (overlay != null) overlay.setVisible(true);
-
-            System.out.println("register with username:" + userName + ", pass:" + passwd);
+            client.sendRequest(new RegisterRequest(userName, passwd));
+            switchScene("registerScene.fxml", "loadingIcon.fxml", 440.0, 60.0, 600, 400);
+            loadingcontroller.loadingStackPane.setVisible(true);
         }
     }
 
@@ -221,17 +238,17 @@ public class MainController implements ClientResponseHandle {
         usernameLogin = usernameTextFieldLogin.getText().trim();
         passwordLogin = passwordTextFieldLogin.getText().trim();
 
+        switchScene("logInScene.fxml", "loadingIcon.fxml", 440.0, 60.0, 600, 400);
+        loadingcontroller.loadingStackPane.setVisible(true);
+
         client.sendRequest(new LoginRequest(usernameLogin, passwordLogin));
-        if (overlay != null) overlay.setVisible(true);
         usernameTextFieldLogin.clear();
         passwordTextFieldLogin.clear();
     }
 
     public void registerFormController(ActionEvent event) {
-        switchScene("registerScene.fxml", "loadingIcon.fxml");
+        switchScene("registerScene.fxml");
     }
-
-
     public void offlineModeMenu(ActionEvent event) {
         switchScene("offlineModeScene.fxml");
     }
@@ -260,26 +277,66 @@ public class MainController implements ClientResponseHandle {
 
     }
 
+    public void wrongLogin(String fxmlFile) {
+        try {
+            // Tạo FXMLLoader
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
+            // Load FXML và lấy controller
+            root = loader.load();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+            // Lấy controller sau khi load
+            MainController loginController = loader.getController();
+
+            // Thao tác với notifyLabelLogin từ controller mới
+            Platform.runLater(() -> {
+                loginController.notifyLabelLogin.setText("Wrong username or password!");
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void rightRegister(String fxmlFile) {
+        try {
+            // Tạo FXMLLoader
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
+            root = loader.load();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+            // Lấy controller sau khi load
+            MainController registerController = loader.getController();
+
+            // Thao tác với notifyLabelLogin từ controller mới
+            Platform.runLater(() -> {
+                registerController.notifyLabelRegister.setText("Register successfully!, Redirecting to login in 3s...");
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void handleLoginResponse(LoginResponse response) {
         if (!response.isSuccess) {
             Platform.runLater(() -> {
-                showPopup(response.message);
+                wrongLogin("logInScene.fxml");
             });
-            System.out.println(response.message);
             return;
         }
         user = new User(response.userId, response.userName, response.elo, response.win, response.lose, response.draw);
-        System.out.println(user);
-        Platform.runLater(() -> {
-            System.out.println("switched");
-            switchScene("onlineModeScene.fxml", user.name, String.valueOf(user.elo));
+        currentUsername = user.name;
+        currentElo = String.valueOf(user.elo);
+                Platform.runLater(() -> {
 
-
-        });
-
+                    switchScene("onlineModeScene.fxml", user.name, String.valueOf(user.elo));
+                    loadingcontroller.loadingStackPane.setVisible(false);
+                });
     }
-
     @Override
     public void handleProfileView(ProfileViewResponse response) {
         // TODO Auto-generated method stub
@@ -297,13 +354,19 @@ public class MainController implements ClientResponseHandle {
     @Override
     public void handleRegisterResponse(RegisterResponse response) {
         if (!response.isSuccess) {
-            showPopup(response.message);
+            System.out.println(response.message);
             return;
         }
-        System.out.println(response.message);
         Platform.runLater(() -> {
-            switchScene("loginScene.fxml");
+            loadingcontroller.loadingStackPane.setVisible(false);
+            AppState.setSuccessfulRegistered(true);
+            rightRegister("registerScene.fxml");
         });
+                Platform.runLater(() -> {
+                    AppState.setSuccessfulRegistered(false);
+                    switchScene("loginScene.fxml");
+                });
+
     }
     
     
@@ -346,10 +409,6 @@ public class MainController implements ClientResponseHandle {
 //            imageView.setStyle("-fx-border-color: #4CAF50; -fx-border-width: 5; -fx-background-color: white;");
         }
     }
-
-    /**
-     * Hàm cắt ảnh thành hình vuông dựa trên min(width, height)
-     */
     private Image cropToSquare(Image image) {
         double width = image.getWidth();
         double height = image.getHeight();
@@ -364,4 +423,103 @@ public class MainController implements ClientResponseHandle {
         // Tạo ảnh mới với kích thước vuông
         return new WritableImage(image.getPixelReader(), (int) x, (int) y, (int) size, (int) size);
     }
+
+     // Liên kết với VBox trong FXML
+
+    public void handleRankingList() {
+        try {
+            // Tạo FXMLLoader
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/onlineModeScene.fxml"));
+
+
+            root = loader.load();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+            // Lấy controller sau khi load
+            MainController onlineModeController = loader.getController();
+
+
+
+        for (int i = 1; i <= 30; i++) {
+            HBox playerRow = new HBox(0); // Khoảng cách giữa các cột
+            playerRow.setPrefWidth(830);
+            playerRow.setAlignment(Pos.CENTER_LEFT); // Căn thẳng hàng với criteria
+
+
+            // Cột Rank
+            Label rankLabel = new Label("#" + i);
+            rankLabel.setPrefWidth(70);
+            rankLabel.setStyle("-fx-font-size: 14px;");
+            rankLabel.setAlignment(javafx.geometry.Pos.CENTER);
+
+            // Cột Player
+            Label playerLabel = new Label("Player" + i);
+            playerLabel.setPrefWidth(500);
+            playerLabel.setStyle("-fx-font-size: 14px;");
+            playerLabel.setAlignment(Pos.CENTER_LEFT);
+
+            // Cột ELO
+            Label eloLabel = new Label(String.valueOf(1000 + 10 * (30 - i)));
+            eloLabel.setPrefWidth(150);
+            eloLabel.setStyle("-fx-font-size: 14px;");
+            eloLabel.setAlignment(javafx.geometry.Pos.CENTER);
+            if (i == 1) {
+                playerRow.getStyleClass().add("top-1");
+                rankLabel.getStyleClass().add("label-top-1");
+                eloLabel.getStyleClass().add("label-top-1");
+                playerLabel.getStyleClass().add("label-top-1");
+            } else if (i == 2) {
+                playerRow.getStyleClass().add("top-2");
+                rankLabel.getStyleClass().add("label-top-2");
+                eloLabel.getStyleClass().add("label-top-2");
+                playerLabel.getStyleClass().add("label-top-2");
+            } else if (i == 3) {
+                playerRow.getStyleClass().add("top-3");
+                rankLabel.getStyleClass().add("label-top-3");
+                eloLabel.getStyleClass().add("label-top-3");
+                playerLabel.getStyleClass().add("label-top-3");
+            }
+            // Thêm các cột vào dòng
+            playerRow.getChildren().addAll(rankLabel, playerLabel, eloLabel);
+
+            // Đường phân cách
+            Line line = new Line();
+            line.setStartX(10); // Khoảng cách từ trái (dịch vào 10px)
+            line.setEndX(830 - 10); // Khoảng cách từ phải (dịch vào 10px)
+            line.setStartY(0); // Vị trí dọc (giữ nguyên)
+            line.setEndY(0);
+            line.setStroke(Color.GREEN);
+            line.setStrokeWidth(1);
+
+            // Thêm dòng vào danh sách
+            VBox playerBox = new VBox(5);
+            playerBox.getChildren().addAll(playerRow, line);
+
+            onlineModeController.playerList.getChildren().add(playerBox);
+        }
+            Platform.runLater(() -> {
+                onlineModeController.rankingScrollPane.setVisible(true);
+                onlineModeController.triangle.setVisible(true);
+                onlineModeController.triangle.setLayoutX(337.0);
+                onlineModeController.rankingScrollPane.setPrefWidth(830);
+                onlineModeController.boardImageView.setVisible(false);
+                onlineModeController.playerList.setPrefWidth(830);
+                System.out.println(usernameLogin);
+                onlineModeController.usernameDisplayLabel.setText("Username : " + usernameLogin);
+                System.out.println(usernameLogin);
+                onlineModeController.eloDisplayLabel.setText("Elo : " + currentElo);
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleFindOnlineGame() {
+        switchScene("findOnlineGameScene.fxml", "loadingIcon.fxml", 450, 88, 632, 830);
+
+    }
 }
+

@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.TestController">
-    <Button fx:id="loadImageButton" text="Tải ảnh"  onAction="#handleLoadImage"/>
-    <ImageView fx:id="imageView" fitHeight="300" fitWidth="300" />
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="chessgame.ui.TestController">
+    <Button fx:id="triggerButton"
+            layoutX="50.0"
+            layoutY="50.0"
+            text="Click Me!"
+            onAction="#showAnchorPane"/>
 
+    <AnchorPane fx:id="animatedPane"
+                layoutX="-400.0"
+                layoutY="100.0"
+                prefHeight="200.0"
+                prefWidth="300.0"
+                style="-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 2;">
+    </AnchorPane>
 </AnchorPane>
