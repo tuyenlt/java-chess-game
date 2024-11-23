@@ -18,8 +18,6 @@ import chessgame.ui.PlayerSection;
 
 public class TwoPlayerOfflineMode {
     
-    private CountdownTimer countdownTimerTop;
-    private CountdownTimer countdownTimerBottom;
 
     @FXML
     private VBox rightSection;
