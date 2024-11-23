@@ -23,9 +23,9 @@
         </ImageView>
     <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(0, 0, 0, 0.1);" xmlns="http://javafx.com/javafx/23.0.1">
 
-        <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(38, 36, 33, 0.8);" stylesheets="style.css">
+        <AnchorPane layoutY="-14.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(38, 36, 33, 0.8);" stylesheets="style.css">
             <children>
-                <ImageView fitHeight="632.0" fitWidth="632.0" layoutX="648.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="boardImageView" fitHeight="632.0" fitWidth="632.0" layoutX="648.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@image/board.png" />
                     </image>
@@ -52,23 +52,26 @@
                         <Label fx:id="eloDisplayLabel" layoutX="950" layoutY="55.0" style="-fx-fill: white;-fx-font-size: 20px; -fx-font-family: Constantia" textFill="WHITE" />
                     </children>
                 </AnchorPane>
-                <ScrollPane prefWidth="830" prefHeight="632" layoutX="450" layoutY="88" styleClass="scroll-pane"  stylesheets="@style.css">
+                <ScrollPane fx:id="rankingScrollPane" fitToWidth="true" hbarPolicy="NEVER" layoutX="450" layoutY="88" prefHeight="632" prefWidth="830" styleClass="custom-scroll-pane" stylesheets="@style.css" vbarPolicy="AS_NEEDED">
                     <content>
-                        <VBox spacing="10" prefWidth="810" styleClass="vbox">
-                            <!-- Tiêu đề bảng xếp hạng -->
-                            <HBox spacing="0" alignment="CENTER_LEFT" styleClass="hbox">
-                                <Label text="Rank" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: CENTER;" prefWidth="70" alignment="CENTER"/>
-                                <Label text="Player" style="-fx-font-size: 16px; -fx-font-weight: bold;" prefWidth="500" alignment="CENTER_LEFT"/>
-                                <Label text="ELO" style="-fx-font-size: 16px; -fx-font-weight: bold;" prefWidth="150" alignment="CENTER"/>
+                        <VBox prefWidth="830" spacing="10" styleClass="vbox">
+                            <HBox fx:id="criteria" alignment="CENTER_LEFT" spacing="0">
+                                <Label alignment="CENTER" prefWidth="70" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Rank" />
+                                <Label alignment="CENTER_LEFT" prefWidth="500" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Player" />
+                                <Label alignment="CENTER" prefWidth="150" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="ELO" />
                             </HBox>
-
-                            <!-- Danh sách player -->
-                            <VBox spacing="5" fx:id="playerList" styleClass="vbox">
-                                <!-- Mục mẫu sẽ được thêm bằng Controller -->
+                            <VBox fx:id="playerList" spacing="5" styleClass="vbox">
+                                <!-- Nội dung động được thêm từ Controller -->
                             </VBox>
                         </VBox>
                     </content>
                 </ScrollPane>
+            <ImageView fx:id="triangle" fitHeight="53.0" fitWidth="40.0" layoutX="410.0" layoutY="337.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@image/triangle_pic.png" />
+               </image>
+            </ImageView>
+
             </children>
         </AnchorPane>
         <AnchorPane fx:id="onlineModeForm" layoutY="88.0" prefHeight="632.0" prefWidth="400.0" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
@@ -80,7 +83,7 @@
                 <VBox layoutX="50.0" layoutY="300.0" prefWidth="300" spacing="10" />
                 <HBox alignment="CENTER" layoutX="120" layoutY="520" />
 
-                <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="54.0">
+                                        <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="54.0">
                     <image>
                         <Image url="@image/logo.png" />
                     </image>
@@ -105,7 +108,7 @@
                 <Button fx:id="logOutButton" layoutX="25.0" layoutY="546.0" onAction="#logOut" prefHeight="54.0" prefWidth="350.0" styleClass="quit-button" stylesheets="@style.css" text="Log Out" />
 
 
-                <StackPane alignment="TOP_LEFT">
+                                        <StackPane alignment="TOP_LEFT">
                     <!-- Ảnh nền -->
                     <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -117,7 +120,7 @@
                     </Button>
                 </StackPane>
 
-            </children>
+                                    </children>
         </AnchorPane>
     </AnchorPane>
 </StackPane>

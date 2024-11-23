@@ -8,7 +8,7 @@
 
 <!--<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="chessgame.ui.TestController" stylesheets="@style.css">-->
     <!-- ScrollPane chứa bảng xếp hạng -->
-    <ScrollPane prefWidth="830" prefHeight="632" layoutX="450" layoutY="88" styleClass="scroll-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="chessgame.ui.TestController" stylesheets="@style.css">
+    <ScrollPane fx:id="rankingScrollPane" prefWidth="830" prefHeight="632" layoutX="450" layoutY="88" styleClass="scroll-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="chessgame.ui.TestController" stylesheets="@style.css">
         <content>
             <VBox spacing="10" prefWidth="810" styleClass="vbox">
                 <!-- Tiêu đề bảng xếp hạng -->

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Region?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.HistoryGameController">
+    <VBox spacing="10" alignment="CENTER">
+        <!-- Player 1 and Player 2 game history -->
+        <HBox spacing="10">
+            <VBox alignment="CENTER">
+                <ImageView fx:id="player1Avatar" fitWidth="50" fitHeight="50"/>
+                <Label fx:id="player1Name" text="Player 1" />
+            </VBox>
+            <VBox alignment="CENTER">
+                <ImageView fx:id="player2Avatar" fitWidth="50" fitHeight="50"/>
+                <Label fx:id="player2Name" text="Player 2" />
+            </VBox>
+        </HBox>
+
+        <!-- Game result -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label fx:id="resultLabel" text="Player 1 won!" style="-fx-text-fill: green;" />
+            <Label fx:id="eloChange" text="ELO: +50" />
+        </HBox>
+
+        <!-- Game time -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label fx:id="gameTime" text="Time: 15:30"/>
+        </HBox>
+
+        <!-- Move count -->
+        <Label fx:id="moveCount" text="Moves: 9" />
+    </VBox>
+</VBox>

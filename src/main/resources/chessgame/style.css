@@ -148,9 +148,12 @@
     -fx-font-size: 15px;
     -fx-font-family: "Montserrat";
 }
-.scroll-pane {
+.custom-scroll-pane {
     -fx-background-color: transparent; /* Nền trong suốt */
-    -fx-padding: 10; /* Căn lề bên trong */
+
+    -fx-background-radius: 15; /* Bo góc nền */
+    -fx-border-color: green;
+    -fx-border-width: 2px;
 }
 
 .scroll-pane .viewport {
@@ -174,15 +177,18 @@
 
 /* VBox styles */
 .vbox {
+-fx-border-radius: 15; /* Bo góc viền */
+    -fx-background-radius: 15; /* Bo góc nền */
     -fx-background-color: transparent; /* Nền trong suốt */
     -fx-spacing: 10; /* Khoảng cách giữa các phần tử */
 }
 
 /* HBox styles */
 .hbox {
+-fx-border-radius: 15; /* Bo góc viền */
+    -fx-background-radius: 15; /* Bo góc nền */
     -fx-background-color: black; /* Nền màu đen */
     -fx-opacity: 0.5; /* Độ trong suốt */
-    -fx-padding: 10; /* Căn lề bên trong */
 }
 
 /* Label styles */
@@ -202,4 +208,47 @@
     -fx-opacity: 0.3; /* Độ trong suốt */
     -fx-start-margin: 10; /* Dịch vào từ trái */
     -fx-end-margin: 10; /* Dịch vào từ phải */
+}
+.top-1 {
+    -fx-background-color: linear-gradient(to bottom, #FFD700, #FFA500); /* Gradient vàng cam */
+
+    -fx-border-color: #FFD700; /* Viền vàng */
+    -fx-border-radius: 10; /* Bo góc viền */
+    -fx-background-radius: 10; /* Bo góc nền */
+
+}
+
+/* Dành cho Top 2 */
+.top-2 {
+    -fx-background-color: linear-gradient(to bottom, #C0C0C0, #A9A9A9); /* Gradient bạc */
+
+    -fx-border-color: #C0C0C0; /* Viền bạc */
+    -fx-border-radius: 10; /* Bo góc viền */
+    -fx-background-radius: 10; /* Bo góc nền */
+
+}
+
+/* Dành cho Top 3 */
+.top-3 {
+    -fx-background-color: linear-gradient(to bottom, #CD7F32, #8B4513); /* Gradient đồng */
+
+    -fx-border-color: #CD7F32; /* Viền đồng */
+    -fx-border-radius: 10; /* Bo góc viền */
+    -fx-background-radius: 10; /* Bo góc nền */
+
+}
+.label-top-1{
+-fx-text-fill: black; /* Màu chữ đen */
+    -fx-font-size: 14px; /* Font lớn hơn */
+    -fx-font-weight: bold; /* In đậm */
+}
+.label-top-2{
+-fx-text-fill: black; /* Màu chữ đen */
+    -fx-font-size: 14px; /* Font nhỏ hơn Top 1 */
+    -fx-font-weight: bold; /* In đậm */
+}
+.label-top-3{
+-fx-text-fill: white; /* Màu chữ trắng */
+    -fx-font-size: 14px; /* Font nhỏ hơn Top 2 */
+    -fx-font-weight: bold; /* In đậm */
 }
