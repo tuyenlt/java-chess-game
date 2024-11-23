@@ -23,6 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -40,7 +41,7 @@ public class MainController implements ClientResponseHandle {
     private Parent root;
 
     LoadingController loadingcontroller;
-    MainController newController;
+    MainController Controller;
 
     private User user;
     private static ClientNetwork client;
@@ -126,6 +127,9 @@ public class MainController implements ClientResponseHandle {
             root = loadingLoader.load();
             loadingcontroller = loadingLoader.getController();
             loadingcontroller.loadingStackPane.setVisible(false);
+
+//            testController.test.setVisible(false);
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -172,6 +176,9 @@ public class MainController implements ClientResponseHandle {
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+            if (root instanceof Pane){
+                ((Pane) root).getChildren().add(loadingcontroller.loadingStackPane);
+            }
             loadingcontroller.loadingStackPane.setVisible(true);
             System.out.println(loadingcontroller.loadingStackPane.isVisible());
             loadingcontroller.loadingStackPane.setLayoutX(x);
@@ -187,25 +194,25 @@ public class MainController implements ClientResponseHandle {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
             root = loader.load();
-            newController = loader.getController();
-//            newController.setGreetingLabel(label, text);
+            Controller = loader.getController();
+//            Controller.setGreetingLabel(label, text);
             if (username.length() > 16) {
                 username = username.substring(0, 16) + "...";
             }
-            newController.usernameDisplayLabel.setText("Username : " + username);
-            newController.eloDisplayLabel.setText("Elo : " + elo);
+            Controller.usernameDisplayLabel.setText("Username : " + username);
+            Controller.eloDisplayLabel.setText("Elo : " + elo);
 
-            newController.rankingScrollPane.setVisible(false);
-            newController.triangle.setVisible(false);
+            Controller.rankingScrollPane.setVisible(false);
+            Controller.triangle.setVisible(false);
 
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
-            double labelWidth = 1195.0 - newController.usernameDisplayLabel.getWidth();
+            double labelWidth = 1195.0 - Controller.usernameDisplayLabel.getWidth();
             if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
 
-            newController.usernameDisplayLabel.setLayoutX(labelWidth);
-            newController.eloDisplayLabel.setLayoutX(labelWidth);
+            Controller.usernameDisplayLabel.setLayoutX(labelWidth);
+            Controller.eloDisplayLabel.setLayoutX(labelWidth);
         } catch (IOException e) {
             System.out.println(e.getStackTrace());
         }
@@ -419,10 +426,7 @@ public class MainController implements ClientResponseHandle {
             stage.show();
 
             // Lấy controller sau khi load
-            MainController onlineModeController = loader.getController();
-
-
-
+            Controller = loader.getController();
         for (int i = 1; i <= 30; i++) {
             HBox playerRow = new HBox(0); // Khoảng cách giữa các cột
             playerRow.setPrefWidth(830);
@@ -477,20 +481,19 @@ public class MainController implements ClientResponseHandle {
             // Thêm dòng vào danh sách
             VBox playerBox = new VBox(5);
             playerBox.getChildren().addAll(playerRow, line);
-
-            onlineModeController.playerList.getChildren().add(playerBox);
+            Controller.playerList.getChildren().add(playerBox);
         }
             Platform.runLater(() -> {
-                onlineModeController.rankingScrollPane.setVisible(true);
-                onlineModeController.triangle.setVisible(true);
-                onlineModeController.triangle.setLayoutX(337.0);
-                onlineModeController.rankingScrollPane.setPrefWidth(830);
-                onlineModeController.boardImageView.setVisible(false);
-                onlineModeController.playerList.setPrefWidth(830);
+                Controller.rankingScrollPane.setVisible(true);
+                Controller.triangle.setVisible(true);
+                Controller.triangle.setLayoutX(337.0);
+                Controller.rankingScrollPane.setPrefWidth(830);
+                Controller.boardImageView.setVisible(false);
+                Controller.playerList.setPrefWidth(830);
                 System.out.println(usernameLogin);
-                onlineModeController.usernameDisplayLabel.setText("Username : " + usernameLogin);
+                Controller.usernameDisplayLabel.setText("Username : " + usernameLogin);
                 System.out.println(usernameLogin);
-                onlineModeController.eloDisplayLabel.setText("Elo : " + currentElo);
+                Controller.eloDisplayLabel.setText("Elo : " + currentElo);
             });
 
         } catch (Exception e) {
@@ -499,7 +502,15 @@ public class MainController implements ClientResponseHandle {
     }
 
     public void handleFindOnlineGame() {
-        switchScene("findOnlineGameScene.fxml", "loadingIcon.fxml", 450, 88, 632, 830);
+        switchScene("onlineModeScene.fxml", "loadingIcon.fxml", 450, 88, 632, 830);
+        if( Controller.rankingScrollPane != null) Controller.rankingScrollPane.setVisible(false);
+        if( Controller.boardImageView != null) Controller.boardImageView.setVisible(false);
+
+    }
+    public void handleEscapeButton(){
+        switchScene("onlineModeScene.fxml", "loadingIcon.fxml", 450, 88, 632, 830);
+        
+
 
     }
 }
