@@ -40,14 +40,12 @@ public class MainController implements ClientResponseHandle {
     private Scene scene;
     private Parent root;
 
-    LoadingController loadingcontroller;
+    LoadingController loadingController;
     MainController Controller;
 
     private User user;
     private static ClientNetwork client;
 
-    private double angle = 0; // Độ dài vòng cung
-    private double rotation = 0; // Góc xoay
     private String currentUsername;
 
 
@@ -125,8 +123,8 @@ public class MainController implements ClientResponseHandle {
         try {
             FXMLLoader loadingLoader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
             root = loadingLoader.load();
-            loadingcontroller = loadingLoader.getController();
-            loadingcontroller.loadingStackPane.setVisible(false);
+            loadingController = loadingLoader.getController();
+            loadingController.loadingAnchorPane.setVisible(false);
 
 //            testController.test.setVisible(false);
 
@@ -155,6 +153,7 @@ public class MainController implements ClientResponseHandle {
             // Tải tệp FXML mới
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + fxmlFile));
             root = loader.load();
+            Controller = loader.getController();
             // Tạo Scene mới từ root FXML và đặt vào Stage
             scene = new Scene(root);
             stage.setScene(scene);
@@ -172,19 +171,32 @@ public class MainController implements ClientResponseHandle {
             // Nạp scene chính
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/" + startScene));
             root = loader.load();
+            Controller = loader.getController();
 
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+            FXMLLoader addLoader = new FXMLLoader(getClass().getResource("/chessgame/" + addScene));
+            Parent loadRoot = addLoader.load();
+            loadingController = addLoader.getController();
+
+
+            loadingController.loadingAnchorPane.setLayoutX(x);
+            loadingController.loadingAnchorPane.setLayoutY(y);
+            loadingController.loadingAnchorPane.setPrefWidth(width);
+            loadingController.loadingAnchorPane.setPrefHeight(height);
+
+            loadingController.loadingAnchorPane = (AnchorPane) loadRoot.lookup("#loadingAnchorPane");
+            AnchorPane.setTopAnchor(loadingController.loadingAnchorPane, (720 - loadingController.loadingAnchorPane.getPrefHeight()) / 2);
+            AnchorPane.setLeftAnchor(loadingController.loadingAnchorPane, (1280 - loadingController.loadingAnchorPane.getPrefWidth()) / 2);
+            AnchorPane.setRightAnchor(loadingController.loadingAnchorPane, null);
+            AnchorPane.setBottomAnchor(loadingController.loadingAnchorPane, null);
+
             if (root instanceof Pane){
-                ((Pane) root).getChildren().add(loadingcontroller.loadingStackPane);
+                ((Pane) root).getChildren().add(loadingController.loadingAnchorPane);
             }
-            loadingcontroller.loadingStackPane.setVisible(true);
-            System.out.println(loadingcontroller.loadingStackPane.isVisible());
-            loadingcontroller.loadingStackPane.setLayoutX(x);
-            loadingcontroller.loadingStackPane.setLayoutY(y);
-            loadingcontroller.loadingStackPane.setPrefWidth(width);
-            loadingcontroller.loadingStackPane.setPrefHeight(height);
+            loadingController.loadingAnchorPane.setVisible(false);
+
         } catch (IOException e) {
             System.out.println(e.getStackTrace());
         }
@@ -237,7 +249,7 @@ public class MainController implements ClientResponseHandle {
         } else {
             client.sendRequest(new RegisterRequest(userName, passwd));
             switchScene("registerScene.fxml", "loadingIcon.fxml", 440.0, 60.0, 600, 400);
-            loadingcontroller.loadingStackPane.setVisible(true);
+            loadingController.loadingAnchorPane.setVisible(true);
         }
     }
 
@@ -246,7 +258,7 @@ public class MainController implements ClientResponseHandle {
         passwordLogin = passwordTextFieldLogin.getText().trim();
 
         switchScene("logInScene.fxml", "loadingIcon.fxml", 440.0, 60.0, 600, 400);
-        loadingcontroller.loadingStackPane.setVisible(true);
+        loadingController.loadingAnchorPane.setVisible(true);
 
         client.sendRequest(new LoginRequest(usernameLogin, passwordLogin));
         usernameTextFieldLogin.clear();
@@ -334,11 +346,20 @@ public class MainController implements ClientResponseHandle {
         user = new User(response.userId, response.userName, response.elo, response.win, response.lose, response.draw);
         currentUsername = user.name;
         currentElo = String.valueOf(user.elo);
-                Platform.runLater(() -> {
+        new Thread(() -> {
+            try {
+                // Giả lập tải dữ liệu hoặc đợi trong 2 giây
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // Sau khi chờ xong, cập nhật giao diện qua Platform.runLater
+            Platform.runLater(() -> {
+                switchScene("onlineModeScene.fxml", user.name, String.valueOf(user.elo));
+                loadingController.loadingAnchorPane.setVisible(false);
+            });
+        }).start();
 
-                    switchScene("onlineModeScene.fxml", user.name, String.valueOf(user.elo));
-                    loadingcontroller.loadingStackPane.setVisible(false);
-                });
     }
     @Override
     public void handleProfileView(ProfileViewResponse response) {
@@ -358,7 +379,7 @@ public class MainController implements ClientResponseHandle {
             return;
         }
         Platform.runLater(() -> {
-            loadingcontroller.loadingStackPane.setVisible(false);
+            loadingController.loadingAnchorPane.setVisible(false);
             AppState.setSuccessfulRegistered(true);
             rightRegister("registerScene.fxml");
         });
@@ -503,15 +524,20 @@ public class MainController implements ClientResponseHandle {
 
     public void handleFindOnlineGame() {
         switchScene("onlineModeScene.fxml", "loadingIcon.fxml", 450, 88, 632, 830);
+        if (root instanceof Pane){
+            ((Pane) root).getChildren().add(Controller.rankingScrollPane);
+        }
         if( Controller.rankingScrollPane != null) Controller.rankingScrollPane.setVisible(false);
-        if( Controller.boardImageView != null) Controller.boardImageView.setVisible(false);
+        if( Controller.boardImageView != null) Controller.boardImageView.setVisible(true);
+        if( Controller.triangle != null) Controller.triangle.setVisible(false);
+        if( loadingController.loadingAnchorPane != null) loadingController.loadingAnchorPane.setVisible(true);
 
     }
     public void handleEscapeButton(){
+        loadingController.loadingAnchorPane.setVisible(false);
         switchScene("onlineModeScene.fxml", "loadingIcon.fxml", 450, 88, 632, 830);
-        
-
-
+        Controller.rankingScrollPane.setVisible(false);
+        Controller.boardImageView.setVisible(true);
+        Controller.triangle.setVisible(false);
     }
 }
-

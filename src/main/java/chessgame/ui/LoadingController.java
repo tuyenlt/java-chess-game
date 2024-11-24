@@ -10,8 +10,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 
 public class LoadingController {
-
+    @FXML
     public StackPane loadingStackPane;
+    @FXML
+    public AnchorPane loadingAnchorPane;
+
     @FXML
     private Canvas loadingCanvas;
 

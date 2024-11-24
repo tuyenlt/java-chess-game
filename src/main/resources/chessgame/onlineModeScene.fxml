@@ -92,10 +92,23 @@
                 <Label fx:id="greetingLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="181.0" prefHeight="26.0" prefWidth="350.0" styleClass="greetingText">
 
                 </Label>
-                <Button fx:id="findOnlineGameButton" layoutX="23.0" layoutY="148.0" onAction="#handleFindOnlineGame" prefHeight="34.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Find Online Game">
-                </Button>
-                <Button fx:id="rankingListButton" layoutX="25.0" layoutY="227.0" onAction="#handleRankingList" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Ranking List">
-                </Button>
+                <Button fx:id="findOnlineGameButton" layoutX="23.0" layoutY="148.0" onAction="#handleFindOnlineGame" prefHeight="34.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Find Online Game"/>
+                <StackPane style="-fx-background-color: rgba(0, 0, 0, 0);" layoutX="25.0" layoutY="227.0">
+                    <children>
+                        <!-- Đặt Button vào giữa StackPane -->
+                        <Button fx:id="rankingListButton" onAction="#handleRankingList"
+                                prefHeight="54.0" prefWidth="350.0"
+                                styleClass="custom-button" stylesheets="@style.css" text="Ranking List"/>
+
+                        <!-- Đặt ImageView tại góc trên bên trái -->
+                        <ImageView fitHeight="54" fitWidth="54" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/ranking.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
                 <Button fx:id="historyGameButton" layoutX="25.0" layoutY="304.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="History Game">
                 </Button>
                 <Button fx:id="twoPlayerButton" layoutX="25.0" layoutY="385.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
