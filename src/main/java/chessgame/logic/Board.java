@@ -331,6 +331,13 @@ public class Board {
         return false;
     }
 
+    // Trả về kết quả của ván đấu
+    public String gameState(){
+        if(isCheckMate()) return "win";
+        if(isDraw()) return "draw";
+        return "ongoing";
+    }
+
     private void popPiece(String namePiece){
         char pieceType = namePiece.charAt(1);
         if(namePiece.charAt(0) == 'w'){
