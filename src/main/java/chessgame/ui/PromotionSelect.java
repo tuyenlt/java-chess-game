@@ -1,6 +1,5 @@
 package chessgame.ui;
 
-import java.util.Collections;
 import java.util.function.Consumer;
 
 import chessgame.logic.Move;
@@ -15,7 +14,6 @@ import javafx.scene.paint.Color;
 
 public class PromotionSelect extends VBox{
     private String color;
-    private String selectedPiece;
     private boolean isTopDown = true;
     private int size;
     private Consumer<String> onFinish;
@@ -28,15 +26,19 @@ public class PromotionSelect extends VBox{
         this.size = size;
         setViewOrder(-1);
         setVisible(false);
+        setLayoutX(0);
         setBackground(new Background(
             new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)
         ));
+        setLayoutX(0);
         if(isTopDown){
+            setLayoutY(0);
             getChildren().add(createPieceItem(color + "Q"));
             getChildren().add(createPieceItem(color + "R"));
             getChildren().add(createPieceItem(color + "B"));
             getChildren().add(createPieceItem(color + "N"));
         }else{
+            setLayoutY(4 * 90);
             getChildren().add(createPieceItem(color + "N"));
             getChildren().add(createPieceItem(color + "B"));
             getChildren().add(createPieceItem(color + "R"));

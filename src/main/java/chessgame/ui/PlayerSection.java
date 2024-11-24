@@ -10,6 +10,8 @@ public class PlayerSection extends Pane {
     private String elo;
     private CountdownTimer timer;
     private Label timerLabel;
+    private Label nameLabel;
+    private Label eloLabel;
     private String side;
 
     public PlayerSection(String name, String elo, int initialTimeInSeconds, String side) {
@@ -24,8 +26,8 @@ public class PlayerSection extends Pane {
         indicator.setLayoutX(50);
         indicator.setLayoutY(50);
 
-        Label nameLabel = new Label(name);
-        Label eloLabel = new Label(elo);
+        nameLabel = new Label(name);
+        eloLabel = new Label(elo);
         nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
         eloLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
         nameLabel.setLayoutX(100);
@@ -60,5 +62,13 @@ public class PlayerSection extends Pane {
 
     public Label getTimerLabel() {
         return timerLabel;
+    }
+
+    public void setInfo(String name, String elo, String side){
+        this.name = name;
+        this.elo = elo;
+        this.side = side;
+        nameLabel.setText(name);
+        eloLabel.setText(elo);
     }
 }

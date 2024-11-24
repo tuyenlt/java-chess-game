@@ -53,11 +53,6 @@ public class BoardPane extends Pane{
         this.onMovePiece = onMovePiece;
     }
 
-    public void setGameMode(String gameMode){
-        this.gameMode = gameMode;
-    }
-
-
     public void start(){
         if(isBoardReverse){
             onMovePiece.accept(board.getCurrentTurn());
@@ -73,18 +68,19 @@ public class BoardPane extends Pane{
         initPiece();
     }
 
-    public BoardPane() {
+    public BoardPane(String gameMode, boolean isBoardReverse) {
         setPrefSize(TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
         createBoard();
         promotionSelectInit();
 
+        this.gameMode = gameMode;
+        setReverse(isBoardReverse);
 
         blockingPane = new Pane();
         blockingPane.setPrefSize(getPrefWidth(), getPrefHeight());
         blockingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);");
         blockingPane.setVisible(false);
 
-        // Intercept all mouse events
         blockingPane.setOnMouseClicked(event -> event.consume());
         blockingPane.setOnMousePressed(event -> event.consume());
         blockingPane.setOnMouseDragged(event -> event.consume());
@@ -203,15 +199,11 @@ public class BoardPane extends Pane{
             botSide = "w";
         }
         promotionSelectTop = new PromotionSelect(topSide, !isBoardReverse, TILE_SIZE);
-        promotionSelectTop.setLayoutX(0);
-        promotionSelectTop.setLayoutY(0);
         promotionSelectTop.setOnFinish((name) -> {
             handlePromotionMove(promotionSelectTop.getPromotionMove(), name);
         });
 
         promotionSelectBot = new PromotionSelect(botSide, isBoardReverse, TILE_SIZE);
-        promotionSelectBot.setLayoutX(0);
-        promotionSelectBot.setLayoutY(4 * TILE_SIZE);
         promotionSelectBot.setOnFinish((name) -> {
             handlePromotionMove(promotionSelectBot.getPromotionMove(), name);
         });
@@ -243,7 +235,7 @@ public class BoardPane extends Pane{
         boxHightlightRect.setX((int)(event.getSceneX() / TILE_SIZE) * TILE_SIZE);
         boxHightlightRect.setY((int)(event.getSceneY() / TILE_SIZE) * TILE_SIZE);
         draggedPiece.setCursor(Cursor.HAND);
-
+        
         resetState();
         chossingBox = new Pair(col, row);
         hightlightMove(row, col);
@@ -251,7 +243,7 @@ public class BoardPane extends Pane{
         System.out.println("chossing box: "+ chossingBox.col + " " + chossingBox.row);
     }
 
-
+    
     private void onPieceDragged(MouseEvent event) {
         if (draggedPiece != null) {
             draggedPiece.setCursor(Cursor.CLOSED_HAND);
@@ -261,8 +253,9 @@ public class BoardPane extends Pane{
             boxHightlightRect.setY((int)(event.getSceneY() / TILE_SIZE) * TILE_SIZE);
         }
     }
-
+    
     private void onPieceReleased(MouseEvent event) {
+        System.out.println("Scene for boardPane: " + getScene());
         try {
             if (draggedPiece != null) {
                 draggedPiece.setViewOrder(0);

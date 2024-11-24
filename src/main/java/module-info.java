@@ -9,6 +9,7 @@ module chessgame {
 
     opens chessgame.ui to javafx.fxml;
     opens chessgame.game to javafx.fxml;
+    exports chessgame.game;
     exports chessgame;
     exports chessgame.network.packets;
 }
