@@ -27,7 +27,7 @@ public class TwoPlayerOfflineMode {
     
     @FXML
     public void initialize() {
-        boardPane.setGameMode("twoPlayer");
+        // boardPane.setGameMode("twoPlayer");
         boardPane.setReverse(false);
         PlayerSection playerSectionTop = new PlayerSection("Player 1", "200", 600, "b");
         PlayerSection playerSectionBottom = new PlayerSection("Player 1", "200", 600, "w");

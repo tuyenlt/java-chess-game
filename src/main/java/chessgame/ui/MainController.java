@@ -1,5 +1,7 @@
 package chessgame.ui;
 
+import chessgame.game.MainGame;
+import chessgame.game.TwoPlayer;
 import chessgame.network.ClientNetwork;
 import chessgame.network.ClientResponseHandle;
 import chessgame.network.User;
@@ -44,6 +46,7 @@ public class MainController implements ClientResponseHandle {
     MainController Controller;
 
     private User user;
+    
     private static ClientNetwork client;
 
     private String currentUsername;
@@ -280,7 +283,11 @@ public class MainController implements ClientResponseHandle {
         switchScene("singlePlayerScene.fxml");
     }
     public void twoPlayerMode(ActionEvent event){
-        switchScene("twoPlayerScene.fxml");
+        // switchScene("twoPlayerScene.fxml");
+        TwoPlayer game = new TwoPlayer(false);
+        Scene scene = new Scene(game);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void showRankingList(ActionEvent event){

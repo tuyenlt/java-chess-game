@@ -6,22 +6,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import chessgame.network.packets.GeneralPackets.FindGameRequest;
-import chessgame.network.packets.GeneralPackets.FindGameResponse;
-import chessgame.network.packets.GeneralPackets.HistoryGameRequest;
-import chessgame.network.packets.GeneralPackets.HistoryGameResponse;
-import chessgame.network.packets.GeneralPackets.LoginRequest;
-import chessgame.network.packets.GeneralPackets.LoginResponse;
-import chessgame.network.packets.GeneralPackets.MsgPacket;
-import chessgame.network.packets.GeneralPackets.ProfileViewRequest;
-import chessgame.network.packets.GeneralPackets.ProfileViewResponse;
-import chessgame.network.packets.GeneralPackets.RankingListRequest;
-import chessgame.network.packets.GeneralPackets.RankingListResponse;
-import chessgame.network.packets.GeneralPackets.RegisterRequest;
-import chessgame.network.packets.GeneralPackets.RegisterResponse;
-import chessgame.network.packets.IngamePackets.GameEndResponse;
-import chessgame.network.packets.IngamePackets.GameStateResponse;
-import chessgame.network.packets.IngamePackets.MovePacket;
+import chessgame.network.packets.GeneralPackets.*;
+import chessgame.network.packets.IngamePackets.*;
 import chessgame.network.packets.PacketsRegester;
 
 public class GameNetwork {
