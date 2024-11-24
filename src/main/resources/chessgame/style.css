@@ -248,7 +248,7 @@
     -fx-font-weight: bold; /* In đậm */
 }
 .label-top-3{
--fx-text-fill: white; /* Màu chữ trắng */
+-fx-text-fill: black; /* Màu chữ trắng */
     -fx-font-size: 14px; /* Font nhỏ hơn Top 2 */
     -fx-font-weight: bold; /* In đậm */
 }

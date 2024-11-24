@@ -3,19 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="chessgame.ui.TestController">
-    <Button fx:id="triggerButton"
-            layoutX="50.0"
-            layoutY="50.0"
-            text="Click Me!"
-            onAction="#showAnchorPane"/>
+<AnchorPane fx:id="test" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="chessgame.ui.TestController" prefWidth="1280" prefHeight="720" style="-fx-background-color = black;">
 
-    <AnchorPane fx:id="animatedPane"
-                layoutX="-400.0"
-                layoutY="100.0"
-                prefHeight="200.0"
-                prefWidth="300.0"
-                style="-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 2;">
-    </AnchorPane>
 </AnchorPane>
