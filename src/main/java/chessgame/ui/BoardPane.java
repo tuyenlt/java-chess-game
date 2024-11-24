@@ -103,6 +103,7 @@ public class BoardPane extends Pane{
                 tile.setX(col * TILE_SIZE);
                 tile.setY(row * TILE_SIZE);
                 
+                tiles[row][col] = tile;
                 tile.setOnMouseClicked(event -> {
                     int Col = (int)(event.getX() / TILE_SIZE);
                     int Row = (int)(event.getY() / TILE_SIZE);
@@ -112,7 +113,6 @@ public class BoardPane extends Pane{
 
                 });
 
-                tiles[row][col] = tile;
 
                 Circle moveHightlightCircle = new Circle(tile.getX() + TILE_SIZE / 2, tile.getY() + TILE_SIZE / 2, 15);
                 moveHightlightCircle.setFill(Color.rgb(0, 0, 0, 0.2));
@@ -157,6 +157,12 @@ public class BoardPane extends Pane{
                     }else{
                         addPiece(broadState[i][j], j, i);
                     }
+                }else{
+                    if(isBoardReverse){
+                        piecesImage[7-i][7-j] = null;
+                    }else{
+                        piecesImage[i][j] = null;
+                    }
                 }
             }
         }
@@ -172,17 +178,18 @@ public class BoardPane extends Pane{
             piece.setX(col * TILE_SIZE);
             piece.setY(row * TILE_SIZE);
 
+            getChildren().add(piece);
+            piecesImage[row][col] = piece;            
+
             piece.setOnMouseClicked(event -> {
                 tiles[row][col].fireEvent(event);
             });
 
-            piecesImage[row][col] = piece;            
             piece.setOnMousePressed(event -> onPiecePressed(event));
             piece.setOnMouseDragged(event -> onPieceDragged(event));
             piece.setOnMouseReleased(event -> onPieceReleased(event));
             piece.setOnMouseEntered(event -> piece.setCursor(Cursor.HAND));
 
-            getChildren().add(piece);
         } catch (Exception e) {
             System.err.println("Could not load image: " + pieceName + ".png");
         }
@@ -227,9 +234,14 @@ public class BoardPane extends Pane{
         System.out.println("chossing:" + row + " " + col);
 
         draggedPiece = (ImageView) event.getSource();
+        if(draggedPiece == null){
+            return;
+        }
         draggedPiece.setViewOrder(-1);
         draggedPiece.setX(event.getSceneX() - TILE_SIZE / 2);
         draggedPiece.setY(event.getSceneY() - TILE_SIZE / 2);
+        boxHightlightRect.setX((int)(event.getSceneX() / TILE_SIZE) * TILE_SIZE);
+        boxHightlightRect.setY((int)(event.getSceneY() / TILE_SIZE) * TILE_SIZE);
         draggedPiece.setCursor(Cursor.HAND);
 
         resetState();
@@ -251,18 +263,23 @@ public class BoardPane extends Pane{
     }
 
     private void onPieceReleased(MouseEvent event) {
-        if (draggedPiece != null) {
-            draggedPiece.setViewOrder(0);
-            draggedPiece.setCursor(Cursor.DEFAULT);
-            int endRow = (int) (event.getSceneY() / TILE_SIZE);
-            int endCol = (int) (event.getSceneX() / TILE_SIZE);
-            boxHightlightRect.setVisible(false);
-            int startRow = chossingBox.row;
-            int startCol = chossingBox.col;
-            if(!movePiece(startRow, startCol, endRow, endCol)){
-                draggedPiece.setX(startCol * TILE_SIZE);
-                draggedPiece.setY(startRow * TILE_SIZE);
+        try {
+            if (draggedPiece != null) {
+                draggedPiece.setViewOrder(0);
+                draggedPiece.setCursor(Cursor.DEFAULT);
+                int endRow = (int) (event.getSceneY() / TILE_SIZE);
+                int endCol = (int) (event.getSceneX() / TILE_SIZE);
+                boxHightlightRect.setVisible(false);
+                int startRow = chossingBox.row;
+                int startCol = chossingBox.col;
+                if(!movePiece(startRow, startCol, endRow, endCol)){
+                    draggedPiece.setX(startCol * TILE_SIZE);
+                    draggedPiece.setY(startRow * TILE_SIZE);
+                }
             }
+        } catch (Exception e) {
+            System.out.println("Error on draggpiece");
+            e.printStackTrace();
         }
     }
 
@@ -319,61 +336,67 @@ public class BoardPane extends Pane{
     }
 
     public boolean movePiece(int startRow, int startCol, int endRow, int endCol, String promotionType){
-        if(startCol == endCol && startRow == endRow){
-            return false;
-        }
-        resetState();
-        chossingBox = null;
-        Move newMove = new Move(startRow, startCol, endRow, endCol);
-        if(!promotionType.equals("")){
-            newMove.setPromotedPieceType(promotionType);
-        }
-        if(isBoardReverse){
-            newMove.reverseBoard();
-        }
-        Piece chossingPiece = board.getPiece(newMove.getStartRow(), newMove.getStartCol());
-        for(Move move : chossingPiece.getSafeMoves(board, newMove.getStartRow(), newMove.getStartCol())){
-            if(move.equals(newMove)){
-                if(piecesImage[endRow][endCol] != null){
-                    getChildren().remove(piecesImage[endRow][endCol]);
-                }
-                if(newMove.isCastling(board)){
-                    handleCasleMove(newMove);
-                }
-                if(newMove.isPromotion(board)){
-                    if(!board.getCurrentTurn().equals(localPlayerSide) && !gameMode.equals("twoPlayer")){
-                        handlePromotionMove(newMove, promotionType);
+        try {
+            if(startCol == endCol && startRow == endRow){
+                return false;
+            }
+            resetState();
+            chossingBox = null;
+            Move newMove = new Move(startRow, startCol, endRow, endCol);
+            if(!promotionType.equals("")){
+                newMove.setPromotedPieceType(promotionType);
+            }
+            if(isBoardReverse){
+                newMove.reverseBoard();
+            }
+            Piece chossingPiece = board.getPiece(newMove.getStartRow(), newMove.getStartCol());
+            for(Move move : chossingPiece.getSafeMoves(board, newMove.getStartRow(), newMove.getStartCol())){
+                if(move.equals(newMove)){
+                    if(piecesImage[endRow][endCol] != null){
+                        getChildren().remove(piecesImage[endRow][endCol]);
+                    }
+                    if(newMove.isCastling(board)){
+                        handleCasleMove(newMove);
+                    }
+                    if(newMove.isPromotion(board)){
+                        if(!board.getCurrentTurn().equals(localPlayerSide) && !gameMode.equals("twoPlayer")){
+                            handlePromotionMove(newMove, promotionType);
+                            return true;
+                        }
+                        blockingPane.setVisible(true);
+                        if(promotionSelectTop.getColor().equals(board.getCurrentTurn())){
+                            promotionSelectTop.setVisible(true);
+                            promotionSelectTop.setLayoutX(endCol * TILE_SIZE);
+                            promotionSelectTop.setPromotionMove(newMove);
+                        }else{
+                            promotionSelectBot.setVisible(true);
+                            promotionSelectBot.setLayoutX(endCol * TILE_SIZE);
+                            promotionSelectBot.setPromotionMove(newMove);
+                        }
                         return true;
                     }
-                    blockingPane.setVisible(true);
-                    if(promotionSelectTop.getColor().equals(board.getCurrentTurn())){
-                        promotionSelectTop.setVisible(true);
-                        promotionSelectTop.setLayoutX(endCol * TILE_SIZE);
-                        promotionSelectTop.setPromotionMove(newMove);
-                    }else{
-                        promotionSelectBot.setVisible(true);
-                        promotionSelectBot.setLayoutX(endCol * TILE_SIZE);
-                        promotionSelectBot.setPromotionMove(newMove);
+                    if(move.isEnPassant()){
+                        newMove.setEnPassant(true);
                     }
+                    board.movePiece(newMove);
+                    onMovePiece.accept(board.getCurrentTurn());
+                    
+                    piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
+                    if(piecesImage[endRow][endCol] != null){
+                        piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
+                        piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
+                    }
+                    piecesImage[startRow][startCol] = null;
+                    cleanNullPiece();
                     return true;
                 }
-                if(move.isEnPassant()){
-                    newMove.setEnPassant(true);
-                }
-                board.movePiece(newMove);
-                onMovePiece.accept(board.getCurrentTurn());
-
-                piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
-                if(piecesImage[endRow][endCol] != null){
-                    piecesImage[endRow][endCol].setX(endCol * TILE_SIZE);
-                    piecesImage[endRow][endCol].setY(endRow * TILE_SIZE);
-                }
-                piecesImage[startRow][startCol] = null;
-                cleanNullPiece();
-                return true;
             }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erorr on move piece");
+            return false;
         }
-        return false;
     }
 
     private void handleCasleMove(Move move){
