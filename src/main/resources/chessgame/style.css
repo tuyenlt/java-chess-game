@@ -71,7 +71,7 @@
     -fx-text-fill: #000000; /* Màu chữ xám nhạt */
     -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
     -fx-background-radius: 5; /* Bo góc */
-    -fx-padding: 5 5 5 40; /* Chừa khoảng trống cho icon */
+    -fx-padding: 5 5 5 50; /* Chừa khoảng trống cho icon */
     -fx-border-color: None; /* Không cần viền */
     -fx-font-size: 17px;
     -fx-background-image: url("image/icon.png"); /* Đường dẫn đến file icon */
@@ -85,7 +85,7 @@
     -fx-text-fill: #000000; /* Màu chữ xám nhạt */
     -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
     -fx-background-radius: 5; /* Bo góc */
-    -fx-padding: 5 5 5 40; /* Chừa khoảng trống cho icon */
+    -fx-padding: 5 5 5 50; /* Chừa khoảng trống cho icon */
     -fx-border-color: None; /* Không cần viền */
     -fx-font-size: 17px;
     -fx-background-image: url("image/pass_resized.png"); /* Đường dẫn đến file icon */

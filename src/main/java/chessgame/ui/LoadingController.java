@@ -3,6 +3,8 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -11,13 +13,17 @@ import javafx.scene.shape.ArcType;
 
 public class LoadingController {
     @FXML
-    public StackPane loadingStackPane;
+    public AnchorPane loadingStackPane;
     @FXML
     public AnchorPane loadingAnchorPane;
 
     @FXML
-    private Canvas loadingCanvas;
+    public Canvas loadingCanvas;
 
+    @FXML
+    public Label escLabel;
+    @FXML
+    public Button cancelFindingButton;
     private double angle = 0; // Độ dài vòng cung
     private double rotation = 0; // Góc xoay
 
