@@ -32,13 +32,11 @@ public class PromotionSelect extends VBox{
         ));
         setLayoutX(0);
         if(isTopDown){
-            setLayoutY(0);
             getChildren().add(createPieceItem(color + "Q"));
             getChildren().add(createPieceItem(color + "R"));
             getChildren().add(createPieceItem(color + "B"));
             getChildren().add(createPieceItem(color + "N"));
         }else{
-            setLayoutY(4 * 90);
             getChildren().add(createPieceItem(color + "N"));
             getChildren().add(createPieceItem(color + "B"));
             getChildren().add(createPieceItem(color + "R"));

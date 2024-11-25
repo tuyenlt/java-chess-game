@@ -25,7 +25,7 @@ public class GameNetwork {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
         this.serverAddr = serverAddr;
-        client = new Client();
+        client = new Client(8912, 8912);
         PacketsRegester.register(client);
     }
 
@@ -40,10 +40,12 @@ public class GameNetwork {
 
             public void connected(Connection connection) {
                 isConnected = true;  
-                client.sendTCP(user);
             }
 
-            public void received(Connection connection, Object object) { 
+            public void received(Connection connection, Object object) {
+                if(object instanceof OpponentInfo){
+                    responseHandle.onReciveOpponentInfo((OpponentInfo)object);
+                } 
 
                 if (object instanceof MsgPacket) {
                     responseHandle.handleMsgPacket((MsgPacket) object);
@@ -92,6 +94,9 @@ public class GameNetwork {
 
         if(object instanceof MovePacket){
             client.sendTCP((MovePacket)object);
+        }
+        if(object instanceof InitPacket){
+            client.sendTCP((InitPacket)object);
         }
     }
 }

@@ -2,6 +2,7 @@ package chessgame.game;
 
 import chessgame.ui.BoardPane;
 import chessgame.ui.GameEndAnnouncement;
+import chessgame.ui.GameOptionsMenu;
 import chessgame.ui.PlayerSection;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -19,6 +20,8 @@ abstract public class MainGame extends StackPane {
     protected PlayerInfo playerTop = new PlayerInfo();
     protected PlayerInfo playerBottom = new PlayerInfo();
     protected Stage mainStage;
+    protected GameOptionsMenu gameOptionsMenu;
+    protected AnchorPane contentPane;
     protected Runnable onGameEnd = () -> {
         System.out.println("game end motherfucker");
     };
@@ -53,25 +56,52 @@ abstract public class MainGame extends StackPane {
 
         backgroundPane.getChildren().add(backgroundImageView);
 
-        AnchorPane contentPane = new AnchorPane();
+        contentPane = new AnchorPane();
         contentPane.setPrefSize(1280, 720);
 
         rightSection.setLayoutX(720);
         rightSection.setLayoutY(0);
         rightSection.setPrefSize(560, 720);
         rightSection.setStyle("-fx-background-image: url('/chessgame/image/bg.png'); " +
-        "-fx-background-size: cover; " +
-        "-fx-background-repeat: no-repeat; " +
-        "-fx-background-position: center;");
+                                "-fx-background-size: cover; " +
+                                "-fx-background-repeat: no-repeat; " +
+                                "-fx-background-position: center;");
 
         playerSectionTop = new PlayerSection("Player 1", "???", gameTime, "b");
         playerSectionBottom = new PlayerSection("Player 2", "???", gameTime, "w");
-        rightSection.getChildren().addAll(playerSectionTop, playerSectionBottom);
 
+        gameOptionsMenu = new GameOptionsMenu();
+        gameOptionsMenu.addButton("Quit Game", "quit-button", event -> onGameEnd.run());
+
+        rightSection.getChildren().addAll(gameOptionsMenu,playerSectionTop, playerSectionBottom);
+
+        createBoard(mode, isBoardReverse);
+        
+        contentPane.getChildren().add(rightSection);
+        this.getChildren().addAll(backgroundPane, contentPane);
+    }
+
+    abstract protected void handleOnMovePiece(String currentTurn);
+
+    public void createBoard(String mode, boolean isBoardReverse){
+        String topSide = "b";
+        String botSide = "w";
+        if(isBoardReverse){
+            topSide = "w";
+            botSide = "b";
+        }
+        playerSectionTop.setSide(topSide);
+        playerSectionTop.stopTimer();
+        playerSectionTop.resetTime();
+        
+        playerSectionBottom.setSide(botSide);
+        playerSectionBottom.stopTimer();
+        playerSectionBottom.resetTime();
+
+        if(boardPane != null){
+            contentPane.getChildren().remove(boardPane);
+        }
         boardPane = new BoardPane(mode, isBoardReverse);
-        boardPane.setLayoutX(0);
-        boardPane.setLayoutY(0);
-        boardPane.setPrefSize(720, 720);
         boardPane.setOnMovePiece((currentTurn) -> {
             new Thread(() -> {
                 if (currentTurn.equals(playerSectionBottom.getSide())) {
@@ -90,12 +120,13 @@ abstract public class MainGame extends StackPane {
             }).start();
         });
         boardPane.start();
-        
-        contentPane.getChildren().addAll(boardPane, rightSection);
-        this.getChildren().addAll(backgroundPane, contentPane);
+        if(boardPane.getCurrentTurn().equals(topSide)){
+            playerSectionTop.startTimer();
+        }else{
+            playerSectionBottom.startTimer();
+        }
+        contentPane.getChildren().add(boardPane);
     }
-
-    abstract protected void handleOnMovePiece(String currentTurn);
     
     public void setPlayerTop(String name, String elo, String side){
         playerTop = new PlayerInfo(name, elo, side);

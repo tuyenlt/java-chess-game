@@ -1,59 +1,67 @@
 package chessgame.game;
 
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 import chessgame.engine.StockfishEngineDemo;
 import chessgame.logic.Move;
-import chessgame.ui.BoardPane;
-import chessgame.ui.CountdownTimer;
-import chessgame.ui.PlayerSection;
+import javafx.application.Platform;
 
-public class SinglePlayerMode {
+public class SinglePlayerMode extends MainGame{
     private StockfishEngineDemo stockfish = new StockfishEngineDemo();
+    private String playerSide = "w";
+    private boolean isBoardReverse;
     
-    @FXML
-    private BoardPane singleBoardPane;
+    public SinglePlayerMode(boolean isBoardReverse){
+        super("singlePlayer", isBoardReverse);
+        this.isBoardReverse = isBoardReverse;
+        if(isBoardReverse){
+            playerSide = "b";
+        }
+        if(playerSide.equals("w")){
+            setPlayerTop("StockFish", "???", "b");
+            setPlayerBottom("Player(You)", "???", "w");
+        }else{
+            setPlayerTop("StockFish", "???", "w");
+            setPlayerBottom("Player(You)", "???", "b");
+        }
 
-    @FXML
-    private VBox rightSection;
-    
-    @FXML
-    public void initialize() {
-        stockfish.start(); 
-        PlayerSection playerSectionTop = new PlayerSection("StockFish Bot", "???", 600, "b");
-        PlayerSection playerSectionBottom = new PlayerSection("Player 1", "200", 600, "w");
-        rightSection.getChildren().addAll(playerSectionTop);
-        rightSection.getChildren().addAll(playerSectionBottom);
-        singleBoardPane.setReverse(false);
-        singleBoardPane.setOnMovePiece((tmp) -> {
-            new Thread(() -> {
-                if(singleBoardPane.getCurrentTurn().equals("w")) {
-                    playerSectionTop.stopTimer();
-                    playerSectionBottom.startTimer();
-                }else{
-                    playerSectionTop.startTimer();
-                    playerSectionBottom.stopTimer();
-                }
-                if(singleBoardPane.getCurrentTurn().equals("w")){
-                    return;
-                }
-
-                stockfish.setPosition(singleBoardPane.getMove("all"));
-                Move bestMove = new Move(stockfish.getBestMove());
-                System.out.println(bestMove);
-            
-                Platform.runLater(() -> {
-                    singleBoardPane.movePiece(bestMove);
-                    System.out.println(
-                        bestMove.getStartRow() + " " + bestMove.getStartCol() + " " +
-                        bestMove.getEndRow() + " " + bestMove.getEndCol()
-                    );
-                });
-            }).start();
+        gameOptionsMenu.addButton("Reverse", "custom-button", event->{
+            this.isBoardReverse = !this.isBoardReverse;
+            if(this.isBoardReverse){
+                playerSide = "b";
+            }else{
+                playerSide = "w";
+            }
+            stockfish.stop();
+            stockfish = new StockfishEngineDemo();
+            createBoard(playerSide, this.isBoardReverse);
         });
+    }
 
-        singleBoardPane.start();
+    @Override
+    protected void handleOnMovePiece(String currentTurn) {
+        try{
+            while(stockfish == null){
+                Thread.sleep(100);
+                System.out.println("nullll");
+            }
+        }catch(Exception e){
+            
+        }
+        if(currentTurn.equals(playerSide)){
+            return;
+        }
+        stockfish.setPosition(boardPane.getMove("all"));
+        for(String move : boardPane.getMove("all")){
+            System.out.print(move + " ");
+        }
+        System.out.println();
+        Move bestMove = new Move(stockfish.getBestMove());
+        System.out.println(bestMove);
+        Platform.runLater(() -> {
+            boardPane.movePiece(bestMove);
+            System.out.println(
+                bestMove.getStartRow() + " " + bestMove.getStartCol() + " " +
+                bestMove.getEndRow() + " " + bestMove.getEndCol()
+            );
+        });                
     }
 }

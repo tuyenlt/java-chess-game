@@ -1,8 +1,8 @@
 package chessgame.ui;
 
-import chessgame.game.MainGame;
-import chessgame.game.SinglePlayer;
-import chessgame.game.TwoPlayer;
+import chessgame.game.HistoryGameReplay;
+import chessgame.game.SinglePlayerMode;
+import chessgame.game.TwoPlayerOfflineMode;
 import chessgame.game.TwoPlayerOnlineMode;
 import chessgame.network.ClientNetwork;
 import chessgame.network.ClientResponseHandle;
@@ -296,7 +296,7 @@ public class MainController implements ClientResponseHandle {
     }
 
     public void singlePlayerMode(ActionEvent event){
-        SinglePlayer game = new SinglePlayer(false);
+        SinglePlayerMode game = new SinglePlayerMode(false);
         game.setOnGameEnd(()->{
             if(user == null){
                 switchScene("offlineModeScene.fxml");
@@ -309,15 +309,20 @@ public class MainController implements ClientResponseHandle {
         stage.show();
     }
     public void twoPlayerMode(ActionEvent event){
-        TwoPlayer game = new TwoPlayer(false);
-        game.setOnGameEnd(()->{
-            if(user == null){
-                switchScene("offlineModeScene.fxml");
-            }else{
-                switchScene("onlineModeScene.fxml");
-            }
+        // TwoPlayerOfflineMode game = new TwoPlayerOfflineMode(false);
+        // game.setOnGameEnd(()->{
+        //     if(user == null){
+        //         switchScene("offlineModeScene.fxml");
+        //     }else{
+        //         switchScene("onlineModeScene.fxml");
+        //     }
+        // });
+        // Scene scene = new Scene(game);
+        HistoryGameReplay replayGame = new HistoryGameReplay("d2d4 d7d5 e2e4 d5e4 c1f4 g8f6 d1d3 e4d3 c2d3 d8d4 b1c3 d4f4 d3d4 c7c6 b2b3 f6e4 f2f3", false);
+        replayGame.setOnReturn(()->{
+            switchScene("offlineModeScene.fxml");
         });
-        Scene scene = new Scene(game);
+        Scene scene = new Scene(replayGame);
         stage.setScene(scene);
         stage.show();
     }
@@ -333,6 +338,10 @@ public class MainController implements ClientResponseHandle {
     public void handleHistoryGame(HistoryGameResponse response) {
         // TODO Auto-generated method stub
 
+    }
+
+    public void handleRankingListShow(){
+        client.sendRequest(new RankingListRequest("a"));
     }
 
     public void wrongLogin(String fxmlFile) {
@@ -411,134 +420,38 @@ public class MainController implements ClientResponseHandle {
 
     @Override
     public void handleRankingList(RankingListResponse response) {
-        // TODO Auto-generated method stub
-        for(UserRank rank : response.rankingList){
-            System.out.println(rank.userName + " " + rank.elo);
-        }
-    }
-
-    @Override
-    public void handleRegisterResponse(RegisterResponse response) {
-        if (!response.isSuccess) {
-            System.out.println(response.message);
-            return;
-        }
-        Platform.runLater(() -> {
-            loadingController.loadingStackPane.setVisible(false);
-            AppState.setSuccessfulRegistered(true);
-            rightRegister("registerScene.fxml");
-        });
-        Platform.runLater(() -> {
-            AppState.setSuccessfulRegistered(false);
-            switchScene("loginScene.fxml");
-        });
-
-    }
-
-    @Override
-    public void handleNewGameResonse(FindGameResponse response) {
-        TwoPlayerOnlineMode game;
-        if(response.side == "w"){
-            game = new TwoPlayerOnlineMode(false);
-        }else{
-            game = new TwoPlayerOnlineMode(true);
-        }     
-        game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side);
-        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
-        try{
-            gameClient.connectGameServer();       
-        }catch(IOException e){
-            System.out.println(e);
-        }
-        gameClient.sendRequest(new InitPacket(user.playerId));
-        game.setClient(gameClient);
-        game.setOnGameEnd(()->{
-            switchScene("onlineModeScene.fxml");
-        });
-        Scene scene = new Scene(game);
-        Platform.runLater(()->{
-            stage.setScene(scene);
-        });
-    }
-
-    @FXML
-    private ImageView imageView;
-
-
-    public void handleImageUpload() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
-
-        // Hiển thị cửa sổ chọn file và lấy file đã chọn
-        File file = fileChooser.showOpenDialog((Stage) avatarImageView.getScene().getWindow());
-
-        if (file != null) {
-            Image image = new Image(file.toURI().toString());
-
-
-            // Lấy min(width, height) và crop ảnh
-            Image croppedImage = cropToSquare(image);
-
-            // Hiển thị ảnh đã cắt
-            avatarImageView.setImage(croppedImage);
-
-            Circle clip = new Circle(35.5, 35.5, 35.5); // Đặt bán kính vòng tròn (vì chiều rộng và cao của imageView là 88px)
-            avatarImageView.setClip(clip);
-
-            // Thiết lập viền và nền
-//            imageView.setStyle("-fx-border-color: #4CAF50; -fx-border-width: 5; -fx-background-color: white;");
-        }
-    }
-    private Image cropToSquare(Image image) {
-        double width = image.getWidth();
-        double height = image.getHeight();
-
-        // Xác định kích thước vuông (min của width và height)
-        double size = Math.min(width, height);
-
-        // Xác định tọa độ để crop ảnh chính giữa
-        double x = (width - size) / 2;
-        double y = (height - size) / 2;
-
-        // Tạo ảnh mới với kích thước vuông
-        return new WritableImage(image.getPixelReader(), (int) x, (int) y, (int) size, (int) size);
-    }
-
-     // Liên kết với VBox trong FXML
-
-    public void handleRankingList() {
         try {
             // Tạo FXMLLoader
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/onlineModeScene.fxml"));
-
-
             root = loader.load();
             scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            Platform.runLater(()->{
+                stage.setScene(scene);
+                stage.show();
+            });
 
             // Lấy controller sau khi load
             Controller = loader.getController();
-        for (int i = 1; i <= 30; i++) {
+        for (int i = 0; i<response.rankingList.size(); i++) {
             HBox playerRow = new HBox(0); // Khoảng cách giữa các cột
             playerRow.setPrefWidth(830);
             playerRow.setAlignment(Pos.CENTER_LEFT); // Căn thẳng hàng với criteria
 
 
             // Cột Rank
-            Label rankLabel = new Label("#" + i);
+            Label rankLabel = new Label("#" + (i + 1));
             rankLabel.setPrefWidth(70);
             rankLabel.setStyle("-fx-font-size: 14px;");
             rankLabel.setAlignment(javafx.geometry.Pos.CENTER);
 
             // Cột Player
-            Label playerLabel = new Label("Player" + i);
+            Label playerLabel = new Label(response.rankingList.get(i).userName);
             playerLabel.setPrefWidth(500);
             playerLabel.setStyle("-fx-font-size: 14px;");
             playerLabel.setAlignment(Pos.CENTER_LEFT);
 
             // Cột ELO
-            Label eloLabel = new Label(String.valueOf(1000 + 10 * (30 - i)));
+            Label eloLabel = new Label(String.valueOf(response.rankingList.get(i).elo));
             eloLabel.setPrefWidth(150);
             eloLabel.setStyle("-fx-font-size: 14px;");
             eloLabel.setAlignment(javafx.geometry.Pos.CENTER);
@@ -598,6 +511,95 @@ public class MainController implements ClientResponseHandle {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void handleRegisterResponse(RegisterResponse response) {
+        if (!response.isSuccess) {
+            System.out.println(response.message);
+            return;
+        }
+        Platform.runLater(() -> {
+            loadingController.loadingStackPane.setVisible(false);
+            AppState.setSuccessfulRegistered(true);
+            rightRegister("registerScene.fxml");
+        });
+        Platform.runLater(() -> {
+            AppState.setSuccessfulRegistered(false);
+            switchScene("loginScene.fxml");
+        });
+
+    }
+
+    @Override
+    public void handleNewGameResonse(FindGameResponse response) {
+        TwoPlayerOnlineMode game;
+        if(response.side.equals("w")){
+            game = new TwoPlayerOnlineMode(false);
+        }else{
+            game = new TwoPlayerOnlineMode(true);
+        }     
+        game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side);
+        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
+        gameClient.setResponHandler(game);
+        game.setClient(gameClient);
+        try{
+            gameClient.connectGameServer();       
+        }catch(IOException e){
+            System.out.println(e);
+        }
+        gameClient.sendRequest(new InitPacket(user.playerId));
+        game.setOnGameEnd(()->{
+            switchScene("onlineModeScene.fxml");
+        });
+        Scene scene = new Scene(game);
+        Platform.runLater(()->{
+            stage.setScene(scene);
+        });
+    }
+
+    @FXML
+    private ImageView imageView;
+
+
+    public void handleImageUpload() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+
+        // Hiển thị cửa sổ chọn file và lấy file đã chọn
+        File file = fileChooser.showOpenDialog((Stage) avatarImageView.getScene().getWindow());
+
+        if (file != null) {
+            Image image = new Image(file.toURI().toString());
+
+
+            // Lấy min(width, height) và crop ảnh
+            Image croppedImage = cropToSquare(image);
+
+            // Hiển thị ảnh đã cắt
+            avatarImageView.setImage(croppedImage);
+
+            Circle clip = new Circle(35.5, 35.5, 35.5); // Đặt bán kính vòng tròn (vì chiều rộng và cao của imageView là 88px)
+            avatarImageView.setClip(clip);
+
+            // Thiết lập viền và nền
+//            imageView.setStyle("-fx-border-color: #4CAF50; -fx-border-width: 5; -fx-background-color: white;");
+        }
+    }
+    private Image cropToSquare(Image image) {
+        double width = image.getWidth();
+        double height = image.getHeight();
+
+        // Xác định kích thước vuông (min của width và height)
+        double size = Math.min(width, height);
+
+        // Xác định tọa độ để crop ảnh chính giữa
+        double x = (width - size) / 2;
+        double y = (height - size) / 2;
+
+        // Tạo ảnh mới với kích thước vuông
+        return new WritableImage(image.getPixelReader(), (int) x, (int) y, (int) size, (int) size);
+    }
+
 
     public void handleFindOnlineGame() {
         switchScene("onlineModeScene.fxml", "loadingIcon.fxml", 648, 88, 632, 632);

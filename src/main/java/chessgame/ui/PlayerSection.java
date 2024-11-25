@@ -13,13 +13,14 @@ public class PlayerSection extends Pane {
     private Label nameLabel;
     private Label eloLabel;
     private String side;
+    private int maxTime = 600;
 
     public PlayerSection(String name, String elo, int initialTimeInSeconds, String side) {
         this.name = name;
         this.elo = elo;
         this.side = side;
-
-        this.setPrefSize(560, 360);
+        this.maxTime = initialTimeInSeconds;
+        this.setPrefSize(560, 330);
         this.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
 
         Circle indicator = new Circle(30, Color.LIMEGREEN);
@@ -60,8 +61,18 @@ public class PlayerSection extends Pane {
         return side;
     }
 
+    public void setSide(String side){
+        this.side = side;
+    }
+
     public Label getTimerLabel() {
         return timerLabel;
+    }
+
+    public void resetTime(){
+        timerLabel.setText("10:00");
+        timer = new CountdownTimer(maxTime);
+        timer.setLabel(timerLabel);
     }
 
     public void setInfo(String name, String elo, String side){

@@ -16,7 +16,7 @@ public class StockfishEngineDemo {
     private int depth =20;
     
     // Khởi chạy Stockfish
-    public boolean start() {
+    public StockfishEngineDemo() {
         try {
             stockfishPath = StockfishEngineDemo.class
                 .getResource("/chessgame/stockfish/stockfish.exe")
@@ -27,9 +27,9 @@ public class StockfishEngineDemo {
             stockfishWriter = new OutputStreamWriter(stockfishProcess.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            // return false;
         }
-        return true;
+        // return true;
     }
 
     // Độ sâu phân tích tối đa là 30.

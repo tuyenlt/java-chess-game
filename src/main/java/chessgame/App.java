@@ -1,11 +1,15 @@
 package chessgame;
 
 import chessgame.ui.MainController;
+import chessgame.utils.ResourcesHanlder;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 import chessgame.network.ClientNetwork;
 
@@ -23,10 +27,12 @@ public class App extends Application {
         Parent root = loader.load();
         // ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "3.27.120.232");
         ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "localhost");
-        client.setUiResponseHandler(loader.getController());
         client.connectMainServer();
+        // File seclectedFile = ResourcesHanlder.selectFile(stage);
+        // seclectedFile = ResourcesHanlder.convertToJPG(seclectedFile);
+        // client.sendImage(seclectedFile, "tuyenlt.jpg");
+        client.setUiResponseHandler(loader.getController());
         Scene scene = new Scene(root);
-        // MainController mainController = loader.getController();
         MainController.setClient(client);
         MainController.setStage(stage);
         stage.setScene(scene);

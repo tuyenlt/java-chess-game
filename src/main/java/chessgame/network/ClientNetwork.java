@@ -1,10 +1,18 @@
 package chessgame.network;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
+import chessgame.App;
 import chessgame.network.packets.PacketsRegester;
 import chessgame.network.packets.GeneralPackets.*;
 import chessgame.network.packets.IngamePackets.*;
@@ -101,6 +109,25 @@ public class ClientNetwork {
     //* 
     //* 
     //* end */
+
+    public void sendImage(File file, String name) {
+        try {
+            // Read file into byte array
+            byte[] imageData = Files.readAllBytes(file.toPath());
+
+            // Create ImageUpload object
+            ImageUpload upload = new ImageUpload();
+            upload.fileName = name;
+            upload.imageData = imageData;
+
+            // Send file to server
+            client.sendTCP(upload);
+            System.out.println("Image " + upload.fileName + " sent to server.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to read or send file: " + file.getAbsolutePath());
+        }
+    }
 
 
     public void sendRequest(Object object){

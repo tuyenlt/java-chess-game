@@ -69,7 +69,9 @@ public class BoardPane extends Pane{
     }
 
     public BoardPane(String gameMode, boolean isBoardReverse) {
-        setPrefSize(TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
+        this.setLayoutX(0);
+        this.setLayoutY(0);
+        this.setPrefSize(720, 720);
         createBoard();
         promotionSelectInit();
 
@@ -199,11 +201,13 @@ public class BoardPane extends Pane{
             botSide = "w";
         }
         promotionSelectTop = new PromotionSelect(topSide, !isBoardReverse, TILE_SIZE);
+        promotionSelectTop.setLayoutY(4 * TILE_SIZE);
         promotionSelectTop.setOnFinish((name) -> {
             handlePromotionMove(promotionSelectTop.getPromotionMove(), name);
         });
-
+        
         promotionSelectBot = new PromotionSelect(botSide, isBoardReverse, TILE_SIZE);
+        promotionSelectBot.setLayoutY(0);
         promotionSelectBot.setOnFinish((name) -> {
             handlePromotionMove(promotionSelectBot.getPromotionMove(), name);
         });
@@ -348,9 +352,6 @@ public class BoardPane extends Pane{
                     if(piecesImage[endRow][endCol] != null){
                         getChildren().remove(piecesImage[endRow][endCol]);
                     }
-                    if(newMove.isCastling(board)){
-                        handleCasleMove(newMove);
-                    }
                     if(newMove.isPromotion(board)){
                         if(!board.getCurrentTurn().equals(localPlayerSide) && !gameMode.equals("twoPlayer")){
                             handlePromotionMove(newMove, promotionType);
@@ -392,34 +393,36 @@ public class BoardPane extends Pane{
         }
     }
 
-    private void handleCasleMove(Move move){
-        System.out.println("pass");
-        int rookEndCol = move.getEndCol() + (move.getEndCol() < move.getStartCol() ? 1 : -1);
-        int rookStartCol = (move.getEndCol() < move.getStartCol() ? 0 : 7);
-        piecesImage[move.getEndRow()][rookEndCol] = piecesImage[move.getEndRow()][rookStartCol];
-        piecesImage[move.getEndRow()][rookEndCol].setX(rookEndCol * TILE_SIZE);
-        piecesImage[move.getEndRow()][rookEndCol].setY(move.getEndRow() * TILE_SIZE);
-        piecesImage[move.getEndRow()][rookStartCol] = null;
-    }
-
     private void handlePromotionMove(Move promotionMove, String pieceName){
         if(promotionMove.getPromotedPieceType().equals("")){
             promotionMove.setPromotedPieceType(pieceName);
         }
         String pieceImageName = board.getCurrentTurn() + pieceName.toUpperCase();
-        addPiece(pieceImageName, promotionMove.getEndCol(), promotionMove.getEndRow());
         board.movePiece(promotionMove);
+        if(isBoardReverse){
+            promotionMove.reverseBoard();
+        }
+        addPiece(pieceImageName, promotionMove.getEndCol(), promotionMove.getEndRow());
         onMovePiece.accept(board.getCurrentTurn());
-        getChildren().remove(draggedPiece);
+        getChildren().remove(piecesImage[promotionMove.getStartCol()][promotionMove.getStartRow()]);
+        piecesImage[promotionMove.getStartCol()][promotionMove.getStartRow()] = null;
         draggedPiece = null;
         blockingPane.setVisible(false);
+        cleanNullPiece();
     }
 
     private void cleanNullPiece(){
         for(int row=0;row<8;row++){
             for(int col=0; col<8; col++){
-                if(board.getPiece(row, col) == null && piecesImage[row][col] != null){
+                Piece piece = board.getPiece(row, col);
+                if(isBoardReverse){
+                    piece = board.getPiece(7 - row,7 - col);
+                }
+                if(piece == null && piecesImage[row][col] != null){
                     getChildren().remove(piecesImage[row][col]);
+                }
+                if(piece != null && piecesImage[row][col] == null){
+                    addPiece(piece.getName(), col, row);
                 }
             }
         }

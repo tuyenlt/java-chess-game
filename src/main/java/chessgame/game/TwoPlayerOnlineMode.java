@@ -17,6 +17,9 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
     
     public TwoPlayerOnlineMode(boolean isBoardReverse){
         super("singlePlayer", isBoardReverse);
+        gameOptionsMenu.addButton("Resign", "custom-button", (event)->{
+            client.sendRequest(new MsgPacket("/surrender"));
+        });
     }
 
     public void setClient(GameNetwork client){
@@ -30,6 +33,7 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
                 return;
             }
             String newMove = boardPane.getLastMove().toString();
+            System.out.println(newMove);
             client.sendRequest(new MovePacket(newMove));
         }        
     }

@@ -94,7 +94,7 @@
                 <StackPane style="-fx-background-color: rgba(0, 0, 0, 0);" layoutX="25.0" layoutY="227.0">
                     <children>
                         <!-- Đặt Button vào giữa StackPane -->
-                        <Button fx:id="rankingListButton" onAction="#handleRankingList"
+                        <Button fx:id="rankingListButton" onAction="#handleRankingListShow"
                                 prefHeight="54.0" prefWidth="350.0"
                                 styleClass="custom-button" stylesheets="@style.css" text="Ranking List"/>
 
