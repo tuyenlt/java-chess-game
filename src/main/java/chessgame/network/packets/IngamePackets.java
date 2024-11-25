@@ -1,9 +1,14 @@
 package chessgame.network.packets;
 
+
 public class IngamePackets {
 
     public static class InitPacket {
         public int id;
+        public InitPacket(){}
+        public InitPacket(int id){
+            this.id = id;
+        }
     }
 
     public static class OpponentInfo{

@@ -21,8 +21,8 @@ public class App extends Application {
         // Tải tệp FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScene.fxml"));
         Parent root = loader.load();
-        ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "3.27.120.232");
-        // ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "localhost");
+        // ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "3.27.120.232");
+        ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "localhost");
         client.setUiResponseHandler(loader.getController());
         client.connectMainServer();
         Scene scene = new Scene(root);

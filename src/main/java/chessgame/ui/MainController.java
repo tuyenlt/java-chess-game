@@ -9,6 +9,7 @@ import chessgame.network.ClientResponseHandle;
 import chessgame.network.GameNetwork;
 import chessgame.network.User;
 import chessgame.network.packets.GeneralPackets.*;
+import chessgame.network.packets.IngamePackets.InitPacket;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -48,7 +49,7 @@ public class MainController implements ClientResponseHandle {
     LoadingController loadingController;
     MainController Controller;
 
-    private User user;
+    private static User user;
     
     private static ClientNetwork client;
 
@@ -57,6 +58,8 @@ public class MainController implements ClientResponseHandle {
 
     private String usernameRegister = "";
     private String passwordRegister = "";
+
+    
     private String currentElo;
     @FXML
     private Canvas loadingCanvas;
@@ -434,13 +437,14 @@ public class MainController implements ClientResponseHandle {
             game = new TwoPlayerOnlineMode(true);
         }     
         game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side);
-        GameNetwork client = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
+        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
         try{
-            client.connectGameServer();       
+            gameClient.connectGameServer();       
         }catch(IOException e){
             System.out.println(e);
         }
-        game.setClient(client);
+        gameClient.sendRequest(new InitPacket(user.playerId));
+        game.setClient(gameClient);
         game.setOnGameEnd(()->{
             switchScene("onlineModeScene.fxml");
         });
@@ -589,8 +593,10 @@ public class MainController implements ClientResponseHandle {
         if( Controller.boardImageView != null) Controller.boardImageView.setVisible(true);
         if( Controller.triangle != null) Controller.triangle.setVisible(false);
         if( loadingController.loadingAnchorPane != null) loadingController.loadingAnchorPane.setVisible(true);
-
+        client.sendRequest(new FindGameRequest(user.playerId, user.elo));
     }
+
+    
     public void handleEscapeButton(){
         loadingController.loadingAnchorPane.setVisible(false);
         switchScene("onlineModeScene.fxml", "loadingIcon.fxml", 450, 88, 632, 830);
