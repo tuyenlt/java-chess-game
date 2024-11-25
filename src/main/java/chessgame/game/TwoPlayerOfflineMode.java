@@ -1,19 +1,8 @@
 package chessgame.game;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.VBox;
-import chessgame.engine.StockfishEngineDemo;
-import chessgame.logic.Move;
 import chessgame.ui.BoardPane;
-import chessgame.ui.CountdownTimer;
 import chessgame.ui.PlayerSection;
 
 public class TwoPlayerOfflineMode {

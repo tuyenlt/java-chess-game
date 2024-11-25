@@ -1,79 +1,87 @@
 package chessgame.game;
 
+import chessgame.logic.Move;
+import chessgame.network.GameNetwork;
 import chessgame.network.IngameResponseHandler;
 import chessgame.network.packets.GeneralPackets.MsgPacket;
 import chessgame.network.packets.IngamePackets.GameEndResponse;
 import chessgame.network.packets.IngamePackets.GameStateResponse;
 import chessgame.network.packets.IngamePackets.MovePacket;
 import chessgame.network.packets.IngamePackets.OpponentInfo;
-import chessgame.ui.BoardPane;
-import chessgame.ui.CountdownTimer;
-import chessgame.ui.PlayerSection;
-import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
+import chessgame.ui.GameEndAnnouncement;
+import javafx.application.Platform;
 
-public class TwoPlayerOnlineMode implements IngameResponseHandler{
+public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandler{
 
-    private CountdownTimer countdownTimerTop;
-    private CountdownTimer countdownTimerBottom;
-
-    @FXML
-    private VBox rightSection;
-
-    @FXML
-    private BoardPane boardPane;
+    private GameNetwork client;
     
-    @FXML
-    public void initialize() {
-        // boardPane.setGameMode("twoPlayer");
-        boardPane.setReverse(false);
-        PlayerSection playerSectionTop = new PlayerSection("Player 1", "200", 600, "b");
-        PlayerSection playerSectionBottom = new PlayerSection("Player 1", "200", 600, "w");
-        rightSection.getChildren().addAll(playerSectionTop);
-        rightSection.getChildren().addAll(playerSectionBottom);
-        boardPane.setOnMovePiece((tmp) -> {
-            new Thread(() -> {
-                if(boardPane.getCurrentTurn().equals("w")) {
-                    playerSectionTop.stopTimer();
-                    playerSectionBottom.startTimer();
-                }else{
-                    playerSectionTop.startTimer();
-                    playerSectionBottom.stopTimer();
-                }
-            }).start();
-        });
-        boardPane.start();
-        playerSectionBottom.startTimer();
+    public TwoPlayerOnlineMode(boolean isBoardReverse){
+        super("singlePlayer", isBoardReverse);
+    }
+
+    public void setClient(GameNetwork client){
+        this.client = client;
+    }
+
+    @Override
+    protected void handleOnMovePiece(String currentTurn) {
+        if(currentTurn.equals(playerTop.side)){
+            String newMove = boardPane.getLastMove().toString();
+            client.sendRequest(new MovePacket(newMove));
+        }        
     }
 
 
     @Override
+    public void checkGameEnd(String currentTurn){
+        return;
+    }
+
+    @Override
     public void handleGameEnd(GameEndResponse gameEndResponse) {
-        // TODO Auto-generated method stub
-        
+        String winnerName = "None";
+        if(gameEndResponse.state == 0){
+            winnerName = playerTop.name;
+        }else if(gameEndResponse.state == 1){
+            winnerName = playerBottom.name;
+        }
+        GameEndAnnouncement gameEndAnnouncement = new GameEndAnnouncement(
+            playerTop.name, 
+            playerBottom.name,
+            gameEndResponse.state == 0.5 ? "Draw" : winnerName + " win", 
+            String.valueOf(gameEndResponse.eloChange), 
+            () -> {
+                onGameEnd.run();
+            }
+        );
+        Platform.runLater(()->{
+            getChildren().add(gameEndAnnouncement);
+        });
     }
 
     @Override
     public void handleGamestateUpdate(GameStateResponse gameStateResponse) {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public void handleMovePacket(MovePacket movePacket) {
-        // TODO Auto-generated method stub
-        
+        if(boardPane.getCurrentTurn().equals(playerTop.side)){
+            Platform.runLater(()->{
+                boardPane.movePiece(new Move(movePacket.move));
+           });
+        }
     }
 
     @Override
     public void onReciveOpponentInfo(OpponentInfo opponentInfo) {
-        // TODO Auto-generated method stub
-        
+        Platform.runLater(() -> {
+            setPlayerTop(opponentInfo.name, String.valueOf(opponentInfo.elo), opponentInfo.side);        
+        });
     }
 
     @Override
     public void handleMsgPacket(MsgPacket response) {
-        // TODO Auto-generated method stub
-        
+        System.out.println(response.msg);        
     }
 }

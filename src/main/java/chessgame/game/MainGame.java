@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 
 abstract public class MainGame extends StackPane {
     protected int gameTime = 600;
@@ -15,20 +16,28 @@ abstract public class MainGame extends StackPane {
     protected boolean isBoardReverse = false;
     protected PlayerSection playerSectionTop;
     protected PlayerSection playerSectionBottom;
-    protected PlayerInfo playerTop;
-    protected PlayerInfo playerBottom;
+    protected PlayerInfo playerTop = new PlayerInfo();
+    protected PlayerInfo playerBottom = new PlayerInfo();
+    protected Stage mainStage;
+    protected Runnable onGameEnd = () -> {
+        System.out.println("game end motherfucker");
+    };
 
     protected class PlayerInfo{
         public String name;
         public String elo;
         public String side;
+        public PlayerInfo(){
+            name = "Player (Not You Bitch)";
+            elo = "???";
+            side = "w";
+        }
         public PlayerInfo(String name, String elo, String side) {
             this.name = name;
             this.elo = elo;
             this.side = side;
         }
     }
-
 
     public MainGame(String mode, boolean isBoardReverse) {
         getStylesheets().add(getClass().getResource("/chessgame/style.css").toExternalForm());
@@ -77,18 +86,13 @@ abstract public class MainGame extends StackPane {
                     });
                 }
                 handleOnMovePiece(currentTurn);
-                hanldeGameEnd(currentTurn);
+                checkGameEnd(currentTurn);
             }).start();
         });
         boardPane.start();
         
         contentPane.getChildren().addAll(boardPane, rightSection);
-        GameEndAnnouncement gameEndAnnouncement = new GameEndAnnouncement("Player 1", "Player 2", "win", 
-                () -> {
-                    System.out.println("return to main menu");
-                }
-        );
-        this.getChildren().addAll(backgroundPane, contentPane, gameEndAnnouncement);
+        this.getChildren().addAll(backgroundPane, contentPane);
     }
 
     abstract protected void handleOnMovePiece(String currentTurn);
@@ -103,7 +107,28 @@ abstract public class MainGame extends StackPane {
         playerSectionBottom.setInfo(name, elo, side);
     }
 
-    public void hanldeGameEnd(String currentTurn){
+    public void checkGameEnd(String currentTurn){
+        String gameState = boardPane.getGameState();
+        if(!gameState.equals("ongoing")){
+            String winnerName = "None";
+            if(gameState.equals("win")){
+                if(currentTurn.equals(playerTop.side)){
+                    winnerName = playerTop.name;
+                }else{
+                    winnerName = playerBottom.name;
+                }
+            }
+            GameEndAnnouncement gameEndAnnouncement = new GameEndAnnouncement(playerTop.name, playerBottom.name,winnerName + " win", "None", 
+            () -> {
+                onGameEnd.run();
+            });
+            Platform.runLater(()->{
+                getChildren().add(gameEndAnnouncement);
+            });
+        }
+    }
 
+    public void setOnGameEnd(Runnable onGameEnd){
+        this.onGameEnd = onGameEnd;
     }
 }

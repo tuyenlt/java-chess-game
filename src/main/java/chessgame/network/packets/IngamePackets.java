@@ -9,10 +9,12 @@ public class IngamePackets {
     public static class OpponentInfo{
         public String name;
         public int elo;
+        public String side;
         public OpponentInfo(){}
-        public OpponentInfo(String name, int elo) {
+        public OpponentInfo(String name, int elo, String side) {
             this.name = name;
             this.elo = elo;
+            this.side = side;
         }
     }
 

@@ -10,9 +10,8 @@ import javafx.scene.shape.Rectangle;
 
 public class GameEndAnnouncement extends Pane {
 
-    public GameEndAnnouncement(String player1Name, String player2Name, String result, Runnable onReturn) {
-        // getStylesheets().add(getClass().getResource("/chessgame/style.css").toExternalForm());
-
+    public GameEndAnnouncement(String player1Name, String player2Name, String result, 
+                               String eloChange, Runnable onReturn) {
         double rectWidth = 600;
         double rectHeight = 300;
         Rectangle background = new Rectangle(rectWidth, rectHeight);
@@ -30,22 +29,27 @@ public class GameEndAnnouncement extends Pane {
 
         Label gameResult = new Label("Result: " + result);
         gameResult.getStyleClass().add("greetingText");
-
+        
         // Return button styled using CSS
         Button returnButton = new Button("Return");
         returnButton.getStyleClass().add("custom-button");
-
+        
         returnButton.setOnAction(event -> {
             if (onReturn != null) {
-                setVisible(false); // Hide the announcement
-                onReturn.run();    // Execute return action
+                setVisible(false);
+                onReturn.run();  
             }
         });
-
         // Layout using VBox
         VBox contentBox = new VBox(20); // Vertical spacing
+        if(!eloChange.equals("None")){
+            Label eloChangeLabel = new Label("Elo change:" + eloChange);
+            eloChangeLabel.getStyleClass().add("greetingText");
+            contentBox.getChildren().addAll(announcement, playerInfo, gameResult, eloChangeLabel, returnButton);
+        }else{
+            contentBox.getChildren().addAll(announcement, playerInfo, gameResult, returnButton);
+        }
         contentBox.setAlignment(Pos.CENTER);
-        contentBox.getChildren().addAll(announcement, playerInfo, gameResult, returnButton);
 
         // Position content in the center of the rectangle
         contentBox.setLayoutX((1280 - rectWidth) / 2); // Same X as background

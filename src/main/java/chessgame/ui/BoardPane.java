@@ -426,17 +426,18 @@ public class BoardPane extends Pane{
     }
 
     public String getGameState(){
-        return "ongoing";
+        return board.gameState();
     }
 
     public List<String> getMove(String side){
         return board.getMoves(side);
     }
 
+    public Move getLastMove(){
+        return board.getLastMove();
+    }
+
     public String getCurrentTurn(){
         return board.getCurrentTurn();
     }
-
-
-
 }

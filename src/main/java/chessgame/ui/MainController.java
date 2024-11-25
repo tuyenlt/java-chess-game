@@ -1,9 +1,12 @@
 package chessgame.ui;
 
 import chessgame.game.MainGame;
+import chessgame.game.SinglePlayer;
 import chessgame.game.TwoPlayer;
+import chessgame.game.TwoPlayerOnlineMode;
 import chessgame.network.ClientNetwork;
 import chessgame.network.ClientResponseHandle;
+import chessgame.network.GameNetwork;
 import chessgame.network.User;
 import chessgame.network.packets.GeneralPackets.*;
 import javafx.animation.FadeTransition;
@@ -280,11 +283,27 @@ public class MainController implements ClientResponseHandle {
     }
 
     public void singlePlayerMode(ActionEvent event){
-        switchScene("singlePlayerScene.fxml");
+        SinglePlayer game = new SinglePlayer(false);
+        game.setOnGameEnd(()->{
+            if(user == null){
+                switchScene("offlineModeScene.fxml");
+            }else{
+                switchScene("onlineModeScene.fxml");
+            }
+        });
+        Scene scene = new Scene(game);
+        stage.setScene(scene);
+        stage.show();
     }
     public void twoPlayerMode(ActionEvent event){
-        // switchScene("twoPlayerScene.fxml");
         TwoPlayer game = new TwoPlayer(false);
+        game.setOnGameEnd(()->{
+            if(user == null){
+                switchScene("offlineModeScene.fxml");
+            }else{
+                switchScene("onlineModeScene.fxml");
+            }
+        });
         Scene scene = new Scene(game);
         stage.setScene(scene);
         stage.show();
@@ -397,10 +416,10 @@ public class MainController implements ClientResponseHandle {
             AppState.setSuccessfulRegistered(true);
             rightRegister("registerScene.fxml");
         });
-                Platform.runLater(() -> {
-                    AppState.setSuccessfulRegistered(false);
-                    switchScene("loginScene.fxml");
-                });
+        Platform.runLater(() -> {
+            AppState.setSuccessfulRegistered(false);
+            switchScene("loginScene.fxml");
+        });
 
     }
     
@@ -408,12 +427,25 @@ public class MainController implements ClientResponseHandle {
 
     @Override
     public void handleNewGameResonse(FindGameResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    private void showPopup(String msg) { // TODO làm 1 cái popup thật đẹp ở đây
-        System.out.println(msg);
+        TwoPlayerOnlineMode game;
+        if(response.side == "w"){
+            game = new TwoPlayerOnlineMode(false);
+        }else{
+            game = new TwoPlayerOnlineMode(true);
+        }     
+        game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side);
+        GameNetwork client = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
+        try{
+            client.connectGameServer();       
+        }catch(IOException e){
+            System.out.println(e);
+        }
+        game.setClient(client);
+        game.setOnGameEnd(()->{
+            switchScene("onlineModeScene.fxml");
+        });
+        Scene scene = new Scene(game);
+        stage.setScene(scene);
     }
 
     @FXML
