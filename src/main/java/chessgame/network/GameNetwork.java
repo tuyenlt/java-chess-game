@@ -65,7 +65,7 @@ public class GameNetwork {
         });
 
 
-        new Thread("Connect") {
+        new Thread("game") {
             public void run() {
                 try {
                     client.connect(timeout, serverAddr, tcpPort, udpPort);

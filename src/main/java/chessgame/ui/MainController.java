@@ -456,7 +456,9 @@ public class MainController implements ClientResponseHandle {
             switchScene("onlineModeScene.fxml");
         });
         Scene scene = new Scene(game);
-        stage.setScene(scene);
+        Platform.runLater(()->{
+            stage.setScene(scene);
+        });
     }
 
     @FXML
@@ -617,6 +619,7 @@ public class MainController implements ClientResponseHandle {
         loadingController.cancelFindingButton.setVisible(false);
 
         StackPane.setAlignment(Controller.rankingPic, Pos.TOP_LEFT);
+        client.sendRequest(new FindGameRequest(user.playerId, user.elo));
     }
 
     

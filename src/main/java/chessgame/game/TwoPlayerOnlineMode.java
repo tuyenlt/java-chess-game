@@ -26,6 +26,9 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
     @Override
     protected void handleOnMovePiece(String currentTurn) {
         if(currentTurn.equals(playerTop.side)){
+            if(boardPane.getLastMove() == null){
+                return;
+            }
             String newMove = boardPane.getLastMove().toString();
             client.sendRequest(new MovePacket(newMove));
         }        

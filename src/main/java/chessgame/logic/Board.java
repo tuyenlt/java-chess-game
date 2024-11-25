@@ -297,6 +297,9 @@ public class Board {
     }
 
     public Move getLastMove(){
+        if(allMoves.isEmpty()){
+            return null;
+        }
         return new Move(allMoves.getLast());
     }
 
