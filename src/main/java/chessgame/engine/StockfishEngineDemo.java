@@ -55,7 +55,7 @@ public class StockfishEngineDemo {
             String line;
             while ((line = stockfishReader.readLine()) != null ) {
                 output.add(line);
-                // System.out.println(line);
+                System.out.println(line);
                 if(line.startsWith("bestmove"))break;
             }
             return output;
@@ -86,10 +86,39 @@ public class StockfishEngineDemo {
         return null;
     }
 
-    // Trả về điểm số của nước đi cuối cùng
+    // Trả về điểm số của thế trận
     // Dương có lợi cho trắng, âm có lợi cho đen
     // 100 điểm tương đương với lợi thế 1 con tốt
-    public String getMovesScore(List<String> allMoves){
+    // public int getMovesScore(List<String> allMoves){
+    //     setPosition(allMoves);
+    //     sendCommand("go depth "+depth);                 // Phân tích với độ sâu depth mặc định là 20
+    //     List<String> output = readOutput();
+    //     for (String line : output) {
+    //         if(line.startsWith("info depth " + depth)){
+    //             if (line.contains("score cp")) {
+    //                 // Điểm dựa trên vật chất (centipawn)
+    //                 String[] parts = line.split("score cp ");
+    //                 int score = Integer.parseInt(parts[1].split(" ")[0]);
+    //                 if (allMoves.size() %2 ==0 ) score = -score;
+    //                 return score;
+    //             } else if (line.contains("score mate")) {
+    //                 // Điểm khi có thể chiếu bí
+    //                 // String[] parts = line.split("score mate ");
+    //                 // String moves = parts[1].split(" ")[0];
+    //                 // Mate in là trạng thái chắc chắn bị chiếu hết(nếu đánh chuẩn chỉ) sau moves lượt
+    //                 // return "Mate in: " + moves + " moves";
+    //                 if (allMoves.size() % 2==0) return Integer.MIN_VALUE;
+    //                 return Integer.MAX_VALUE;
+    //             }
+    //         } 
+    //     }
+    //     return 0;
+    // }
+
+    
+    // Trả về tỉ lệ thắng của người chơi hiện tại
+    public double getWinRate(List<String> allMoves){
+        int score = 0;
         setPosition(allMoves);
         sendCommand("go depth "+depth);                 // Phân tích với độ sâu depth mặc định là 20
         List<String> output = readOutput();
@@ -98,21 +127,19 @@ public class StockfishEngineDemo {
                 if (line.contains("score cp")) {
                     // Điểm dựa trên vật chất (centipawn)
                     String[] parts = line.split("score cp ");
-                    int score = Integer.parseInt(parts[1].split(" ")[0]);
+                    score = Integer.parseInt(parts[1].split(" ")[0]);
                     if (allMoves.size() %2 ==0 ) score = -score;
-                    return "Score: "+ score;
                 } else if (line.contains("score mate")) {
-                    // Điểm khi có thể chiếu bí
-                    String[] parts = line.split("score mate ");
-                    String moves = parts[1].split(" ")[0];
-                    // Mate in là trạng thái chắc chắn bị chiếu hết(nếu đánh chuẩn chỉ) sau moves lượt
-                    return "Mate in: " + moves + " moves";
+                    if (allMoves.size() % 2==0) score = Integer.MIN_VALUE;
+                    score = Integer.MAX_VALUE;
                 }
             } 
         }
-        return null;
+
+        // Chuyển hóa từ điểm centipawn sang tỉ lệ thắng
+        return 1/(1+Math.exp(-0.003*score));
     }
-    
+
     // Dừng Stockfish
     public void stop() {
         sendCommand("quit");

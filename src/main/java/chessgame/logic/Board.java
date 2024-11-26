@@ -359,6 +359,28 @@ public class Board {
         }
     }
 
+    // Cái này là hàm chính trả về phân loại nước đi
+    // oldRate anh là biến tạo từ ban đầu và cập nhật sau mỗi nước đi
+    // newRate là tỉ lệ thắng sau khi đi nước đi x bằng cách gọi stockfish tính điểm
+    // lostPiece là true nếu nước đi này có sự hi sinh 1 quân cờ nào đó
+    // Xếp hạng nước đi Brilliant > Great > Best > Excellent > Good > Inaccuracy > Mistake > Blunder 
+    public static String getTypeMove(double newRate, double oldRate, boolean lostPiece){
+        double changeRate = oldRate - newRate;
+        if (changeRate >= 0.2) return "Blunder";
+        else if(changeRate >= 0.1) return "Mistake";
+        else if(changeRate>= 0.05) return "Inaccuracy";
+        else if(changeRate>=0.02) return "Good";
+        else if(changeRate>=0) return "Excellent";
+        else {
+            // Nếu nước cờ này hi sinh quân cờ nhưng vẫn đem lại lợi thế lớn thì là "Brilliant"
+            if (lostPiece) return "Brilliant";
+            
+            // Nếu nó thay đổi thế cờ từ hòa hoặc thua => thắng thì là Great
+            if (newRate >=0.5 && oldRate <=0.5) return "Great";
+            return "Best";
+        }   
+    }
+
     @Override
     public String toString() {
         String output = "------------------------" +'\n';
