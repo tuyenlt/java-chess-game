@@ -42,6 +42,9 @@ public class Board {
     HashMap<Character,Integer> whitePieces;
     HashMap<Character,Integer> blackPieces;
     
+    // Tỉ lệ thắng hiện tại của 2 bên
+    private double oldRate;
+
     // Vị trí quân vua của 2 bên
     private int wK_row, wK_col;
     private int bK_row, bK_col;
@@ -59,6 +62,7 @@ public class Board {
         bK_row = 0;
         bK_col = 4;
         currentTurn ="w";
+        oldRate = 0.5;
     }
 
     private Box[][] createBoard() {
@@ -364,8 +368,9 @@ public class Board {
     // newRate là tỉ lệ thắng sau khi đi nước đi x bằng cách gọi stockfish tính điểm
     // lostPiece là true nếu nước đi này có sự hi sinh 1 quân cờ nào đó
     // Xếp hạng nước đi Brilliant > Great > Best > Excellent > Good > Inaccuracy > Mistake > Blunder 
-    public static String getTypeMove(double newRate, double oldRate, boolean lostPiece){
+    public String getTypeMove(double newRate, boolean lostPiece){
         double changeRate = oldRate - newRate;
+        oldRate = 1- newRate;   
         if (changeRate >= 0.2) return "Blunder";
         else if(changeRate >= 0.1) return "Mistake";
         else if(changeRate>= 0.05) return "Inaccuracy";
@@ -374,11 +379,11 @@ public class Board {
         else {
             // Nếu nước cờ này hi sinh quân cờ nhưng vẫn đem lại lợi thế lớn thì là "Brilliant"
             if (lostPiece) return "Brilliant";
-            
+
             // Nếu nó thay đổi thế cờ từ hòa hoặc thua => thắng thì là Great
             if (newRate >=0.5 && oldRate <=0.5) return "Great";
             return "Best";
-        }   
+        }
     }
 
     @Override
