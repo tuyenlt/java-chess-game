@@ -1,6 +1,7 @@
 package chessgame.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import chessgame.logic.Board;
 import chessgame.logic.Move;
@@ -103,7 +104,6 @@ public class ReplayBoard extends Pane{
         }
         currentStateIndex++;
         loadState(currentStateIndex);
-    
     }
     
     public void prev(){
@@ -112,5 +112,26 @@ public class ReplayBoard extends Pane{
         }
         currentStateIndex--;
         loadState(currentStateIndex);
+    }
+
+    public String getMovesAtIndex(int index){
+        if(index < 0){
+            return "";
+        }
+        if(index >= moves.length){
+            index = moves.length - 1;
+        }
+        StringBuilder res = new StringBuilder();
+        for(int i=0; i<= index; i++){
+            res.append(moves[i] + " ");
+        }
+        return res.toString();
+    }
+
+    public String getMoves(){
+        return getMovesAtIndex(currentStateIndex);
+    }
+    public String getPrevMoves(){
+        return getMovesAtIndex(currentStateIndex-1);
     }
 }

@@ -318,7 +318,7 @@ public class MainController implements ClientResponseHandle {
         //     }
         // });
         // Scene scene = new Scene(game);
-        HistoryGameReplay replayGame = new HistoryGameReplay("d2d4 d7d5 e2e4 d5e4 c1f4 g8f6 d1d3 e4d3 c2d3 d8d4 b1c3 d4f4 d3d4 c7c6 b2b3 f6e4 f2f3", false);
+        HistoryGameReplay replayGame = new HistoryGameReplay("d2d4 d7d5 e2e4 d5e4 c1f4 g8f6 d1d3 e4d3 c2d3 d8d4 b1c3 d4f4 d3d4 c7c6 b2b3 f6e4 f2f3", true);
         replayGame.setOnReturn(()->{
             switchScene("offlineModeScene.fxml");
         });
@@ -621,7 +621,7 @@ public class MainController implements ClientResponseHandle {
         loadingController.cancelFindingButton.setVisible(false);
 
         StackPane.setAlignment(Controller.rankingPic, Pos.TOP_LEFT);
-        client.sendRequest(new FindGameRequest(user.playerId, user.elo));
+        client.sendRequest(new FindGameRequest(user.playerId, user.name, user.elo));
     }
 
     

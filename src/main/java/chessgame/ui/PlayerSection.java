@@ -1,8 +1,10 @@
 package chessgame.ui;
 
+import chessgame.utils.ResourcesHanlder;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class PlayerSection extends Pane {
@@ -12,6 +14,7 @@ public class PlayerSection extends Pane {
     private Label timerLabel;
     private Label nameLabel;
     private Label eloLabel;
+    private ImageView indicator;
     private String side;
     private int maxTime = 600;
 
@@ -23,9 +26,17 @@ public class PlayerSection extends Pane {
         this.setPrefSize(560, 330);
         this.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
 
-        Circle indicator = new Circle(30, Color.LIMEGREEN);
-        indicator.setLayoutX(50);
-        indicator.setLayoutY(50);
+        indicator = new ImageView();
+        indicator.setImage(getImage(name));
+        indicator.setFitWidth(60);
+        indicator.setFitHeight(60);
+        indicator.setLayoutX(20);
+        indicator.setLayoutY(20);
+
+        Circle clip = new Circle(30); 
+        clip.setCenterX(30); 
+        clip.setCenterY(30); 
+        indicator.setClip(clip);
 
         nameLabel = new Label(name);
         eloLabel = new Label(elo);
@@ -61,7 +72,7 @@ public class PlayerSection extends Pane {
         return side;
     }
 
-    public void setSide(String side){
+    public void setSide(String side) {
         this.side = side;
     }
 
@@ -69,16 +80,23 @@ public class PlayerSection extends Pane {
         return timerLabel;
     }
 
-    public void resetTime(){
+    public void resetTime() {
         timerLabel.setText("10:00");
         timer = new CountdownTimer(maxTime);
         timer.setLabel(timerLabel);
     }
 
-    public void setInfo(String name, String elo, String side){
+    private Image getImage(String name) {
+        String imagePath = getClass().getResource("/chessgame/avatar/" + name + ".jpg").toExternalForm();
+        System.out.println(imagePath);
+        return ResourcesHanlder.cropImageToSquare(new Image(imagePath, 60, 60, true, true));
+    }
+
+    public void setInfo(String name, String elo, String side) {
         this.name = name;
         this.elo = elo;
         this.side = side;
+        indicator.setImage(getImage(name));
         nameLabel.setText(name);
         eloLabel.setText(elo);
     }

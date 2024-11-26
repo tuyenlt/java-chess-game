@@ -1,4 +1,5 @@
 package chessgame.utils;
-public class MoveConvert {
+
+public class Validator {
     
 }

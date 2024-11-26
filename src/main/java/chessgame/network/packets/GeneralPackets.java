@@ -123,6 +123,13 @@ public class GeneralPackets {
         }
         
     }
+
+    public static class ImageChunk {
+        public String fileName;
+        public int chunkIndex;
+        public int totalChunks;
+        public byte[] imageData;
+    }
     
     public static class ImageUpload {
         public String fileName;
@@ -151,15 +158,16 @@ public class GeneralPackets {
 
     public static class FindGameRequest{
         public int userId;
+        public String name;
         public int elo;
         public FindGameRequest(){
 
         }
-        public FindGameRequest(int userId, int elo) {
+        public FindGameRequest(int userId, String name, int elo) {
             this.userId = userId;
+            this.name = name;
             this.elo = elo;
         }
-        
     }
 
     public static class FindGameResponse{

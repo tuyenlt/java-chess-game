@@ -17,10 +17,10 @@ public class SinglePlayerMode extends MainGame{
         }
         if(playerSide.equals("w")){
             setPlayerTop("StockFish", "???", "b");
-            setPlayerBottom("Player(You)", "???", "w");
+            setPlayerBottom("You", "???", "w");
         }else{
             setPlayerTop("StockFish", "???", "w");
-            setPlayerBottom("Player(You)", "???", "b");
+            setPlayerBottom("You", "???", "b");
         }
 
         gameOptionsMenu.addButton("Reverse", "custom-button", event->{
@@ -41,7 +41,6 @@ public class SinglePlayerMode extends MainGame{
         try{
             while(stockfish == null){
                 Thread.sleep(100);
-                System.out.println("nullll");
             }
         }catch(Exception e){
             

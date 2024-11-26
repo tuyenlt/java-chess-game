@@ -20,7 +20,7 @@ public class BoardPane extends Pane{
     private static final int TILE_SIZE = 90; 
     private static final int BOARD_SIZE = 8; 
     private Board board = new Board();
-    private ImageView draggedPiece; // The piece that is being dragged
+    private ImageView draggedPiece;
     private final Rectangle[][] tiles = new Rectangle[BOARD_SIZE][BOARD_SIZE];
     private Circle[][] moveHightLight = new Circle[8][8];
     private Circle[][] takeableHightLight = new Circle[8][8];
@@ -347,6 +347,9 @@ public class BoardPane extends Pane{
                 newMove.reverseBoard();
             }
             Piece chossingPiece = board.getPiece(newMove.getStartRow(), newMove.getStartCol());
+            if(chossingPiece == null){
+                return false;
+            }
             for(Move move : chossingPiece.getSafeMoves(board, newMove.getStartRow(), newMove.getStartCol())){
                 if(move.equals(newMove)){
                     if(piecesImage[endRow][endCol] != null){

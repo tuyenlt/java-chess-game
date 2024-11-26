@@ -1,5 +1,7 @@
 package chessgame.game;
 
+import chessgame.engine.StockfishEngineDemo;
+import chessgame.engine.StockfishEvaluator;
 import chessgame.ui.GameOptionsMenu;
 import chessgame.ui.ReplayBoard;
 import javafx.animation.KeyFrame;
@@ -20,6 +22,7 @@ public class HistoryGameReplay extends StackPane {
     private ReplayBoard replayBoard;
     private boolean isAutoPlay = false; 
     private Timeline autoPlayTimeline;
+    private StockfishEvaluator stockfish = new StockfishEvaluator();
     private Runnable onReturn = () -> {
         System.out.println("return");
     };
@@ -61,6 +64,7 @@ public class HistoryGameReplay extends StackPane {
         });
         
         replayMenu.addButton("Next", "custom-button", event -> {
+            getScore();
             replayBoard.next();
         });
 
@@ -86,5 +90,13 @@ public class HistoryGameReplay extends StackPane {
 
     public void setOnReturn(Runnable onReturn){
         this.onReturn = onReturn;
+    }
+
+    public void getScore(){
+        String prevMoves = replayBoard.getPrevMoves();
+        String currentMoves = replayBoard.getMoves();
+        new Thread(()->{
+            System.out.println(stockfish.evaluateLastMove(prevMoves, currentMoves, 10));
+        }).start();
     }
 }

@@ -67,8 +67,8 @@ abstract public class MainGame extends StackPane {
                                 "-fx-background-repeat: no-repeat; " +
                                 "-fx-background-position: center;");
 
-        playerSectionTop = new PlayerSection("Player 1", "???", gameTime, "b");
-        playerSectionBottom = new PlayerSection("Player 2", "???", gameTime, "w");
+        playerSectionTop = new PlayerSection("Player1", "???", gameTime, "b");
+        playerSectionBottom = new PlayerSection("Player2", "???", gameTime, "w");
 
         gameOptionsMenu = new GameOptionsMenu();
         gameOptionsMenu.addButton("Quit Game", "quit-button", event -> onGameEnd.run());
@@ -144,9 +144,9 @@ abstract public class MainGame extends StackPane {
             String winnerName = "None";
             if(gameState.equals("win")){
                 if(currentTurn.equals(playerTop.side)){
-                    winnerName = playerTop.name;
-                }else{
                     winnerName = playerBottom.name;
+                }else{
+                    winnerName = playerTop.name;
                 }
             }
             GameEndAnnouncement gameEndAnnouncement = new GameEndAnnouncement(playerTop.name, playerBottom.name,winnerName + " win", "None", 

@@ -1,21 +1,15 @@
 package chessgame.network;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import chessgame.App;
 import chessgame.network.packets.PacketsRegester;
 import chessgame.network.packets.GeneralPackets.*;
-import chessgame.network.packets.IngamePackets.*;
 
 public class ClientNetwork {
     private Client client;
@@ -31,7 +25,7 @@ public class ClientNetwork {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
         this.serverAddr = serverAddr;
-        client = new Client();
+        client = new Client(10000, 10000);
         PacketsRegester.register(client);
     }
 
@@ -85,7 +79,7 @@ public class ClientNetwork {
             }
 
         });
-
+        client.addListener(new ImageChunkHandler());
         new Thread("Connect") {
             public void run() {
                 try {
@@ -111,18 +105,24 @@ public class ClientNetwork {
     //* end */
 
     public void sendImage(File file, String name) {
-        try {
-            // Read file into byte array
-            byte[] imageData = Files.readAllBytes(file.toPath());
+        final int CHUNK_SIZE = 8000;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] buffer = new byte[CHUNK_SIZE];
+            int bytesRead;
+            int chunkIndex = 0;
 
-            // Create ImageUpload object
-            ImageUpload upload = new ImageUpload();
-            upload.fileName = name;
-            upload.imageData = imageData;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                ImageChunk chunk = new ImageChunk();
+                chunk.fileName = name;
+                chunk.chunkIndex = chunkIndex++;
+                chunk.totalChunks = (int) Math.ceil((double) file.length() / CHUNK_SIZE);
+                chunk.imageData = bytesRead == CHUNK_SIZE ? buffer : java.util.Arrays.copyOf(buffer, bytesRead);
 
-            // Send file to server
-            client.sendTCP(upload);
-            System.out.println("Image " + upload.fileName + " sent to server.");
+                client.sendTCP(chunk);
+                System.out.println("Sent chunk " + chunk.chunkIndex + "/" + chunk.totalChunks + " of file " + name);
+            }
+
+            System.out.println("Image " + name + " sent to server in chunks.");
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to read or send file: " + file.getAbsolutePath());
