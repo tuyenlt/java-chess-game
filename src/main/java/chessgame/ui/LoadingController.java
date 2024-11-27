@@ -13,19 +13,20 @@ import javafx.scene.shape.ArcType;
 
 public class LoadingController {
     @FXML
-    public AnchorPane loadingStackPane;
-    @FXML
     public AnchorPane loadingAnchorPane;
 
     @FXML
     public Canvas loadingCanvas;
 
     @FXML
-    public Label escLabel;
+    public Label loadingLabel;
     @FXML
     public Button cancelFindingButton;
     private double angle = 0; // Độ dài vòng cung
     private double rotation = 0; // Góc xoay
+    private Runnable onCancelCallBack = () -> {
+        System.out.println("cancel");
+    };
 
     @FXML
     public void initialize() {
@@ -51,6 +52,24 @@ public class LoadingController {
                 }
             }
         }.start();
+    }
+    
+    public void setIsFindingGame(boolean isFindingGame){
+        if(isFindingGame){
+            loadingLabel.setText("Waiting for opponent...");
+            cancelFindingButton.setVisible(true);
+        }else{
+            loadingLabel.setText("Loading ...");
+            cancelFindingButton.setVisible(false);
+        }
+    }
+
+    public void setOnCancel(Runnable onCancelCallBack){
+        this.onCancelCallBack = onCancelCallBack;
+    }
+
+    public void onCancel() {
+        onCancelCallBack.run();
     }
 
     private void drawRotatingArc(GraphicsContext gc, double size) {

@@ -1,16 +1,24 @@
 package chessgame.ui;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 import chessgame.network.packets.GeneralPackets.RegisterRequest;
 import chessgame.utils.Validator;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 
 public class RegisterController {
-    
+
+    @FXML
+    private AnchorPane loadingPane;
+
     @FXML
     private TextField usernameTextFieldRegister;
 
@@ -26,11 +34,34 @@ public class RegisterController {
     @FXML
     private Label warningLabel;
 
+    @FXML
+    private AnchorPane registerForm;
     private Runnable onSwitchToLogin;
     private Consumer<RegisterRequest> onSubmit;
     private Runnable onReturn;
 
+    public void initialize() {
+        if(registerForm != null) {
+            AnimationUtils.applyEffect(registerForm, 0.2);
+        }
+    }
+
     public void registerSubmit(ActionEvent event) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            Parent loadingListRoot = loader.load();
+            LoadingController loadingListController = loader.getController();
+
+            Platform.runLater(() -> {
+                loadingPane.getChildren().setAll(loadingListRoot);
+                loadingPane.setVisible(true);
+
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String username = usernameTextFieldRegister.getText();
         String password = passwordTextFieldRegister.getText();
         String confirmPassword = confirmPasswordField.getText();

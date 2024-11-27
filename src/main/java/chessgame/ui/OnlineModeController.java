@@ -2,12 +2,11 @@ package chessgame.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.cert.PolicyNode;
 
 import chessgame.network.ClientNetwork;
 import chessgame.network.User;
-import chessgame.network.packets.GeneralPackets.FindGameRequest;
-import chessgame.network.packets.GeneralPackets.MsgPacket;
-import chessgame.network.packets.GeneralPackets.RankingListResponse;
+import chessgame.network.packets.GeneralPackets.*;
 import chessgame.utils.ResourcesHanlder;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -28,25 +27,40 @@ public class OnlineModeController {
     private Runnable onLogout;
 
     @FXML
+    private AnchorPane root;
+    @FXML
     private Label usernameDisplayLabel;
     @FXML
     private Label eloDisplayLabel;
     @FXML
     private ImageView avatarImageView;
     @FXML
-    private AnchorPane rankingListPane;
+    private AnchorPane rankingPane;
+    @FXML
+    private AnchorPane loadingPane;
+    @FXML
+    private AnchorPane historyPane;
+    @FXML
+    private ImageView boardImageView;
 
-    public void initialize() {
+    public void initialize() throws IOException{
         System.out.println("OnlineModeController initialized");
         System.out.println(avatarImageView.isVisible());
     }
 
     public void handleImageUpload() {
         try {
-            File avatarFile = ResourcesHanlder.selectFile(new Stage());
-            ImageView newAvatarImageView = ResourcesHanlder.createAvatarView(avatarFile.getPath(), true);
+            File selectFile = ResourcesHanlder.selectFile(new Stage());
+            File avatarFile = ResourcesHanlder.convertToJPG(selectFile);
+            if(avatarFile == null) return;
+            Image avatarImage = new Image(avatarFile.toURI().toString());
+            client.sendImage(avatarFile, user.name + ".jpg");
             Platform.runLater(() -> {
-                avatarImageView.setImage(newAvatarImageView.getImage());
+                avatarImageView.setImage(ResourcesHanlder.cropImageToSquare(avatarImage));
+                avatarImageView.setFitHeight(70);
+                avatarImageView.setFitWidth(70);
+                Circle clip = new Circle(35, 35, 35);
+                avatarImageView.setClip(clip);
                 avatarImageView.setVisible(true);
             });
             client.sendImage(avatarFile, user.name);
@@ -72,7 +86,7 @@ public class OnlineModeController {
             usernameDisplayLabel.setText("User Name: " + user.name);
             eloDisplayLabel.setText("Elo: " + user.elo);
             double labelWidth = 1195.0 - usernameDisplayLabel.getWidth() - 80;
-            if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
+//            if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
             usernameDisplayLabel.setLayoutX(labelWidth);
             eloDisplayLabel.setLayoutX(labelWidth);
             loadAvatarImage(ResourcesHanlder.getAvatarImage(user.name));
@@ -95,36 +109,77 @@ public class OnlineModeController {
             rankingListController.updateRankingList(response, user);
 
             Platform.runLater(() -> {
-                rankingListPane.getChildren().setAll(rankingListRoot);
-                rankingListPane.setVisible(true);
+                rankingPane.getChildren().setAll(rankingListRoot);
+                rankingPane.setVisible(true);
+                boardImageView.setVisible(false);
+                historyPane.setVisible(false);
+
+
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void handleRankingListClose() {
-        rankingListPane.setVisible(false);
+    public void handleHistory() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/historyList.fxml"));
+            Parent historyListRoot = loader.load();
+            HistoryController historyListController = loader.getController();
+            historyListController.updateHistory();
+
+            Platform.runLater(() -> {
+                historyPane.getChildren().setAll(historyListRoot);
+                historyPane.setVisible(true);
+                rankingPane.setVisible(false);
+                boardImageView.setVisible(false);
+
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleFindOnlineGame() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            Parent loadingRoot = loader.load();
+            LoadingController loadingController = loader.getController();
+            loadingController.setOnCancel(()->{
+                client.sendRequest(new MsgPacket("/cancel-find-game"));
+                loadingPane.setVisible(false);
+            });
+
+            Platform.runLater(() -> {
+                loadingPane.getChildren().setAll(loadingRoot);
+                loadingPane.setVisible(true);
+
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         client.sendRequest(new FindGameRequest(user.playerId, user.name, user.elo));
         System.out.println("Find online game");
     }
 
     public void handleEscapeButton() {
         client.sendRequest(new MsgPacket("/cancel-find-game"));
+        System.out.println("Escape button pressed");
+        Platform.runLater(() -> {
+            loadingPane.setVisible(false);
+            rankingPane.setVisible(false);
+            historyPane.setVisible(false);
+            // histortyy
+        });
     }
 
     public void handleRankingListShow() {
-        client.sendRequest(new MsgPacket("/ranking-list"));
+        client.sendRequest(new RankingListRequest(user.name));
     }
+
+
 
     public void logOut() {
         onLogout.run();
-    }
-
-    public void returnToMainMenu() {
-        // Implement return to main menu logic
     }
 }

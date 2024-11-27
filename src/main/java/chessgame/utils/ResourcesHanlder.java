@@ -89,7 +89,7 @@ public class ResourcesHanlder {
         if(!isPath) {
             imagePath = ResourcesHanlder.class.getResource("/chessgame/avatar/" + name + ".jpg").toExternalForm();
         }else{
-            imagePath = name;
+            imagePath = name.replace("\\", "/");
         }
         Image avatar = ResourcesHanlder.cropImageToSquare(new Image(imagePath, 60, 60, true, true));
         ImageView avatarView = new ImageView();

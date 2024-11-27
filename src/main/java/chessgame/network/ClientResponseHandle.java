@@ -10,5 +10,5 @@ public interface ClientResponseHandle{
     void handleRankingList(RankingListResponse response);
     void handleProfileView(ProfileViewResponse response);
     void handleHistoryGame(HistoryGameResponse response);
-    void handleNewGameResonse(FindGameResponse response);
+    void handleNewGameResponse(FindGameResponse response);
 }

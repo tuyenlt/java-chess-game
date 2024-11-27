@@ -92,6 +92,18 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: 5 50%; /* Đặt icon bên trái, căn giữa theo chiều dọc */
 }
+.email-custom-textfield {
+-fx-background-color: #ffffff; /* Màu nền đen xám */
+    -fx-text-fill: #000000; /* Màu chữ xám nhạt */
+    -fx-prompt-text-fill: #aaaaaa; /* Màu chữ cho placeholder */
+    -fx-background-radius: 5; /* Bo góc */
+    -fx-padding: 5 5 5 50; /* Chừa khoảng trống cho icon */
+    -fx-border-color: None; /* Không cần viền */
+    -fx-font-size: 17px;
+    -fx-background-image: url("image/email.png"); /* Đường dẫn đến file icon */
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 5 50%; /* Đặt icon bên trái, căn giữa theo chiều dọc */
+}
 
 .return-button {
     -fx-background-color: transparent; /* Nền trong suốt */
