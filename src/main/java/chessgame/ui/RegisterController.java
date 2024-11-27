@@ -60,7 +60,7 @@ public class RegisterController {
             return;
         }
 
-        onSubmit.accept(new RegisterRequest(username, password));
+        onSubmit.accept(new RegisterRequest(username, email, password));
     }
 
     public void toLoginForm() {

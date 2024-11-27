@@ -128,14 +128,20 @@ abstract public class MainGame extends StackPane {
         contentPane.getChildren().add(boardPane);
     }
     
-    public void setPlayerTop(String name, String elo, String side){
+    public void setPlayerTop(String name, String elo, String side,boolean isOnline){
         playerTop = new PlayerInfo(name, elo, side);
         playerSectionTop.setInfo(name, elo, side);
+        if(isOnline){
+            playerSectionTop.setUserAvatar(name);
+        }
     }
 
-    public void setPlayerBottom(String name, String elo, String side){
+    public void setPlayerBottom(String name, String elo, String side, boolean isOnline){
         playerBottom = new PlayerInfo(name, elo, side);
         playerSectionBottom.setInfo(name, elo, side);
+        if (isOnline) {
+            playerSectionBottom.setUserAvatar(name);
+        }
     }
 
     public void checkGameEnd(String currentTurn){

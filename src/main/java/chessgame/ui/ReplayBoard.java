@@ -80,10 +80,31 @@ public class ReplayBoard extends Pane{
         }
     }
 
+    public void resetHightLight(){
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                tiles[row][col].setFill((row + col) % 2 == 0 ? Color.valueOf("#EBECD0") : Color.valueOf("#739552"));
+            }
+        }
+    }
+
+    public void hightlightMove(String currentMove){
+        Move move = new Move(currentMove);
+        if(isBoardReverse){
+            move.reverseBoard();
+        }
+        tiles[move.getStartRow()][move.getStartCol()].setFill(Color.valueOf("#F5F682"));
+        tiles[move.getEndRow()][move.getEndCol()].setFill(Color.valueOf("#F5F682"));
+    }
+
     public boolean loadState(int index){
-        currentStateIndex = index;
         if(index < 0 || index > moves.length){
             return false;
+        }
+        currentStateIndex = index;
+        if(currentStateIndex > 0){
+            resetHightLight();
+            hightlightMove(moves[currentStateIndex-1]);
         }
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){

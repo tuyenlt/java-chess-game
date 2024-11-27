@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -26,15 +27,15 @@ public class App extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScene.fxml"));
         Parent root = loader.load();
         // ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "3.27.120.232");
-        ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "localhost");
-        client.connectMainServer();
-        // File seclectedFile = ResourcesHanlder.selectFile(stage);
-        // seclectedFile = ResourcesHanlder.convertToJPG(seclectedFile);
-        // client.sendImage(seclectedFile, "tuyenlt.jpg");
-        client.setUiResponseHandler(loader.getController());
+        // ClientNetwork client = new ClientNetwork(10000, 5555, 6666, "localhost");
+        // client.connectMainServer();
+        // client.setUiResponseHandler(loader.getController());
         Scene scene = new Scene(root);
-        MainController.setClient(client);
+        // MainController.setClient(client);
         MainController.setStage(stage);
+        stage.setResizable(false);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/chessgame/image/logo.png")));
+        stage.setTitle("Chess Game");
         stage.setScene(scene);
         stage.show();
 

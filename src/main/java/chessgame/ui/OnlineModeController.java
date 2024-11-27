@@ -49,6 +49,7 @@ public class OnlineModeController {
                 avatarImageView.setImage(newAvatarImageView.getImage());
                 avatarImageView.setVisible(true);
             });
+            client.sendImage(avatarFile, user.name);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +70,7 @@ public class OnlineModeController {
         this.user = user;
         Platform.runLater(() -> {
             usernameDisplayLabel.setText("User Name: " + user.name);
-            eloDisplayLabel.setText(String.valueOf("Elo: " + user.elo));
+            eloDisplayLabel.setText("Elo: " + user.elo);
             double labelWidth = 1195.0 - usernameDisplayLabel.getWidth() - 80;
             if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
             usernameDisplayLabel.setLayoutX(labelWidth);
