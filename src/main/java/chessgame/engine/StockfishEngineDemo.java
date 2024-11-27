@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,11 @@ public class StockfishEngineDemo {
     // Khởi chạy Stockfish
     public StockfishEngineDemo() {
         try {
-            stockfishPath = StockfishEngineDemo.class
-                .getResource("/chessgame/stockfish/stockfish.exe")
-                .getPath();
+            String path = StockfishEngineDemo.class
+                    .getResource("/chessgame/stockfish/stockfish.exe")
+                    .getPath().replace("\\", "/");
+            stockfishPath = URLDecoder.decode(path, "UTF-8");
+            System.out.println( stockfishPath);
             stockfishPath = new File(stockfishPath).getAbsolutePath();
             stockfishProcess = new ProcessBuilder(stockfishPath).start();
             stockfishReader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
