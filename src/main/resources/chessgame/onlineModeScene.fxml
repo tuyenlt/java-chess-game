@@ -65,7 +65,7 @@
                                 <!-- Nội dung động được thêm từ Controller -->
                             </VBox>
                         </VBox>
-                    </content>
+                    </content>                    
                 </ScrollPane>
             <ImageView fx:id="triangle" fitHeight="53.0" fitWidth="40.0" layoutX="410.0" layoutY="337.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -132,7 +132,7 @@
                     </Button>
                 </StackPane>
 
-                                    </children>
+             </children>
         </AnchorPane>
     </AnchorPane>
 </StackPane>

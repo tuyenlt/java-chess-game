@@ -26,17 +26,9 @@ public class PlayerSection extends Pane {
         this.setPrefSize(560, 330);
         this.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
 
-        indicator = new ImageView();
-        indicator.setImage(getImage(name));
-        indicator.setFitWidth(60);
-        indicator.setFitHeight(60);
+        indicator = ResourcesHanlder.createAvatarView(name);
         indicator.setLayoutX(20);
         indicator.setLayoutY(20);
-
-        Circle clip = new Circle(30); 
-        clip.setCenterX(30); 
-        clip.setCenterY(30); 
-        indicator.setClip(clip);
 
         nameLabel = new Label(name);
         eloLabel = new Label(elo);

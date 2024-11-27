@@ -6,7 +6,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -80,5 +82,21 @@ public class ResourcesHanlder {
         double y = (height - size) / 2;
 
         return new WritableImage(image.getPixelReader(), (int) x, (int) y, (int) size, (int) size);
+    }
+
+    public static ImageView createAvatarView(String name) {
+        String imagePath = ResourcesHanlder.class.getResource("/chessgame/avatar/" + name + ".jpg").toExternalForm();
+        Image avatar = ResourcesHanlder.cropImageToSquare(new Image(imagePath, 60, 60, true, true));
+        ImageView avatarView = new ImageView(avatar);
+
+        avatarView.setFitWidth(60);
+        avatarView.setFitHeight(60);
+
+        Circle clip = new Circle(30);
+        clip.setCenterX(30);
+        clip.setCenterY(30);
+
+        avatarView.setClip(clip);
+        return  avatarView;
     }
 }

@@ -79,6 +79,8 @@ public class MainController implements ClientResponseHandle {
     @FXML
     private Label warningLabel;
 
+    @FXML
+    private AnchorPane rankingListPane;
 
     private String usernameLogin = "";
     private String passwordLogin = "";
@@ -418,96 +420,19 @@ public class MainController implements ClientResponseHandle {
 
     }
 
-    @Override
+     @Override
     public void handleRankingList(RankingListResponse response) {
         try {
-            // Tạo FXMLLoader
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/onlineModeScene.fxml"));
-            root = loader.load();
-            scene = new Scene(root);
-            Platform.runLater(()->{
-                stage.setScene(scene);
-                stage.show();
-            });
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/rankingList.fxml"));
+            Parent rankingListRoot = loader.load();
+            RankingListController rankingListController = loader.getController();
+            rankingListController.updateRankingList(response, user);
 
-            // Lấy controller sau khi load
-            Controller = loader.getController();
-        for (int i = 0; i<response.rankingList.size(); i++) {
-            HBox playerRow = new HBox(0); // Khoảng cách giữa các cột
-            playerRow.setPrefWidth(830);
-            playerRow.setAlignment(Pos.CENTER_LEFT); // Căn thẳng hàng với criteria
-
-
-            // Cột Rank
-            Label rankLabel = new Label("#" + (i + 1));
-            rankLabel.setPrefWidth(70);
-            rankLabel.setStyle("-fx-font-size: 14px;");
-            rankLabel.setAlignment(javafx.geometry.Pos.CENTER);
-
-            // Cột Player
-            Label playerLabel = new Label(response.rankingList.get(i).userName);
-            playerLabel.setPrefWidth(500);
-            playerLabel.setStyle("-fx-font-size: 14px;");
-            playerLabel.setAlignment(Pos.CENTER_LEFT);
-
-            // Cột ELO
-            Label eloLabel = new Label(String.valueOf(response.rankingList.get(i).elo));
-            eloLabel.setPrefWidth(150);
-            eloLabel.setStyle("-fx-font-size: 14px;");
-            eloLabel.setAlignment(javafx.geometry.Pos.CENTER);
-            if (i == 1) {
-                playerRow.getStyleClass().add("top-1");
-                rankLabel.getStyleClass().add("label-top-1");
-                eloLabel.getStyleClass().add("label-top-1");
-                playerLabel.getStyleClass().add("label-top-1");
-            } else if (i == 2) {
-                playerRow.getStyleClass().add("top-2");
-                rankLabel.getStyleClass().add("label-top-2");
-                eloLabel.getStyleClass().add("label-top-2");
-                playerLabel.getStyleClass().add("label-top-2");
-            } else if (i == 3) {
-                playerRow.getStyleClass().add("top-3");
-                rankLabel.getStyleClass().add("label-top-3");
-                eloLabel.getStyleClass().add("label-top-3");
-                playerLabel.getStyleClass().add("label-top-3");
-            }
-            // Thêm các cột vào dòng
-            playerRow.getChildren().addAll(rankLabel, playerLabel, eloLabel);
-
-            // Đường phân cách
-            Line line = new Line();
-            line.setStartX(10); // Khoảng cách từ trái (dịch vào 10px)
-            line.setEndX(830 - 10); // Khoảng cách từ phải (dịch vào 10px)
-            line.setStartY(0); // Vị trí dọc (giữ nguyên)
-            line.setEndY(0);
-            line.setStroke(Color.GREEN);
-            line.setStrokeWidth(1);
-
-            // Thêm dòng vào danh sách
-            VBox playerBox = new VBox(5);
-            playerBox.getChildren().addAll(playerRow, line);
-            Controller.playerList.getChildren().add(playerBox);
-        }
             Platform.runLater(() -> {
-
-                Controller.rankingScrollPane.setVisible(true);
-                Controller.triangle.setVisible(true);
-                Controller.triangle.setLayoutX(337.0);
-                Controller.rankingScrollPane.setPrefWidth(830);
-                Controller.boardImageView.setVisible(false);
-                Controller.playerList.setPrefWidth(830);
-                StackPane.setAlignment(Controller.rankingPic, Pos.TOP_LEFT);
-                double labelWidth = 1195.0 - Controller.usernameDisplayLabel.getWidth();
-                if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
-
-                Controller.usernameDisplayLabel.setLayoutX(labelWidth);
-                Controller.eloDisplayLabel.setLayoutX(labelWidth);
-                Controller.usernameDisplayLabel.setText("Username : " + user.name);
-                Controller.eloDisplayLabel.setText("Elo : " + user.elo);
-//                Controller.usernameDisplayLabel.setLayoutX(950);
+                rankingListPane.getChildren().setAll(rankingListRoot);
+                rankingListPane.setVisible(true);
             });
-
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

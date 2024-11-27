@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.RankingListController" spacing="5" alignment="CENTER_LEFT" prefWidth="830">
+    <ScrollPane fx:id="rankingScrollPane" visible="false" prefWidth="830">
+        <content>
+            <VBox fx:id="playerListContainer" spacing="5" alignment="CENTER_LEFT" />
+        </content>
+    </ScrollPane>
+    <ImageView fx:id="triangle" visible="false" />
+    <ImageView fx:id="rankingPic" />
+    <ImageView fx:id="boardImageView" visible="false" />
+    <Label fx:id="usernameDisplayLabel" />
+    <Label fx:id="eloDisplayLabel" />
+</VBox>

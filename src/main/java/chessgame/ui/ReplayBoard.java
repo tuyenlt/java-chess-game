@@ -3,6 +3,7 @@ package chessgame.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import chessgame.engine.StockfishEngineDemo;
 import chessgame.logic.Board;
 import chessgame.logic.Move;
 import javafx.scene.Cursor;
@@ -21,6 +22,7 @@ public class ReplayBoard extends Pane{
     private boolean isBoardReverse;
     private ArrayList<String[][]> boardStage = new ArrayList<>();
     private String[] moves;
+    private ArrayList<String> movesEvaluator = new ArrayList<>();
     private int currentStateIndex = 0;
 
     public ReplayBoard(String gameMoves, Boolean isBoardReverse) {
@@ -35,9 +37,13 @@ public class ReplayBoard extends Pane{
     }
 
     private void createBoardState(String gameMoves){
+        StockfishEngineDemo stockfish = new StockfishEngineDemo();
         boardStage.add(board.getBoardState());
+        movesEvaluator.add(" ");
         for(String move : moves){
             board.movePiece(new Move(move));
+            double winRate = stockfish.getWinRate(board.getMoves("all"));
+            movesEvaluator.add(board.getTypeMove(winRate, false));
             boardStage.add(board.getBoardState());
         }
     }
@@ -75,6 +81,7 @@ public class ReplayBoard extends Pane{
     }
 
     public boolean loadState(int index){
+        currentStateIndex = index;
         if(index < 0 || index > moves.length){
             return false;
         }
@@ -95,6 +102,7 @@ public class ReplayBoard extends Pane{
                 }
             }
         }
+        System.out.println(movesEvaluator.get(index));
         return true;
     }
 
@@ -115,7 +123,7 @@ public class ReplayBoard extends Pane{
     }
 
     public String getMovesAtIndex(int index){
-        if(index < 0){
+        if(--index < 0){
             return "";
         }
         if(index >= moves.length){
@@ -123,7 +131,7 @@ public class ReplayBoard extends Pane{
         }
         StringBuilder res = new StringBuilder();
         for(int i=0; i<= index; i++){
-            res.append(moves[i] + " ");
+            res.append(moves[i] + "-" + movesEvaluator.get(i+1) + " ");
         }
         return res.toString();
     }
