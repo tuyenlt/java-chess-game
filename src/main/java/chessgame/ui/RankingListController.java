@@ -17,8 +17,7 @@ public class RankingListController {
 
     @FXML
     private VBox playerListContainer;
-    @FXML
-    private ScrollPane rankingScrollPane;
+
     @FXML
     public void updateRankingList(RankingListResponse response, User user) {
         Platform.runLater(() -> {
@@ -74,9 +73,6 @@ public class RankingListController {
                 playerBox.getChildren().addAll(playerRow, line);
                 playerListContainer.getChildren().add(playerBox);
             }
-
-            rankingScrollPane.setVisible(true);
-
         });
     }
 }

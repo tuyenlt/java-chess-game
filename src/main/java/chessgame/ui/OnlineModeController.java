@@ -2,6 +2,7 @@ package chessgame.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.cert.PolicyNode;
 
 import chessgame.network.ClientNetwork;
 import chessgame.network.User;
@@ -26,6 +27,8 @@ public class OnlineModeController {
     private Runnable onLogout;
 
     @FXML
+    private AnchorPane root;
+    @FXML
     private Label usernameDisplayLabel;
     @FXML
     private Label eloDisplayLabel;
@@ -33,8 +36,14 @@ public class OnlineModeController {
     private ImageView avatarImageView;
     @FXML
     private AnchorPane rankingPane;
+    @FXML
+    private AnchorPane loadingPane;
+    @FXML
+    private AnchorPane historyPane;
+    @FXML
+    private ImageView boardImageView;
 
-    public void initialize() {
+    public void initialize() throws IOException{
         System.out.println("OnlineModeController initialized");
         System.out.println(avatarImageView.isVisible());
     }
@@ -42,7 +51,9 @@ public class OnlineModeController {
     public void handleImageUpload() {
         try {
             File avatarFile = ResourcesHanlder.selectFile(new Stage());
+            if(avatarFile == null) return;
             ImageView newAvatarImageView = ResourcesHanlder.createAvatarView(avatarFile.getPath(), true);
+            client.sendImage(avatarFile, user.name);
             Platform.runLater(() -> {
                 avatarImageView.setImage(newAvatarImageView.getImage());
                 avatarImageView.setVisible(true);
@@ -69,7 +80,7 @@ public class OnlineModeController {
             usernameDisplayLabel.setText("User Name: " + user.name);
             eloDisplayLabel.setText(String.valueOf("Elo: " + user.elo));
             double labelWidth = 1195.0 - usernameDisplayLabel.getWidth() - 80;
-            if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
+//            if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
             usernameDisplayLabel.setLayoutX(labelWidth);
             eloDisplayLabel.setLayoutX(labelWidth);
             loadAvatarImage(ResourcesHanlder.getAvatarImage(user.name));
@@ -94,30 +105,75 @@ public class OnlineModeController {
             Platform.runLater(() -> {
                 rankingPane.getChildren().setAll(rankingListRoot);
                 rankingPane.setVisible(true);
+                boardImageView.setVisible(false);
+                historyPane.setVisible(false);
+
+
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void handleRankingListClose() {
-        rankingPane.setVisible(false);
+
+    public void handleHistory() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/historyList.fxml"));
+            Parent historyListRoot = loader.load();
+            HistoryController historyListController = loader.getController();
+            historyListController.updateHistory();
+
+            Platform.runLater(() -> {
+                historyPane.getChildren().setAll(historyListRoot);
+                historyPane.setVisible(true);
+                rankingPane.setVisible(false);
+                boardImageView.setVisible(false);
+
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleFindOnlineGame() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            Parent loadingRoot = loader.load();
+            LoadingController loadingController = loader.getController();
+            loadingController.setOnCancel(()->{
+                client.sendRequest(new MsgPacket("/cancel-find-game"));
+                loadingPane.setVisible(false);
+            });
+
+            Platform.runLater(() -> {
+                loadingPane.getChildren().setAll(loadingRoot);
+                loadingPane.setVisible(true);
+
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         client.sendRequest(new FindGameRequest(user.playerId, user.name, user.elo));
         System.out.println("Find online game");
     }
 
     public void handleEscapeButton() {
         client.sendRequest(new MsgPacket("/cancel-find-game"));
+        System.out.println("Escape button pressed");
+        Platform.runLater(() -> {
+            loadingPane.setVisible(false);
+            rankingPane.setVisible(false);
+            historyPane.setVisible(false);
+            // histortyy
+        });
     }
 
     public void handleRankingListShow() {
         client.sendRequest(new RankingListRequest(user.name));
     }
 
+
+
     public void logOut() {
         onLogout.run();
     }
-
 }

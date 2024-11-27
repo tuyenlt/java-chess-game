@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.ImageView?>
@@ -5,18 +6,24 @@
 <?import javafx.scene.shape.Line?>
 
 <?import javafx.scene.layout.HBox?>
-<ScrollPane fx:controller="chessgame.ui.RankingListController" fx:id="historyScrollPane" fitToWidth="true"
-            hbarPolicy="NEVER" layoutX="450" layoutY="88" prefHeight="632" prefWidth="830"
-            styleClass="custom-scroll-pane" stylesheets="@style.css" vbarPolicy="AS_NEEDED" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="historyScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" prefWidth="830"
+            prefHeight="632"  xmlns="http://javafx.com/javafx/23.0.1" styleClass="custom-scroll-pane" stylesheets="@style.css"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.HistoryController">
 
-    <VBox prefWidth="830" spacing="10" styleClass="vbox">
-        <HBox  alignment="CENTER_LEFT" spacing="0">
-            <Label alignment="CENTER" prefWidth="70" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Rank" />
-            <Label alignment="CENTER_LEFT" prefWidth="500" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Player" />
-            <Label alignment="CENTER" prefWidth="150" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="ELO" />
-        </HBox>
-        <VBox fx:id="historyListContainer" spacing="5" styleClass="vbox">
-            <!-- Nội dung động được thêm từ Controller -->
+        <VBox spacing="10" prefWidth="830" styleClass="vbox">
+            <!-- Tiêu đề bảng -->
+            <HBox >
+                <Label alignment="CENTER" text="Opponent" prefWidth="500"  style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <Label alignment="CENTER" text="Result" prefWidth="100" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                <Label alignment="CENTER" text="Move" prefWidth="100" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+            </HBox>
+            <!-- Dòng dữ liệu mẫu -->
+            <VBox fx:id="historyContainer" spacing="5" styleClass="vbox">
+                <!-- Nội dung động được thêm từ Controller -->
+            </VBox>
         </VBox>
-    </VBox>
+
 </ScrollPane>
+
+
+

@@ -48,7 +48,7 @@ public class MainController implements ClientResponseHandle, Initializable {
     private Scene scene;
     private Parent root;
 
-    LoadingController loadingController;
+    private static LoadingController loadingController;
     private static LoginController loginController;
     private static RegisterController registerController;
     private static OnlineModeController onlineModeController;
@@ -71,7 +71,7 @@ public class MainController implements ClientResponseHandle, Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {       
         if (secondaryAnchorPane != null) {
-            double duration = 1.3;
+            double duration = 1;
             if(AppState.isSecondaryPaneOpened()) duration = 0.2;
             AnimationUtils.applyEffect(secondaryAnchorPane, duration);
             AppState.setSecondaryPaneOpened(true);
@@ -208,9 +208,6 @@ public class MainController implements ClientResponseHandle, Initializable {
         stage.show();
     }
 
-    public void showRankingList(ActionEvent event){
-        client.sendRequest(new RankingListRequest("a"));
-    }
 
     @Override
     public void handleHistoryGame(HistoryGameResponse response) {

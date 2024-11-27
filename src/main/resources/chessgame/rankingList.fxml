@@ -9,7 +9,7 @@
 
 <?import javafx.scene.layout.HBox?>
 <ScrollPane fx:controller="chessgame.ui.RankingListController" fx:id="rankingScrollPane" fitToWidth="true"
-            hbarPolicy="NEVER" layoutX="450" layoutY="88" prefHeight="632" prefWidth="830"
+            hbarPolicy="NEVER" prefHeight="632" prefWidth="830"
             styleClass="custom-scroll-pane" stylesheets="@style.css" vbarPolicy="AS_NEEDED" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
         <VBox prefWidth="830" spacing="10" styleClass="vbox">

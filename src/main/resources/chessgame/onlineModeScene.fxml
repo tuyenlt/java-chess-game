@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
-           fx:controller="chessgame.ui.OnlineModeController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1"
+            fx:controller="chessgame.ui.OnlineModeController" fx:id="root">
     <children>
         <!-- Scene chính (main scene) -->
 
@@ -85,9 +85,8 @@
                         </ImageView>
 
                         <Button fx:id="findOnlineGameButton" layoutX="23.0" layoutY="151.0"
-                                onAction="#handleFindOnlineGame"
-                                prefHeight="34.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css"
-                                text="Find Online Game"/>
+                                onAction="#handleFindOnlineGame" prefHeight="34.0" prefWidth="350.0"
+                                styleClass="custom-button" stylesheets="@style.css" text="Find Online Game"/>
                         <ImageView fx:id="findingPic" fitHeight="40" fitWidth="40" layoutX="51.0" layoutY="159.0"
                                    pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -97,9 +96,8 @@
 
                         <!-- Đặt Button vào giữa StackPane -->
                         <Button fx:id="rankingListButton" layoutX="25.0" layoutY="228.0"
-                                onAction="#handleRankingListShow"
-                                prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css"
-                                text="Ranking List"/>
+                                onAction="#handleRankingListShow" prefHeight="54.0" prefWidth="350.0"
+                                styleClass="custom-button" stylesheets="@style.css" text="Ranking List"/>
 
                         <!-- Đặt ImageView tại góc trên bên trái -->
                         <ImageView fx:id="rankingPic" fitHeight="40" fitWidth="40" layoutX="51.0" layoutY="236.0"
@@ -111,9 +109,9 @@
 
 
                         <!-- Đặt Button vào giữa StackPane -->
-                        <Button fx:id="historyGameButton" layoutX="25.0" layoutY="305.0" prefHeight="54.0"
-                                prefWidth="350.0"
-                                styleClass="custom-button" stylesheets="@style.css" text="History Game">
+                        <Button fx:id="historyGameButton" onAction="#handleHistory" layoutX="25.0" layoutY="305.0" prefHeight="54.0"
+                                prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css"
+                                text="History Game">
                         </Button>
 
                         <!-- Đặt ImageView tại góc trên bên trái -->
@@ -125,8 +123,7 @@
                         </ImageView>
 
                         <Button fx:id="twoPlayerButton" layoutX="25.0" layoutY="385.0" prefHeight="54.0"
-                                prefWidth="350.0"
-                                styleClass="custom-button" stylesheets="@style.css" text="Two Player">
+                                prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
                         </Button>
                         <Text fill="WHITE" layoutX="71.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0"
                               styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
@@ -135,8 +132,8 @@
                             </font>
                         </Text>
                         <Button fx:id="singlePlayerButton" layoutX="25.0" layoutY="464.0" prefHeight="54.0"
-                                prefWidth="350.0"
-                                styleClass="custom-button" stylesheets="@style.css" text="Single Player"/>
+                                prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css"
+                                text="Single Player"/>
                         <Button fx:id="logOutButton" layoutX="25.0" layoutY="546.0" onAction="#logOut" prefHeight="54.0"
                                 prefWidth="350.0" styleClass="quit-button" stylesheets="@style.css" text="Log Out"/>
 
@@ -156,9 +153,12 @@
                 </AnchorPane>
             </children>
         </AnchorPane>
-        <AnchorPane/>
-        <AnchorPane fx:id="rankingPane"  layoutX="450" layoutY="88" prefHeight="632" prefWidth="830">
+        <AnchorPane fx:id="rankingPane" layoutX="450" layoutY="88" prefHeight="632" prefWidth="830" visible="false">
 
         </AnchorPane>
+        <AnchorPane fx:id="historyPane"  layoutX="450" layoutY="88" prefHeight="632" prefWidth="830" visible="false">
+
+        </AnchorPane>
+        <AnchorPane fx:id="loadingPane" visible="false"></AnchorPane>
     </children>
-</StackPane>
+</AnchorPane>
