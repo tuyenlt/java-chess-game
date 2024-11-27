@@ -74,7 +74,7 @@ public class ClientNetwork {
                 }
 
                 if (object instanceof FindGameResponse){
-                    responseHandle.handleNewGameResonse((FindGameResponse)object);
+                    responseHandle.handleNewGameResponse((FindGameResponse)object);
                 }
             }
 

@@ -20,16 +20,6 @@ public class RankingListController {
     @FXML
     private ScrollPane rankingScrollPane;
     @FXML
-    private ImageView triangle;
-    @FXML
-    private ImageView rankingPic;
-    @FXML
-    private ImageView boardImageView;
-    @FXML
-    private Label usernameDisplayLabel;
-    @FXML
-    private Label eloDisplayLabel;
-
     public void updateRankingList(RankingListResponse response, User user) {
         Platform.runLater(() -> {
             playerListContainer.getChildren().clear();
@@ -53,17 +43,17 @@ public class RankingListController {
                 eloLabel.setStyle("-fx-font-size: 14px;");
                 eloLabel.setAlignment(Pos.CENTER);
 
-                if (i == 1) {
+                if (i == 0) {
                     playerRow.getStyleClass().add("top-1");
                     rankLabel.getStyleClass().add("label-top-1");
                     eloLabel.getStyleClass().add("label-top-1");
                     playerLabel.getStyleClass().add("label-top-1");
-                } else if (i == 2) {
+                } else if (i == 1) {
                     playerRow.getStyleClass().add("top-2");
                     rankLabel.getStyleClass().add("label-top-2");
                     eloLabel.getStyleClass().add("label-top-2");
                     playerLabel.getStyleClass().add("label-top-2");
-                } else if (i == 3) {
+                } else if (i == 2) {
                     playerRow.getStyleClass().add("top-3");
                     rankLabel.getStyleClass().add("label-top-3");
                     eloLabel.getStyleClass().add("label-top-3");
@@ -86,17 +76,7 @@ public class RankingListController {
             }
 
             rankingScrollPane.setVisible(true);
-            triangle.setVisible(true);
-            triangle.setLayoutX(337.0);
-            rankingScrollPane.setPrefWidth(830);
-            boardImageView.setVisible(false);
-            playerListContainer.setPrefWidth(830);
-            double labelWidth = 1195.0 - usernameDisplayLabel.getWidth();
-            if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
-            usernameDisplayLabel.setLayoutX(labelWidth);
-            eloDisplayLabel.setLayoutX(labelWidth);
-            usernameDisplayLabel.setText("Username : " + user.name);
-            eloDisplayLabel.setText("Elo : " + user.elo);
+
         });
     }
 }

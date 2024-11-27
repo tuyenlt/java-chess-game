@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 
 public class RegisterController {
     
@@ -26,9 +27,17 @@ public class RegisterController {
     @FXML
     private Label warningLabel;
 
+    @FXML
+    private AnchorPane registerForm;
     private Runnable onSwitchToLogin;
     private Consumer<RegisterRequest> onSubmit;
     private Runnable onReturn;
+
+    public void initialize() {
+        if(registerForm != null) {
+            AnimationUtils.applyEffect(registerForm, 0.2);
+        }
+    }
 
     public void registerSubmit(ActionEvent event) {
         String username = usernameTextFieldRegister.getText();

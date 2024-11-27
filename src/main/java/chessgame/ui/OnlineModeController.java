@@ -6,9 +6,7 @@ import java.lang.ModuleLayer.Controller;
 
 import chessgame.network.ClientNetwork;
 import chessgame.network.User;
-import chessgame.network.packets.GeneralPackets.FindGameRequest;
-import chessgame.network.packets.GeneralPackets.MsgPacket;
-import chessgame.network.packets.GeneralPackets.RankingListResponse;
+import chessgame.network.packets.GeneralPackets.*;
 import chessgame.utils.ResourcesHanlder;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -35,7 +33,7 @@ public class OnlineModeController {
     @FXML
     private ImageView avatarImageView;
     @FXML
-    private AnchorPane rankingListPane;
+    private AnchorPane rankingPane;
 
     public void initialize() {
         System.out.println("OnlineModeController initialized");
@@ -95,16 +93,15 @@ public class OnlineModeController {
             rankingListController.updateRankingList(response, user);
 
             Platform.runLater(() -> {
-                rankingListPane.getChildren().setAll(rankingListRoot);
-                rankingListPane.setVisible(true);
+                rankingPane.getChildren().setAll(rankingListRoot);
+                rankingPane.setVisible(true);
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public void handleRankingListClose() {
-        rankingListPane.setVisible(false);
+        rankingPane.setVisible(false);
     }
 
     public void handleFindOnlineGame() {
@@ -117,14 +114,11 @@ public class OnlineModeController {
     }
 
     public void handleRankingListShow() {
-        client.sendRequest(new MsgPacket("/ranking-list"));
+        client.sendRequest(new RankingListRequest(user.name));
     }
 
     public void logOut() {
         onLogout.run();
     }
 
-    public void returnToMainMenu() {
-        // Implement return to main menu logic
-    }
 }

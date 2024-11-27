@@ -1,35 +1,39 @@
 package chessgame.ui;
 
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.function.Consumer;
-
 import chessgame.network.packets.GeneralPackets.LoginRequest;
 import chessgame.utils.Validator;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class LoginController implements Initializable {
     @FXML
+    Label notifyLabelLogin;
+    @FXML
     private TextField usernameTextFieldLogin;
-
     @FXML
     private TextField passwordTextFieldLogin;
+    @FXML
+    private AnchorPane logInForm;
 
-    @FXML 
-    Label notifyLabelLogin;
-    
     private Consumer<LoginRequest> onSubmit;
     private Runnable onSwitchToRegister;
     private Runnable onReturn;
-    
+
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         notifyLabelLogin.setText("");
         System.out.println("LoginController initialized" + arg0);
+        if(logInForm != null) {
+            AnimationUtils.applyEffect(logInForm, 0.2);
+        }
     }
 
     public void onLoginSubmit() {
@@ -41,14 +45,14 @@ public class LoginController implements Initializable {
             notifyLabelLogin.setText(userNameValidate);
             return;
         }
-        if(passwordValidate != "ok") {
+        if (passwordValidate != "ok") {
             notifyLabelLogin.setText(passwordValidate);
             return;
         }
         onSubmit.accept(new LoginRequest(username, password));
     }
 
-    public void registerFormController(){
+    public void registerFormController() {
         onSwitchToRegister.run();
     }
 

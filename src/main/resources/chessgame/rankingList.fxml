@@ -7,15 +7,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.RankingListController" spacing="5" alignment="CENTER_LEFT" prefWidth="830">
-    <ScrollPane fx:id="rankingScrollPane" visible="false" prefWidth="830">
-        <content>
-            <VBox fx:id="playerListContainer" spacing="5" alignment="CENTER_LEFT" />
-        </content>
-    </ScrollPane>
-    <ImageView fx:id="triangle" visible="false" />
-    <ImageView fx:id="rankingPic" />
-    <ImageView fx:id="boardImageView" visible="false" />
-    <Label fx:id="usernameDisplayLabel" />
-    <Label fx:id="eloDisplayLabel" />
-</VBox>
+<?import javafx.scene.layout.HBox?>
+<ScrollPane fx:controller="chessgame.ui.RankingListController" fx:id="rankingScrollPane" fitToWidth="true"
+            hbarPolicy="NEVER" layoutX="450" layoutY="88" prefHeight="632" prefWidth="830"
+            styleClass="custom-scroll-pane" stylesheets="@style.css" vbarPolicy="AS_NEEDED" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+        <VBox prefWidth="830" spacing="10" styleClass="vbox">
+            <HBox  alignment="CENTER_LEFT" spacing="0">
+                <Label alignment="CENTER" prefWidth="70" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Rank" />
+                <Label alignment="CENTER_LEFT" prefWidth="500" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Player" />
+                <Label alignment="CENTER" prefWidth="150" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="ELO" />
+            </HBox>
+            <VBox fx:id="playerListContainer" spacing="5" styleClass="vbox">
+                <!-- Nội dung động được thêm từ Controller -->
+            </VBox>
+        </VBox>
+</ScrollPane>

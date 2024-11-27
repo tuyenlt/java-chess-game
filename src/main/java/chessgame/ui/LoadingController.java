@@ -13,8 +13,6 @@ import javafx.scene.shape.ArcType;
 
 public class LoadingController {
     @FXML
-    public AnchorPane loadingStackPane;
-    @FXML
     public AnchorPane loadingAnchorPane;
 
     @FXML

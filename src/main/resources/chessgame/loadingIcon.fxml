@@ -5,16 +5,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane fx:id="loadingStackPane" prefHeight="1280" prefWidth="720" style="-fx-background-color: rgba(0, 0, 0, 0);" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.LoadingController">
-        <AnchorPane fx:id="loadingAnchorPane" layoutX="440.0" layoutY="60.0" prefHeight="632.0" prefWidth="632.0" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
-            <effect>
-                <DropShadow color="#000000" offsetX="5" offsetY="5" radius="10" />
-            </effect>
-            <children>
-                <Canvas fx:id="loadingCanvas" height="50" layoutX="175.0" layoutY="391.0" width="50" />
-         <Label fx:id="escLabel" alignment="CENTER" layoutX="116.0" layoutY="247.0" prefHeight="26.0" prefWidth="400" style="-fx-text-fill: red; -fx-font-size: 20;" text="Press ESC to cancel finding game." wrapText="true" />
-         <Button fx:id="cancelFindingButton" layoutX="260.0" layoutY="363.0" mnemonicParsing="false" styleClass="quit-button" text="Cancel" />
-            </children>
-        </AnchorPane>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="loadingAnchorPane" prefHeight="1280"
+            prefWidth="720" style="-fx-background-color: rgba(38, 36, 33, 0.5);"
+            xmlns="http://javafx.com/javafx/23.0.1" fx:controller="chessgame.ui.LoadingController">
+    <children>
+        <Canvas fx:id="loadingCanvas" height="50" layoutX="175.0" layoutY="391.0" width="50"/>
+        <Label fx:id="escLabel" alignment="CENTER" layoutX="116.0" layoutY="247.0" prefHeight="26.0" prefWidth="400"
+               style="-fx-text-fill: red; -fx-font-size: 20;" text="Press ESC to cancel finding game." wrapText="true"/>
+        <Button fx:id="cancelFindingButton" layoutX="260.0" layoutY="363.0" mnemonicParsing="false"
+                styleClass="quit-button" text="Cancel"/>
+    </children>
 </AnchorPane>

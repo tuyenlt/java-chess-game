@@ -49,7 +49,6 @@ public class MainController implements ClientResponseHandle, Initializable {
     private Parent root;
 
     LoadingController loadingController;
-    MainController Controller;
     private static LoginController loginController;
     private static RegisterController registerController;
     private static OnlineModeController onlineModeController;
@@ -71,31 +70,17 @@ public class MainController implements ClientResponseHandle, Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {       
-        if (secondaryAnchorPane != null && !AppState.isSecondaryPaneOpened()) {
+        if (secondaryAnchorPane != null) {
+            double duration = 1.3;
+            if(AppState.isSecondaryPaneOpened()) duration = 0.2;
+            AnimationUtils.applyEffect(secondaryAnchorPane, duration);
             AppState.setSecondaryPaneOpened(true);
-            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), secondaryAnchorPane);
-            fadeTransition.setFromValue(0.0);
-            fadeTransition.setToValue(1.0);
-
-            ScaleTransition scaleTransition = new ScaleTransition();
-
-            scaleTransition.setDuration(Duration.seconds(1)); 
-            scaleTransition.setNode(secondaryAnchorPane);
-            scaleTransition.setFromX(0.8);
-            scaleTransition.setFromY(0.8);
-            scaleTransition.setToX(1.0);
-            scaleTransition.setToY(1.0);
-            secondaryAnchorPane.setScaleX(0.5);
-            secondaryAnchorPane.setScaleY(0.5);
-
-            ParallelTransition parallelTransition = new ParallelTransition(fadeTransition, scaleTransition);
-            parallelTransition.play();
         }
         try {
             FXMLLoader loadingLoader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
             root = loadingLoader.load();
             loadingController = loadingLoader.getController();
-            loadingController.loadingStackPane.setVisible(false);
+            loadingController.loadingAnchorPane.setVisible(false);
 
             if (user.name.length() > 12) {
                 user.name = user.name.substring(0, 12) + "...";
@@ -111,7 +96,6 @@ public class MainController implements ClientResponseHandle, Initializable {
     }
 
     public void logOut(ActionEvent event) {
-        AppState.setSecondaryPaneOpened(false);
         user = null;
         switchScene("mainScene.fxml");
     }
@@ -180,6 +164,10 @@ public class MainController implements ClientResponseHandle, Initializable {
             onlineModeController = loader.getController();
             onlineModeController.setUserInformation(user);
             onlineModeController.setClient(client);
+            onlineModeController.setOnLogout(() -> {
+                user = null;
+                switchScene("mainScene.fxml");
+            });
         }
     }
 
@@ -242,14 +230,13 @@ public class MainController implements ClientResponseHandle, Initializable {
         user = new User(response.userId, response.userName, response.elo, response.win, response.lose, response.draw);
         Platform.runLater(() -> {
             onlineModeMenu();
-            loadingController.loadingStackPane.setVisible(false);
+            loadingController.loadingAnchorPane.setVisible(false);
         });
 
     }
     @Override
     public void handleProfileView(ProfileViewResponse response) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -260,11 +247,13 @@ public class MainController implements ClientResponseHandle, Initializable {
     @Override
     public void handleRegisterResponse(RegisterResponse response) {
         if (!response.isSuccess) {
-            registerController.setWarningLabel(response.message);
+            Platform.runLater(() -> {
+                registerController.setWarningLabel(response.message);
+            });
             return;
         }
         Platform.runLater(() -> {
-            loadingController.loadingStackPane.setVisible(false);
+            loadingController.loadingAnchorPane.setVisible(false);
             AppState.setSuccessfulRegistered(true);
         });
         Platform.runLater(() -> {
@@ -275,7 +264,7 @@ public class MainController implements ClientResponseHandle, Initializable {
     }
 
     @Override
-    public void handleNewGameResonse(FindGameResponse response) {
+    public void handleNewGameResponse(FindGameResponse response) {
         TwoPlayerOnlineMode game;
         if(response.side.equals("w")){
             game = new TwoPlayerOnlineMode(false);
