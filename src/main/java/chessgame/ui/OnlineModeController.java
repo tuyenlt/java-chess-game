@@ -50,12 +50,17 @@ public class OnlineModeController {
 
     public void handleImageUpload() {
         try {
-            File avatarFile = ResourcesHanlder.selectFile(new Stage());
+            File selectFile = ResourcesHanlder.selectFile(new Stage());
+            File avatarFile = ResourcesHanlder.convertToJPG(selectFile);
             if(avatarFile == null) return;
-            ImageView newAvatarImageView = ResourcesHanlder.createAvatarView(avatarFile.getPath(), true);
-            client.sendImage(avatarFile, user.name);
+            Image avatarImage = new Image(avatarFile.toURI().toString());
+            client.sendImage(avatarFile, user.name + ".jpg");
             Platform.runLater(() -> {
-                avatarImageView.setImage(newAvatarImageView.getImage());
+                avatarImageView.setImage(ResourcesHanlder.cropImageToSquare(avatarImage));
+                avatarImageView.setFitHeight(70);
+                avatarImageView.setFitWidth(70);
+                Circle clip = new Circle(35, 35, 35);
+                avatarImageView.setClip(clip);
                 avatarImageView.setVisible(true);
             });
             client.sendImage(avatarFile, user.name);

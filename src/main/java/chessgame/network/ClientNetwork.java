@@ -105,7 +105,7 @@ public class ClientNetwork {
     //* end */
 
     public void sendImage(File file, String name) {
-        final int CHUNK_SIZE = 8000;
+        final int CHUNK_SIZE = 4000;
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] buffer = new byte[CHUNK_SIZE];
             int bytesRead;

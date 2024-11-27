@@ -120,7 +120,8 @@ public class MainController implements ClientResponseHandle, Initializable {
     public void switchToLogin() {
         if(client == null){
             try {
-                client = new ClientNetwork(10000, 5555, 6666, "localhost");
+//                client = new ClientNetwork(10000, 5555, 6666, "localhost");
+                client = new ClientNetwork(10000, 5555, 6666, "192.168.1.3");
                 client.connectMainServer();
                 client.setUiResponseHandler(this);
             } catch (Exception e) {
@@ -279,7 +280,8 @@ public class MainController implements ClientResponseHandle, Initializable {
             game = new TwoPlayerOnlineMode(true);
         }     
         game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side, true);
-        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
+//        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
+        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "192.168.1.3");
         gameClient.setResponHandler(game);
         game.setClient(gameClient);
         try{
