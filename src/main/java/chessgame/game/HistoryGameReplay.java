@@ -72,7 +72,6 @@ public class HistoryGameReplay extends StackPane {
         });
         
         replayMenu.addButton("Next", "custom-button", event -> {
-            getScore();
             replayBoard.next();
             updateMovesDisplay();
             autoPlayTimeline.stop();
@@ -118,14 +117,6 @@ public class HistoryGameReplay extends StackPane {
 
     public void setOnReturn(Runnable onReturn) {
         this.onReturn = onReturn;
-    }
-
-    public void getScore() {
-        String prevMoves = replayBoard.getPrevMoves();
-        String currentMoves = replayBoard.getMoves();
-        new Thread(() -> {
-            System.out.println("");
-        }).start();
     }
 
     private void updateMovesDisplay() {

@@ -84,6 +84,10 @@ public class PlayerSection extends Pane {
         return ResourcesHanlder.cropImageToSquare(new Image(imagePath, 60, 60, true, true));
     }
 
+    public void setUserAvatar(String name) {
+        indicator.setImage(ResourcesHanlder.getAvatarImage(name));
+    }
+
     public void setInfo(String name, String elo, String side) {
         this.name = name;
         this.elo = elo;

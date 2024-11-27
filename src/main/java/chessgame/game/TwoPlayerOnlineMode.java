@@ -83,7 +83,7 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
     @Override
     public void onReciveOpponentInfo(OpponentInfo opponentInfo) {
         Platform.runLater(() -> {
-            setPlayerTop(opponentInfo.name, String.valueOf(opponentInfo.elo), opponentInfo.side);        
+            setPlayerTop(opponentInfo.name, String.valueOf(opponentInfo.elo), opponentInfo.side, true);        
         });
     }
 

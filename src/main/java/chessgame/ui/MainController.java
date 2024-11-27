@@ -118,6 +118,16 @@ public class MainController implements ClientResponseHandle, Initializable {
     }
 
     public void switchToLogin() {
+        if(client == null){
+            try {
+                client = new ClientNetwork(10000, 5555, 6666, "localhost");
+                client.connectMainServer();
+                client.setUiResponseHandler(this);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
         FXMLLoader loader = switchScene("logInScene.fxml");  
         loginController = loader.getController();  
         
@@ -268,7 +278,7 @@ public class MainController implements ClientResponseHandle, Initializable {
         }else{
             game = new TwoPlayerOnlineMode(true);
         }     
-        game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side);
+        game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side, true);
         GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
         gameClient.setResponHandler(game);
         game.setClient(gameClient);
