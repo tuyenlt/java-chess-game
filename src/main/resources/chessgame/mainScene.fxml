@@ -29,7 +29,7 @@
                 <VBox alignment="CENTER" layoutX="140" layoutY="20" />
                 <VBox layoutX="50.0" layoutY="300.0" prefWidth="300" spacing="10" />
                 <HBox alignment="CENTER" layoutX="120" layoutY="520" />
-                <Button fx:id="onlineModeButton" layoutX="25.0" layoutY="229.0" onAction="#logInFormController" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Play Online">
+                <Button fx:id="onlineModeButton" layoutX="25.0" layoutY="229.0" onAction="#switchToLogin" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Play Online">
                 </Button>
                 <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="25.0" layoutY="103.0">
                     <image>

@@ -26,7 +26,7 @@ public class PlayerSection extends Pane {
         this.setPrefSize(560, 330);
         this.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
 
-        indicator = ResourcesHanlder.createAvatarView(name);
+        indicator = ResourcesHanlder.createAvatarView(name, false);
         indicator.setLayoutX(20);
         indicator.setLayoutY(20);
 

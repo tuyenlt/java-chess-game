@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -13,126 +19,100 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.MainController">
-    <!-- Scene chính (main scene) -->
-
-    <ImageView fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@image/resized_image.png" />
-            </image>
-        </ImageView>
-    <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(0, 0, 0, 0.1);" xmlns="http://javafx.com/javafx/23.0.1">
-
-        <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(38, 36, 33, 0.8);" stylesheets="style.css">
-            <children>
-                <ImageView fx:id="boardImageView" fitHeight="632.0" fitWidth="632.0" layoutX="648.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@image/board.png" />
-                    </image>
-                </ImageView>
-                <AnchorPane fx:id="propertiesAnchorPane" prefHeight="88.0" prefWidth="1280.0" style="-fx-background-color: rgba(0, 0, 0, 0);">
-                    <children>
-                        <StackPane layoutX="1201" layoutY="9.0" prefHeight="71" prefWidth="71" style="-fx-background-color: white; -fx-background-radius: 35.5; -fx-border-radius: 35.5; -fx-padding: 1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
-
-                            <children>
-                                <ImageView fx:id="avatarImageView" fitHeight="70.0" fitWidth="70.0" layoutX="1201" layoutY="9.0" pickOnBounds="true" preserveRatio="true" styleClass="image-view-border" />
-                            </children>
-                        </StackPane>
-                        <StackPane layoutX="1260" layoutY="61" prefHeight="20" prefWidth="20" style="-fx-background-color: rgba(0, 0, 0, 0);">
-                            <children>
-                                <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@image/upload2.png" />
-                                    </image>
-                                </ImageView>
-                                <Button fx:id="loadImageButton" layoutX="1260" layoutY="61.0" mnemonicParsing="false" onAction="#handleImageUpload" opacity="0.0" prefHeight="20" prefWidth="20" />
-                            </children>
-                        </StackPane>
-                        <Label fx:id="usernameDisplayLabel" layoutX="950" layoutY="27.0" style="-fx-fill: white;-fx-font-size: 20px; -fx-font-family: Constantia" textFill="#fffdfd" />
-                        <Label fx:id="eloDisplayLabel" layoutX="950" layoutY="55.0" style="-fx-fill: white;-fx-font-size: 20px; -fx-font-family: Constantia" textFill="WHITE" />
-                  <Button fx:id="escapeButton" cancelButton="true" mnemonicParsing="false" opacity="0.0" prefHeight="0.0" prefWidth="0" onAction="#handleEscapeButton"/>
-                    </children>
-                </AnchorPane>
-                <ScrollPane fx:id="rankingScrollPane" fitToWidth="true" hbarPolicy="NEVER" layoutX="450" layoutY="88" prefHeight="632" prefWidth="830" styleClass="custom-scroll-pane" stylesheets="@style.css" vbarPolicy="AS_NEEDED">
-                    <content>
-                        <VBox prefWidth="830" spacing="10" styleClass="vbox">
-                            <HBox fx:id="criteria" alignment="CENTER_LEFT" spacing="0">
-                                <Label alignment="CENTER" prefWidth="70" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Rank" />
-                                <Label alignment="CENTER_LEFT" prefWidth="500" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Player" />
-                                <Label alignment="CENTER" prefWidth="150" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="ELO" />
-                            </HBox>
-                            <VBox fx:id="playerList" spacing="5" styleClass="vbox">
-                                <!-- Nội dung động được thêm từ Controller -->
-                            </VBox>
-                        </VBox>
-                    </content>                    
-                </ScrollPane>
-            <ImageView fx:id="triangle" fitHeight="53.0" fitWidth="40.0" layoutX="410.0" layoutY="337.0" pickOnBounds="true" preserveRatio="true">
+<StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.OnlineModeController">
+   <children>
+       <!-- Scene chính (main scene) -->
+   
+       <ImageView fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@image/triangle_pic.png" />
+                   <Image url="@image/resized_image.png" />
                </image>
-            </ImageView>
-
-            </children>
-        </AnchorPane>
-        <AnchorPane fx:id="onlineModeForm" layoutY="88.0" prefHeight="632.0" prefWidth="400.0" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
-            <effect>
-                <DropShadow color="#000000" offsetX="5" offsetY="5" radius="10" />
-            </effect>
-            <children>
-                <VBox alignment="CENTER" layoutX="140" layoutY="20" />
-                <VBox layoutX="50.0" layoutY="300.0" prefWidth="300" spacing="10" />
-                <HBox alignment="CENTER" layoutX="120" layoutY="520" />
-
-                                        <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="54.0">
-                    <image>
-                        <Image url="@image/logo.png" />
-                    </image>
-                </ImageView>
-
-                <Button fx:id="findOnlineGameButton" layoutX="23.0" layoutY="148.0" onAction="#handleFindOnlineGame" prefHeight="34.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Find Online Game"/>
-                <StackPane style="-fx-background-color: rgba(0, 0, 0, 0);" layoutX="25.0" layoutY="227.0">
-                    <children>
-                        <!-- Đặt Button vào giữa StackPane -->
-                        <Button fx:id="rankingListButton" onAction="#handleRankingListShow"
-                                prefHeight="54.0" prefWidth="350.0"
-                                styleClass="custom-button" stylesheets="@style.css" text="Ranking List"/>
-
-                        <!-- Đặt ImageView tại góc trên bên trái -->
-                        <ImageView fx:id="rankingPic" fitHeight="54" fitWidth="54" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@image/ranking.png" />
-                            </image>
-                        </ImageView>
-                    </children>
-                </StackPane>
-
-                <Button fx:id="historyGameButton" layoutX="25.0" layoutY="304.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="History Game">
+           </ImageView>
+       <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(0, 0, 0, 0.1);" xmlns="http://javafx.com/javafx/23.0.1">
+          <children>
+      
+              <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: rgba(38, 36, 33, 0.8);" stylesheets="style.css">
+                  <children>
+                      <ImageView fx:id="boardImageView" fitHeight="632.0" fitWidth="632.0" layoutX="648.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                              <Image url="@image/board.png" />
+                          </image>
+                      </ImageView>
+                      <AnchorPane fx:id="propertiesAnchorPane" prefHeight="88.0" prefWidth="1280.0" style="-fx-background-color: rgba(0, 0, 0, 0);">
+                          <children>
+                              <StackPane layoutX="1201" layoutY="9.0" prefHeight="70" prefWidth="70" style="-fx-background-color: white; -fx-background-radius: 35.5; -fx-border-radius: 35.5; -fx-padding: 1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+                                  <children>
+                                      <ImageView fx:id="avatarImageView" />
+                                  </children>
+                              </StackPane>
+                              <StackPane layoutX="1260" layoutY="61" prefHeight="20" prefWidth="20" style="-fx-background-color: rgba(0, 0, 0, 0);">
+                                  <children>
+                                      <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                              <Image url="@image/upload2.png" />
+                                          </image>
+                                      </ImageView>
+                                      <Button fx:id="loadImageButton" layoutX="1260" layoutY="61.0" mnemonicParsing="false" onAction="#handleImageUpload" opacity="0.0" prefHeight="20" prefWidth="20" />
+                                  </children>
+                              </StackPane>
+                              <Label fx:id="usernameDisplayLabel" layoutX="950" layoutY="27.0" style="-fx-fill: white;-fx-font-size: 20px; -fx-font-family: Constantia" textFill="#fffdfd" />
+                              <Label fx:id="eloDisplayLabel" layoutX="950" layoutY="55.0" style="-fx-fill: white;-fx-font-size: 20px; -fx-font-family: Constantia" textFill="WHITE" />
+                        <Button fx:id="escapeButton" cancelButton="true" mnemonicParsing="false" onAction="#handleEscapeButton" opacity="0.0" prefHeight="0.0" prefWidth="0" />
+                          </children>
+                      </AnchorPane>
+      
+                  </children>
+              </AnchorPane>
+              <AnchorPane fx:id="onlineModeForm" layoutY="88.0" prefHeight="632.0" prefWidth="400.0" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
+                  <effect>
+                      <DropShadow color="#000000" offsetX="5" offsetY="5" radius="10" />
+                  </effect>
+                  <children>
+                      <VBox alignment="CENTER" layoutX="140" layoutY="20" />
+                      <VBox layoutX="50.0" layoutY="300.0" prefWidth="300" spacing="10" />
+                      <HBox alignment="CENTER" layoutX="120" layoutY="520" />
+                    <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="54.0">
+                          <image>
+                              <Image url="@image/logo.png" />
+                          </image>
+                      </ImageView>
+      
+                      <Button fx:id="findOnlineGameButton" layoutX="23.0" layoutY="148.0" onAction="#handleFindOnlineGame" prefHeight="34.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Find Online Game" />
+                      <StackPane layoutX="25.0" layoutY="227.0" style="-fx-background-color: rgba(0, 0, 0, 0);">
+                          <children>
+                              <!-- Đặt Button vào giữa StackPane -->
+                              <Button fx:id="rankingListButton" onAction="#handleRankingListShow" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Ranking List" />
+                          </children>
+                      </StackPane>
+      
+                      <Button fx:id="historyGameButton" layoutX="25.0" layoutY="304.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="History Game">
                 </Button>
-                <Button fx:id="twoPlayerButton" layoutX="25.0" layoutY="385.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
+                      <Button fx:id="twoPlayerButton" layoutX="25.0" layoutY="385.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Two Player">
                 </Button>
-                <Text fill="WHITE" layoutX="71.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Text>
-                <Button fx:id="singlePlayerButton" layoutX="25.0" layoutY="464.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Single Player" />
-                <Button fx:id="logOutButton" layoutX="25.0" layoutY="546.0" onAction="#logOut" prefHeight="54.0" prefWidth="350.0" styleClass="quit-button" stylesheets="@style.css" text="Log Out" />
-
-
-                                        <StackPane alignment="TOP_LEFT">
-                    <!-- Ảnh nền -->
-                    <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@image/return.png" />
-                        </image>
-                    </ImageView>
-                    <Button fx:id="returnButton" onAction="#returnToMainMenu" prefHeight="50" prefWidth="50" styleClass="return-button" stylesheets="style.css">
-
-                    </Button>
-                </StackPane>
-
-             </children>
-        </AnchorPane>
-    </AnchorPane>
+                      <Text fill="WHITE" layoutX="71.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
+                          <font>
+                              <Font size="13.0" />
+                          </font>
+                      </Text>
+                      <Button fx:id="singlePlayerButton" layoutX="25.0" layoutY="464.0" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Single Player" />
+                      <Button fx:id="logOutButton" layoutX="25.0" layoutY="546.0" onAction="#logOut" prefHeight="54.0" prefWidth="350.0" styleClass="quit-button" stylesheets="@style.css" text="Log Out" />
+      
+      
+                                              <StackPane alignment="TOP_LEFT">
+         <children>
+                             <!-- Ảnh nền -->
+                             <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                     <Image url="@image/return.png" />
+                                 </image>
+                             </ImageView>
+         </children>
+                      </StackPane>
+      
+                   </children>
+              </AnchorPane>
+          </children>
+       </AnchorPane>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+   </children>
 </StackPane>

@@ -84,11 +84,16 @@ public class ResourcesHanlder {
         return new WritableImage(image.getPixelReader(), (int) x, (int) y, (int) size, (int) size);
     }
 
-    public static ImageView createAvatarView(String name) {
-        String imagePath = ResourcesHanlder.class.getResource("/chessgame/avatar/" + name + ".jpg").toExternalForm();
+    public static ImageView createAvatarView(String name, boolean isPath) {
+        String imagePath;
+        if(!isPath) {
+            imagePath = ResourcesHanlder.class.getResource("/chessgame/avatar/" + name + ".jpg").toExternalForm();
+        }else{
+            imagePath = name;
+        }
         Image avatar = ResourcesHanlder.cropImageToSquare(new Image(imagePath, 60, 60, true, true));
-        ImageView avatarView = new ImageView(avatar);
-
+        ImageView avatarView = new ImageView();
+        avatarView.setImage(avatar);
         avatarView.setFitWidth(60);
         avatarView.setFitHeight(60);
 
@@ -98,5 +103,10 @@ public class ResourcesHanlder {
 
         avatarView.setClip(clip);
         return  avatarView;
+    }
+
+    public static Image getAvatarImage(String name) {
+        String imagePath = ResourcesHanlder.class.getResource("/chessgame/avatar/" + name + ".jpg").toExternalForm();
+        return ResourcesHanlder.cropImageToSquare(new Image(imagePath));
     }
 }
