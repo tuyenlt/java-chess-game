@@ -63,18 +63,29 @@ public class GeneralPackets {
         }
     }
 
-    public static class HistoryGameResponse {
-        public int playerId;
-        public int opponentId;
+    public static class HistoryGame{
+        public String playerName;
+        public String opponentName;
         public String moves;
         public String result;
+        public boolean onWhite;
+        public HistoryGame(){
 
-        public HistoryGameResponse(){}
-        public HistoryGameResponse(int playerId, int opponentId, String moves, String result) {
-            this.playerId = playerId;
-            this.opponentId = opponentId;
+        }
+        public HistoryGame(String playerName, String opponentName, String moves, String result, boolean onWhite){
+            this.playerName = playerName;
+            this.opponentName = opponentName;
             this.moves = moves;
             this.result = result;
+            this.onWhite = onWhite;
+        }
+    }
+
+
+    public static class HistoryGameResponse {
+        public ArrayList<HistoryGame> historyGameList = new ArrayList<>();
+        public void addHistoryGameToList(String playerName, String opponentName, String moves, String result, boolean onWhite){
+            historyGameList.add(new HistoryGame(playerName, opponentName, moves, result, onWhite));
         }
     }
 

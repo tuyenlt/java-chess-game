@@ -260,7 +260,9 @@ public class MainController implements ClientResponseHandle, Initializable {
     @Override
     public void handleRegisterResponse(RegisterResponse response) {
         if (!response.isSuccess) {
-            registerController.setWarningLabel(response.message);
+            Platform.runLater(() -> {
+                registerController.setWarningLabel(response.message);
+            });
             return;
         }
         Platform.runLater(() -> {

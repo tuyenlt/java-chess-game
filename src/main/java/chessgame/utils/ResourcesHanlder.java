@@ -106,7 +106,9 @@ public class ResourcesHanlder {
     }
 
     public static Image getAvatarImage(String name) {
-        String imagePath = ResourcesHanlder.class.getResource("/chessgame/avatar/" + name + ".jpg").toExternalForm();
-        return ResourcesHanlder.cropImageToSquare(new Image(imagePath));
+        String imagePath = System.getProperty("java.io.tmpdir") + "avatar\\" + name + ".jpg";
+        String fileUrl = "file:" + imagePath.replace("\\", "/"); 
+        System.out.println(fileUrl);
+        return ResourcesHanlder.cropImageToSquare(new Image(fileUrl));
     }
 }
