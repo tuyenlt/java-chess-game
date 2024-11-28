@@ -74,7 +74,7 @@ public class MainController implements ClientResponseHandle, Initializable {
     public void initialize(URL arg0, ResourceBundle arg1) {       
         if (secondaryAnchorPane != null) {
             double duration = 0.4;
-//            if(AppState.isSecondaryPaneOpened()) duration = 0.2;
+            if(AppState.isSecondaryPaneOpened()) duration = 0.2;
             AnimationUtils.applyEffect(secondaryAnchorPane, duration);
             AppState.setSecondaryPaneOpened(true);
         }
