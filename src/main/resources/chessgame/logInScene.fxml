@@ -69,7 +69,9 @@
 
                     </Button>
                 </StackPane>
+
             </children>
         </AnchorPane>
     </AnchorPane>
+    <AnchorPane fx:id="loadingPane" visible="false"/>
 </AnchorPane>

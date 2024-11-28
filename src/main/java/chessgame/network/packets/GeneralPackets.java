@@ -55,13 +55,13 @@ public class GeneralPackets {
     }
     
     public static class HistoryGameRequest {
-        public String gameId;
+        public int userId;
         public HistoryGameRequest(){
 
         }
 
-        public HistoryGameRequest(String gameId) {
-            this.gameId = gameId;
+        public HistoryGameRequest(int userId) {
+            this.userId = userId;
         }
     }
 

@@ -84,10 +84,6 @@ public class OnlineModeController {
         Platform.runLater(() -> {
             usernameDisplayLabel.setText("User Name: " + user.name);
             eloDisplayLabel.setText("Elo: " + user.elo);
-            double labelWidth = 1195.0 - usernameDisplayLabel.getWidth() - 80;
-//            if (labelWidth < 1195 - 270) labelWidth = 1195 - 270;
-            usernameDisplayLabel.setLayoutX(labelWidth);
-            eloDisplayLabel.setLayoutX(labelWidth);
             loadAvatarImage(ResourcesHanlder.getAvatarImage(user.name));
         });
     }
@@ -120,12 +116,15 @@ public class OnlineModeController {
         }
     }
 
-    public void handleHistory() {
+    public void handleHistory(){
+        client.sendRequest(new HistoryGameRequest(user.playerId));
+    }
+    public void handleHistoryShow(HistoryGameResponse historyGameResponse) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/historyList.fxml"));
             Parent historyListRoot = loader.load();
             HistoryController historyListController = loader.getController();
-            historyListController.updateHistory();
+            historyListController.updateHistory(historyGameResponse, user);
 
             Platform.runLater(() -> {
                 historyPane.getChildren().setAll(historyListRoot);

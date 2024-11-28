@@ -1,16 +1,21 @@
 package chessgame.ui;
 
+import chessgame.game.HistoryGameReplay;
+import chessgame.network.packets.GeneralPackets.HistoryGame;
+import chessgame.network.packets.GeneralPackets.HistoryGameResponse;
 import chessgame.network.packets.GeneralPackets.RankingListResponse;
 import chessgame.network.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 
 public class HistoryController {
 
@@ -18,50 +23,84 @@ public class HistoryController {
     private VBox historyContainer;
 
     @FXML
-    public void updateHistory() {
+    public void updateHistory(HistoryGameResponse response, User user) {
         Platform.runLater(() -> {
             historyContainer.getChildren().clear();
-            for (int i = 0; i < 30; i++) {
-                HBox playerRow = new HBox(0);
-                playerRow.setPrefWidth(830);
-                playerRow.setAlignment(Pos.CENTER_LEFT);
 
+            for(HistoryGame historyGame : response.historyGameList){
+                String result;
+                int totalsMove = historyGame.moves.split(" ").length;
+                if(historyGame.onWhite){
+                    result = historyGame.result;
+                }else{
+                    result = "draw";
+                    if(historyGame.result.equals("win")){
+                        result = "lose";
+                    }
+                    if(historyGame.result.equals("lose")){
+                        result = "win";
+                    }
+                }
 
-                Label opponentLabel = new Label("Opponent " + (i + 1));
+                // Button bao quanh các Label
+                Button historyButton = new Button();
+                historyButton.setPrefWidth(800);
+                historyButton.getStylesheets().add("chessgame/style.css");
+                historyButton.getStyleClass().add("history-button");
+                historyButton.setOnAction(event -> {
+                    if(historyGame.moves.equals("")){
+                        return;
+                    }
+                    Stage replayStage = new Stage();
+                    replayStage.setTitle("Game Replay");
+                    replayStage.setMaxWidth(1280);
+                    replayStage.setMaxHeight(720);
+                    replayStage.setResizable(false);
+                    HistoryGameReplay historyGameReplay = new HistoryGameReplay(historyGame.moves, !historyGame.onWhite);
+                    historyGameReplay.setOnReturn(replayStage::close);
+                    replayStage.setScene(historyGameReplay.getScene());
+                    replayStage.show();
+
+                });
+
+                HBox contentRow = new HBox();
+                contentRow.setPrefWidth(800);
+
+                Label opponentLabel = new Label(historyGame.opponentName);
                 opponentLabel.setPrefWidth(500);
                 opponentLabel.setStyle("-fx-font-size: 14px;");
                 opponentLabel.setAlignment(Pos.CENTER);
-                Label resultLabel = new Label("win");
-                resultLabel.setStyle("-fx-text-fill: green;");
-                if(i % 2 == 0) {
-                    resultLabel.setText("lose");
-                    resultLabel.setStyle("-fx-text-fill: red;");
-                }
+
+                Label resultLabel = new Label(result);
+                resultLabel.setStyle(result.equals("lose") ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
                 resultLabel.setPrefWidth(100);
                 resultLabel.setAlignment(Pos.CENTER);
 
-                Label eloLabel = new Label("+" + (i + 1));
-
-
-                Label moveLabel = new Label(String.valueOf(i + 1));
+                Label moveLabel = new Label(String.valueOf(totalsMove));
                 moveLabel.setPrefWidth(100);
                 moveLabel.setStyle("-fx-font-size: 14px;");
                 moveLabel.setAlignment(Pos.CENTER);
 
-                playerRow.getChildren().addAll(opponentLabel, resultLabel, moveLabel);
+                contentRow.getChildren().addAll(opponentLabel, resultLabel, moveLabel);
 
-                Line line = new Line();
-                line.setStartX(10);
-                line.setEndX(820);
-                line.setStartY(0);
-                line.setEndY(0);
-                line.setStroke(Color.GREEN);
+                // Đặt nội dung vào Button
+                historyButton.setGraphic(contentRow);
+
+                // Thêm line separator
+                Line line = new Line(0, 0, 830, 0);
+                line.setStroke(Color.LIGHTGRAY);
                 line.setStrokeWidth(1);
 
+                // Gộp Button và line vào VBox
                 VBox historyBox = new VBox(5);
-                historyBox.getChildren().addAll(playerRow, line);
+                historyBox.getChildren().addAll(historyButton, line);
+
+                // Thêm vào container
                 historyContainer.getChildren().add(historyBox);
             }
         });
     }
+
+
+
 }

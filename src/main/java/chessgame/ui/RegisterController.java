@@ -51,12 +51,13 @@ public class RegisterController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
             Parent loadingListRoot = loader.load();
-            LoadingController loadingListController = loader.getController();
+            LoadingController loadingController = loader.getController();
 
             Platform.runLater(() -> {
                 loadingPane.getChildren().setAll(loadingListRoot);
                 loadingPane.setVisible(true);
-
+                loadingController.loadingLabel.setText("Registering, please wait...");
+                loadingController.cancelFindingButton.setVisible(false);
             });
         } catch (IOException e) {
             e.printStackTrace();

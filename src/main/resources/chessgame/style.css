@@ -28,6 +28,16 @@
     -fx-effect: dropshadow(gaussian, #9ccc60, 10, 0, 0, 0); /* Hiệu ứng sáng khi hover */
     -fx-font-size: 22px;
 }
+
+.history-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+}
+.history-button:hover {
+    -fx-background-color: #303030; /* Màu nền khi trỏ chuột (xanh đậm hơn) */
+
+}
+
 .quit-button {
     -fx-background-color: #eb2d2f;
     /* Gradient màu xanh lá */

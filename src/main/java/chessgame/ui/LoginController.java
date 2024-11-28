@@ -3,12 +3,16 @@ package chessgame.ui;
 
 import chessgame.network.packets.GeneralPackets.LoginRequest;
 import chessgame.utils.Validator;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -22,6 +26,8 @@ public class LoginController implements Initializable {
     private TextField passwordTextFieldLogin;
     @FXML
     private AnchorPane logInForm;
+    @FXML
+    private AnchorPane loadingPane;
 
     private Consumer<LoginRequest> onSubmit;
     private Runnable onSwitchToRegister;
@@ -37,6 +43,21 @@ public class LoginController implements Initializable {
     }
 
     public void onLoginSubmit() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            Parent loadingListRoot = loader.load();
+            LoadingController loadingController = loader.getController();
+
+            Platform.runLater(() -> {
+                loadingPane.getChildren().setAll(loadingListRoot);
+                loadingPane.setVisible(true);
+                loadingController.loadingLabel.setText("Logging in, please wait...");
+                loadingController.cancelFindingButton.setVisible(false);
+
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String username = usernameTextFieldLogin.getText();
         String password = passwordTextFieldLogin.getText();
         String userNameValidate = Validator.userNameValidator(username);
