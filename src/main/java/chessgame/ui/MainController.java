@@ -71,8 +71,8 @@ public class MainController implements ClientResponseHandle, Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {       
         if (secondaryAnchorPane != null) {
-            double duration = 1;
-            if(AppState.isSecondaryPaneOpened()) duration = 0.2;
+            double duration = 0.4;
+//            if(AppState.isSecondaryPaneOpened()) duration = 0.2;
             AnimationUtils.applyEffect(secondaryAnchorPane, duration);
             AppState.setSecondaryPaneOpened(true);
         }
@@ -81,11 +81,6 @@ public class MainController implements ClientResponseHandle, Initializable {
             root = loadingLoader.load();
             loadingController = loadingLoader.getController();
             loadingController.loadingAnchorPane.setVisible(false);
-
-            if (user.name.length() > 12) {
-                user.name = user.name.substring(0, 12) + "...";
-            }
-
         } catch (Exception e) {
                 System.out.println(e.getStackTrace());
         }
@@ -236,10 +231,18 @@ public class MainController implements ClientResponseHandle, Initializable {
             return;
         }
         user = new User(response.userId, response.userName, response.elo, response.win, response.lose, response.draw);
-        Platform.runLater(() -> {
-            onlineModeMenu();
-            loadingController.loadingAnchorPane.setVisible(false);
-        });
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(() -> {
+                onlineModeMenu();
+                loadingController.loadingAnchorPane.setVisible(false);
+            });
+        }).start();
+
 
     }
     @Override
@@ -260,14 +263,19 @@ public class MainController implements ClientResponseHandle, Initializable {
             });
             return;
         }
-        Platform.runLater(() -> {
-            loadingController.loadingAnchorPane.setVisible(false);
-            AppState.setSuccessfulRegistered(true);
-        });
-        Platform.runLater(() -> {
-            AppState.setSuccessfulRegistered(false);
-            switchToLogin();
-        });
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(() -> {
+                loadingController.loadingAnchorPane.setVisible(false);
+                AppState.setSuccessfulRegistered(false);
+                switchToLogin();
+            });
+        }).start();
+
 
     }
 
@@ -290,9 +298,7 @@ public class MainController implements ClientResponseHandle, Initializable {
             System.out.println(e);
         }
         gameClient.sendRequest(new InitPacket(user.playerId));
-        game.setOnGameEnd(()->{
-            switchScene("onlineModeScene.fxml");
-        });
+        game.setOnGameEnd(this::onlineModeMenu);
         Scene scene = new Scene(game);
         Platform.runLater(()->{
             stage.setScene(scene);

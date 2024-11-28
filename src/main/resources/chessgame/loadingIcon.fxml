@@ -5,10 +5,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="loadingAnchorPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.8);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.LoadingController" stylesheets="@style.css">
+<AnchorPane fx:id="loadingAnchorPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.8);" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.LoadingController">
     <children>
-        <Canvas fx:id="loadingCanvas" height="50" layoutX="615.0" layoutY="335.0" width="50" />
-        <Label fx:id="loadingLabel" alignment="CENTER" layoutX="415.0" layoutY="243.0" prefHeight="26.0" prefWidth="400" style="-fx-text-fill: red; -fx-font-size: 20;" text="Finding opponent..." wrapText="true" />
-        <Button fx:id="cancelFindingButton" layoutX="589.0" layoutY="396.0" mnemonicParsing="false" onAction="#onCancel" styleClass="quit-button" text="Cancel" />
+        <Canvas fx:id="loadingCanvas" height="50" layoutX="563.0" layoutY="335.0" width="50" />
+        <Label fx:id="loadingLabel" alignment="CENTER" layoutX="357.0" layoutY="250.0" prefHeight="30.0" prefWidth="462.0" style="-fx-text-fill: red; -fx-font-size: 20;" text="Finding opponent..." wrapText="true" />
+        <Button fx:id="cancelFindingButton" layoutX="532.0" layoutY="440.0" mnemonicParsing="false" onAction="#onCancel" styleClass="quit-button" text="Cancel" />
     </children>
 </AnchorPane>
