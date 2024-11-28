@@ -274,3 +274,22 @@
     -fx-font-size: 14px; /* Font nhỏ hơn Top 2 */
     -fx-font-weight: bold; /* In đậm */
 }
+
+.choice-box {
+    -fx-background-color: #ffffff; /* White background */
+    -fx-border-color: #6abf40;    /* Green border */
+    -fx-border-width: 2;          /* Border thickness */
+    -fx-border-radius: 5;         /* Rounded corners */
+    -fx-background-radius: 5;     /* Rounded corners */
+    -fx-padding: 5 10 5 10;       /* Padding inside the box */
+    -fx-font-size: 14px;          /* Font size */
+    -fx-text-fill: #6abf40;       /* Green text */
+    -fx-focus-color: transparent; /* Remove focus color */
+    -fx-hover-border-color: #4ca630; /* Darker green on hover */
+}
+.choice-box .arrow {
+    -fx-background-color: #6abf40; /* Green arrow background */
+}
+.choice-box:hover {
+    -fx-background-color: #f0f0f0; /* Slight hover effect */
+}
