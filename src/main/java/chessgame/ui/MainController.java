@@ -291,7 +291,7 @@ public class MainController implements ClientResponseHandle, Initializable {
         }
         gameClient.sendRequest(new InitPacket(user.playerId));
         game.setOnGameEnd(()->{
-            switchScene("onlineModeScene.fxml");
+            onlineModeMenu();
         });
         Scene scene = new Scene(game);
         Platform.runLater(()->{
