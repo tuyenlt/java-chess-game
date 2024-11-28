@@ -31,7 +31,7 @@ abstract public class MainGame extends StackPane {
         public String elo;
         public String side;
         public PlayerInfo(){
-            name = "Player (Not You Bitch)";
+            name = "You";
             elo = "???";
             side = "w";
         }
@@ -67,11 +67,11 @@ abstract public class MainGame extends StackPane {
                                 "-fx-background-repeat: no-repeat; " +
                                 "-fx-background-position: center;");
 
-        playerSectionTop = new PlayerSection("Player1", "???", gameTime, "b");
-        playerSectionBottom = new PlayerSection("Player2", "???", gameTime, "w");
+        playerSectionTop = new PlayerSection("You", "???", gameTime, "b");
+        playerSectionBottom = new PlayerSection("You", "???", gameTime, "w");
 
         gameOptionsMenu = new GameOptionsMenu();
-        gameOptionsMenu.addButton("Quit Game", "quit-button", event -> onGameEnd.run());
+        gameOptionsMenu.addButton("Quit", "quit-button", event -> onGameEnd.run());
 
         rightSection.getChildren().addAll(gameOptionsMenu,playerSectionTop, playerSectionBottom);
 

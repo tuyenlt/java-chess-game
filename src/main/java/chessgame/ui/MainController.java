@@ -48,14 +48,16 @@ public class MainController implements ClientResponseHandle, Initializable {
     private Scene scene;
     private Parent root;
 
-    private static LoadingController loadingController;
     private static LoginController loginController;
     private static RegisterController registerController;
     private static OnlineModeController onlineModeController;
-
+    
     private static User user;
-
+    
     private static ClientNetwork client;
+    
+    @FXML
+    private AnchorPane loadingPane;
 
     @FXML
     private AnchorPane secondaryAnchorPane;
@@ -76,14 +78,7 @@ public class MainController implements ClientResponseHandle, Initializable {
             AnimationUtils.applyEffect(secondaryAnchorPane, duration);
             AppState.setSecondaryPaneOpened(true);
         }
-        try {
-            FXMLLoader loadingLoader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
-            root = loadingLoader.load();
-            loadingController = loadingLoader.getController();
-            loadingController.loadingAnchorPane.setVisible(false);
-        } catch (Exception e) {
-                System.out.println(e.getStackTrace());
-        }
+
     }
 
     public void quit(ActionEvent event) {
@@ -170,6 +165,12 @@ public class MainController implements ClientResponseHandle, Initializable {
             onlineModeController = loader.getController();
             onlineModeController.setUserInformation(user);
             onlineModeController.setClient(client);
+            onlineModeController.getTwoPlayerButton().setOnAction((event) -> {
+                twoPlayerMode(event);
+            });
+            onlineModeController.getSinglePlayerButton().setOnAction((event) -> {
+                singlePlayerMode(event);
+            });
             onlineModeController.setOnLogout(() -> {
                 user = null;
                 switchScene("mainScene.fxml");
@@ -187,7 +188,7 @@ public class MainController implements ClientResponseHandle, Initializable {
             if(user == null){
                 switchScene("offlineModeScene.fxml");
             }else{
-                switchScene("onlineModeScene.fxml");
+                onlineModeMenu();
             }
         });
         Scene scene = new Scene(game);
@@ -196,20 +197,15 @@ public class MainController implements ClientResponseHandle, Initializable {
     }
 
     public void twoPlayerMode(ActionEvent event){
-        // TwoPlayerOfflineMode game = new TwoPlayerOfflineMode(false);
-        // game.setOnGameEnd(()->{
-        //     if(user == null){
-        //         switchScene("offlineModeScene.fxml");
-        //     }else{
-        //         switchScene("onlineModeScene.fxml");
-        //     }
-        // });
-        // Scene scene = new Scene(game);
-        HistoryGameReplay replayGame = new HistoryGameReplay("d2d4 d7d5 e2e4 d5e4 c1f4 g8f6 d1d3 e4d3 c2d3 d8d4 b1c3 d4f4 d3d4 c7c6 b2b3 f6e4 f2f3", true);
-        replayGame.setOnReturn(()->{
-            switchScene("offlineModeScene.fxml");
+        TwoPlayerOfflineMode game = new TwoPlayerOfflineMode(false);
+        game.setOnGameEnd(()->{
+            if(user == null){
+                switchScene("offlineModeScene.fxml");
+            }else{
+                onlineModeMenu();
+            }
         });
-        Scene scene = new Scene(replayGame);
+        Scene scene = new Scene(game);
         stage.setScene(scene);
         stage.show();
     }
@@ -219,8 +215,11 @@ public class MainController implements ClientResponseHandle, Initializable {
     public void handleHistoryGame(HistoryGameResponse response) {
         onlineModeController.handleHistoryShow(response);
     }
+
+
     @Override
     public void handleLoginResponse(LoginResponse response) {
+        loginController.hideLoadingPane();
         if (!response.isSuccess) {
             Platform.runLater(() -> {
                 if(loginController != null){
@@ -231,19 +230,12 @@ public class MainController implements ClientResponseHandle, Initializable {
         }
         user = new User(response.userId, response.userName, response.elo, response.win, response.lose, response.draw);
         new Thread(() -> {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             Platform.runLater(() -> {
                 onlineModeMenu();
-                loadingController.loadingAnchorPane.setVisible(false);
             });
         }).start();
-
-
     }
+
     @Override
     public void handleProfileView(ProfileViewResponse response) {
         // TODO Auto-generated method stub
@@ -256,6 +248,7 @@ public class MainController implements ClientResponseHandle, Initializable {
 
     @Override
     public void handleRegisterResponse(RegisterResponse response) {
+        registerController.hideLoadingPane();
         if (!response.isSuccess) {
             Platform.runLater(() -> {
                 registerController.setWarningLabel(response.message);
@@ -263,14 +256,7 @@ public class MainController implements ClientResponseHandle, Initializable {
             return;
         }
         new Thread(() -> {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             Platform.runLater(() -> {
-                loadingController.loadingAnchorPane.setVisible(false);
-                AppState.setSuccessfulRegistered(false);
                 switchToLogin();
             });
         }).start();
@@ -301,7 +287,10 @@ public class MainController implements ClientResponseHandle, Initializable {
             user.elo += eloChange;
             onlineModeMenu();
         });
-        game.setOnGameEnd(this::onlineModeMenu);
+        game.setOnGameEnd(()->{
+            client.sendRequest(new MsgPacket("/surrender"));
+            onlineModeMenu();
+        });
         Scene scene = new Scene(game);
         Platform.runLater(()->{
             stage.setScene(scene);

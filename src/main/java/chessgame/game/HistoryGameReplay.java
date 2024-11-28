@@ -56,7 +56,7 @@ public class HistoryGameReplay extends StackPane {
         rightSection.setPrefSize(560, 720);
 
         gameOptionsMenu = new GameOptionsMenu();
-        gameOptionsMenu.addButton("Quit Game", "quit-button", event -> onReturn.run());
+        gameOptionsMenu.addButton("Quit", "quit-button", event -> onReturn.run());
 
         replayMenu = new GameOptionsMenu();
 

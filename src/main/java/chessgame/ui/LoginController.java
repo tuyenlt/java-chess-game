@@ -43,21 +43,6 @@ public class LoginController implements Initializable {
     }
 
     public void onLoginSubmit() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
-            Parent loadingListRoot = loader.load();
-            LoadingController loadingController = loader.getController();
-
-            Platform.runLater(() -> {
-                loadingPane.getChildren().setAll(loadingListRoot);
-                loadingPane.setVisible(true);
-                loadingController.loadingLabel.setText("Logging in, please wait...");
-                loadingController.cancelFindingButton.setVisible(false);
-
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         String username = usernameTextFieldLogin.getText();
         String password = passwordTextFieldLogin.getText();
         String userNameValidate = Validator.userNameValidator(username);
@@ -69,6 +54,19 @@ public class LoginController implements Initializable {
         if (passwordValidate != "ok") {
             notifyLabelLogin.setText(passwordValidate);
             return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            Parent loadingListRoot = loader.load();
+            LoadingController loadingController = loader.getController();
+
+            loadingPane.getChildren().setAll(loadingListRoot);
+            loadingPane.setVisible(true);
+            loadingController.loadingLabel.setText("Logging in, please wait...");
+            loadingController.cancelFindingButton.setVisible(false);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         onSubmit.accept(new LoginRequest(username, password));
     }
@@ -95,5 +93,9 @@ public class LoginController implements Initializable {
 
     public void returnToMainMenu() {
         onReturn.run();
+    }
+
+    public void hideLoadingPane() {
+        loadingPane.setVisible(false);
     }
 }
