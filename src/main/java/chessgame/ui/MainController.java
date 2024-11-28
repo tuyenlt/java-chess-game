@@ -217,8 +217,7 @@ public class MainController implements ClientResponseHandle, Initializable {
 
     @Override
     public void handleHistoryGame(HistoryGameResponse response) {
-        // TODO Auto-generated method stub
-
+        onlineModeController.handleHistoryShow(response);
     }
     @Override
     public void handleLoginResponse(LoginResponse response) {

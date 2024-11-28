@@ -116,12 +116,15 @@ public class OnlineModeController {
         }
     }
 
-    public void handleHistory() {
+    public void handleHistory(){
+        client.sendRequest(new HistoryGameRequest(user.playerId));
+    }
+    public void handleHistoryShow(HistoryGameResponse historyGameResponse) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/historyList.fxml"));
             Parent historyListRoot = loader.load();
             HistoryController historyListController = loader.getController();
-            historyListController.updateHistory();
+            historyListController.updateHistory(historyGameResponse, user);
 
             Platform.runLater(() -> {
                 historyPane.getChildren().setAll(historyListRoot);
