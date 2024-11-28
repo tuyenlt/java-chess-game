@@ -48,26 +48,12 @@ public class RegisterController {
 
     public void registerSubmit(ActionEvent event) {
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
-            Parent loadingListRoot = loader.load();
-            LoadingController loadingController = loader.getController();
-
-            Platform.runLater(() -> {
-                loadingPane.getChildren().setAll(loadingListRoot);
-                loadingPane.setVisible(true);
-                loadingController.loadingLabel.setText("Registering, please wait...");
-                loadingController.cancelFindingButton.setVisible(false);
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        
         String username = usernameTextFieldRegister.getText();
         String password = passwordTextFieldRegister.getText();
         String confirmPassword = confirmPasswordField.getText();
         String email = emailField.getText();
-
+        
         String userNameValidate = Validator.userNameValidator(username);
         String passwordValidate = Validator.passwordValidator(password);
         String emailValidate = Validator.emailValidator(email);
@@ -81,7 +67,7 @@ public class RegisterController {
             warningLabel.setText(passwordValidate);
             return;
         }
-
+        
         if(!password.equals(confirmPassword)) {
             warningLabel.setText("Password and confirm password must be the same");
             return;
@@ -90,6 +76,18 @@ public class RegisterController {
         if (emailValidate != "ok") {
             warningLabel.setText(emailValidate);
             return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            Parent loadingListRoot = loader.load();
+            LoadingController loadingController = loader.getController();
+            loadingPane.getChildren().setAll(loadingListRoot);
+            loadingPane.setVisible(true);
+            loadingController.loadingLabel.setText("Registering, please wait...");
+            loadingController.cancelFindingButton.setVisible(false);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         onSubmit.accept(new RegisterRequest(username, email, password));
@@ -117,5 +115,9 @@ public class RegisterController {
 
     public void setWarningLabel(String message) {
         warningLabel.setText(message);
+    }
+
+    public void hideLoadingPane() {
+        loadingPane.setVisible(false);
     }
 }

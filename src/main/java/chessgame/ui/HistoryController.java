@@ -1,5 +1,8 @@
 package chessgame.ui;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import chessgame.game.HistoryGameReplay;
 import chessgame.network.packets.GeneralPackets.HistoryGame;
 import chessgame.network.packets.GeneralPackets.HistoryGameResponse;
@@ -8,6 +11,8 @@ import chessgame.network.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -26,7 +31,7 @@ public class HistoryController {
     public void updateHistory(HistoryGameResponse response, User user) {
         Platform.runLater(() -> {
             historyContainer.getChildren().clear();
-
+            Collections.reverse(response.historyGameList);
             for(HistoryGame historyGame : response.historyGameList){
                 String result;
                 int totalsMove = historyGame.moves.split(" ").length;
@@ -53,12 +58,12 @@ public class HistoryController {
                     }
                     Stage replayStage = new Stage();
                     replayStage.setTitle("Game Replay");
-                    replayStage.setMaxWidth(1280);
-                    replayStage.setMaxHeight(720);
                     replayStage.setResizable(false);
+                    historyButton.getScene().setCursor(Cursor.WAIT);
                     HistoryGameReplay historyGameReplay = new HistoryGameReplay(historyGame.moves, !historyGame.onWhite);
                     historyGameReplay.setOnReturn(replayStage::close);
-                    replayStage.setScene(historyGameReplay.getScene());
+                    replayStage.setScene(new Scene(historyGameReplay));
+                    historyButton.getScene().setCursor(Cursor.DEFAULT);
                     replayStage.show();
 
                 });

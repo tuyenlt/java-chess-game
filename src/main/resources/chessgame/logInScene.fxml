@@ -13,6 +13,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.PasswordField?>
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.LoginController">
     <!-- Scene chính (main scene) -->
     <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22.0.1">
@@ -47,9 +48,9 @@
                 <TextField fx:id="usernameTextFieldLogin" layoutX="25.0" layoutY="229.0" onAction="#onLoginSubmit" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Username" styleClass="user-custom-textfield">
 
                 </TextField>
-                <TextField fx:id="passwordTextFieldLogin" layoutX="25.0" layoutY="309.0" onAction="#onLoginSubmit" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Password" styleClass="password-custom-textfield">
+                <PasswordField fx:id="passwordTextFieldLogin" layoutX="25.0" layoutY="309.0" onAction="#onLoginSubmit" opacity="0.81" prefHeight="56.0" prefWidth="350.0" promptText="Password" styleClass="password-custom-textfield">
 
-                </TextField>
+                </PasswordField>
                 <Label fx:id="notifyLabelLogin" alignment="CENTER" layoutX="25.0" layoutY="451.0" maxWidth="350.0" prefHeight="32.0" prefWidth="350.0" style="-fx-text-fill: red; -fx-font-size: 15;" wrapText="true" />
                 <Text fill="WHITE" layoutX="95.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="ChessGameText" text="CHESS GAME" wrappingWidth="254.9366455078125">
 

@@ -233,7 +233,6 @@ public class Board {
         
         // Tốt qua đường
         if(move.isEnPassant()){
-            System.out.println("pass");
             setPiece(move.getStartRow(), move.getEndCol(),null);
         }
         
@@ -250,12 +249,10 @@ public class Board {
 
         // Thêm thế cờ mới
         boardPositions.add(toString());
-        System.out.println(this);
     }
          
     // Xử lý riêng phần nhập thành
     private void Castling (Move move){
-        System.out.println("casle");
         if(move.getEndCol() == 2){
             movePiece(new Move(move.getStartRow(),0,move.getEndRow(),3),true);
         }else{

@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,6 +43,10 @@ public class OnlineModeController {
     private AnchorPane historyPane;
     @FXML
     private ImageView boardImageView;
+    @FXML
+    private Button twoPlayerButton;
+    @FXML
+    private Button singlePlayerButton;
 
     public void initialize() throws IOException{
         System.out.println("OnlineModeController initialized");
@@ -66,6 +71,14 @@ public class OnlineModeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Button getSinglePlayerButton(){
+        return singlePlayerButton;
+    }
+
+    public Button getTwoPlayerButton(){
+        return twoPlayerButton;
     }
 
     public void loadAvatarImage(Image avatarImage) {
@@ -119,6 +132,8 @@ public class OnlineModeController {
     public void handleHistory(){
         client.sendRequest(new HistoryGameRequest(user.playerId));
     }
+
+    
     public void handleHistoryShow(HistoryGameResponse historyGameResponse) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/historyList.fxml"));
@@ -167,7 +182,6 @@ public class OnlineModeController {
             loadingPane.setVisible(false);
             rankingPane.setVisible(false);
             historyPane.setVisible(false);
-            // histortyy
         });
     }
 
