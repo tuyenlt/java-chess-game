@@ -10,6 +10,7 @@ import chessgame.network.GameNetwork;
 import chessgame.network.User;
 import chessgame.network.packets.GeneralPackets.*;
 import chessgame.network.packets.IngamePackets.InitPacket;
+import chessgame.utils.Config;
 import chessgame.utils.ResourcesHanlder;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -111,7 +112,7 @@ public class MainController implements ClientResponseHandle, Initializable {
         if(client == null){
             try {
 //                client = new ClientNetwork(10000, 5555, 6666, "localhost");
-                client = new ClientNetwork(10000, 5555, 6666, "192.168.1.3");
+                client = new ClientNetwork(10000, 5555, 6666, Config.serverAddress);
                 client.connectMainServer();
                 client.setUiResponseHandler(this);
             } catch (Exception e) {
@@ -274,7 +275,7 @@ public class MainController implements ClientResponseHandle, Initializable {
         }     
         game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side, true);
 //        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
-        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "192.168.1.3");
+        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, Config.serverAddress);
         gameClient.setResponHandler(game);
         game.setClient(gameClient);
         try{
