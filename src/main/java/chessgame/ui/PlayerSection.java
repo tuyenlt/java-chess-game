@@ -88,11 +88,17 @@ public class PlayerSection extends Pane {
         indicator.setImage(ResourcesHanlder.getAvatarImage(name));
     }
 
-    public void setInfo(String name, String elo, String side) {
+    public void setInfo(String name, String elo, String side, boolean isOnline) {
         this.name = name;
         this.elo = elo;
         this.side = side;
-        indicator.setImage(getImage(name));
+        Image avatarImage;
+        if (isOnline) {
+            avatarImage = ResourcesHanlder.getAvatarImage(name);
+        }else{
+            avatarImage = getImage(name);
+        }
+        indicator.setImage(avatarImage);
         nameLabel.setText(name);
         eloLabel.setText(elo);
     }
