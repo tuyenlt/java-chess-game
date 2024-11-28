@@ -230,17 +230,17 @@ public class MainController implements ClientResponseHandle, Initializable {
             return;
         }
         user = new User(response.userId, response.userName, response.elo, response.win, response.lose, response.draw);
-        new Thread(() -> {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//        new Thread(() -> {
+//            try {
+//                Thread.sleep(3000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
             Platform.runLater(() -> {
                 onlineModeMenu();
                 loadingController.loadingAnchorPane.setVisible(false);
             });
-        }).start();
+//        }).start();
 
 
     }
@@ -259,21 +259,22 @@ public class MainController implements ClientResponseHandle, Initializable {
         if (!response.isSuccess) {
             Platform.runLater(() -> {
                 registerController.setWarningLabel(response.message);
+                loadingController.loadingAnchorPane.setVisible(false);
             });
             return;
         }
-        new Thread(() -> {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//        new Thread(() -> {
+//            try {
+//                Thread.sleep(3000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
             Platform.runLater(() -> {
                 loadingController.loadingAnchorPane.setVisible(false);
                 AppState.setSuccessfulRegistered(false);
                 switchToLogin();
             });
-        }).start();
+//        }).start();
 
 
     }
