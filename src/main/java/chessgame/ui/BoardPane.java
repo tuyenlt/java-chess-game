@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import chessgame.logic.Board;
 import chessgame.logic.Move;
 import chessgame.logic.Piece;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,7 +27,7 @@ public class BoardPane extends Pane{
     private Circle[][] takeableHightLight = new Circle[8][8];
     private ImageView[][] piecesImage = new ImageView[8][8];
     private Rectangle boxHightlightRect;
-    private Pair chossingBox;
+    private Position chossingBox;
     private String gameMode = "singlePlayer";
     private String localPlayerSide = "w";
     private Consumer<String> onMovePiece;
@@ -34,16 +35,16 @@ public class BoardPane extends Pane{
     private PromotionSelect promotionSelectTop;
     private PromotionSelect promotionSelectBot;
     private Pane blockingPane = new Pane();
+    private Position lastMove = null;
 
 
-
-    private class Pair{
+    private class Position{
         public int col;
         public int row;
-        public Pair(){
+        public Position(){
 
         }
-        public Pair(int col, int row){
+        public Position(int col, int row){
             this.col = col;
             this.row = row;
         }
@@ -240,8 +241,8 @@ public class BoardPane extends Pane{
         boxHightlightRect.setY((int)(event.getSceneY() / TILE_SIZE) * TILE_SIZE);
         draggedPiece.setCursor(Cursor.HAND);
         
-        resetState();
-        chossingBox = new Pair(col, row);
+        resetHightlight();
+        chossingBox = new Position(col, row);
         hightlightMove(row, col);
         boxHightlightRect.setVisible(true);
         System.out.println("chossing box: "+ chossingBox.col + " " + chossingBox.row);
@@ -304,8 +305,21 @@ public class BoardPane extends Pane{
             }
         }
     }
+    public void hightLightLastMove(){
+        if(lastMove != null){
+            tiles[lastMove.row][lastMove.col].setFill((lastMove.row + lastMove.col) % 2 == 0 ? Color.web("#EBECD0") : Color.web("#739552"));
+        }
+        Move move = board.getLastMove();
+        if(isBoardReverse){
+            move.reverseBoard();
+        }
+        lastMove = new Position(move.getEndCol(), move.getEndRow());
+        if(lastMove != null){
+            tiles[lastMove.row][lastMove.col].setFill(Color.web("#F5F682"));
+        }
+    }
 
-    public void resetState(){
+    public void resetHightlight(){
         for(int i=0;i<8;i++){
             for(int j=0;j<8;j++){
                 moveHightLight[i][j].setVisible(false);
@@ -337,7 +351,7 @@ public class BoardPane extends Pane{
             if(startCol == endCol && startRow == endRow){
                 return false;
             }
-            resetState();
+            resetHightlight();
             chossingBox = null;
             Move newMove = new Move(startRow, startCol, endRow, endCol);
             if(!promotionType.equals("")){
@@ -377,6 +391,7 @@ public class BoardPane extends Pane{
                     }
                     board.movePiece(newMove);
                     onMovePiece.accept(board.getCurrentTurn());
+                    hightLightLastMove();
                     
                     piecesImage[endRow][endCol] = piecesImage[startRow][startCol];
                     if(piecesImage[endRow][endCol] != null){
@@ -402,6 +417,7 @@ public class BoardPane extends Pane{
         }
         String pieceImageName = board.getCurrentTurn() + pieceName.toUpperCase();
         board.movePiece(promotionMove);
+        hightLightLastMove();
         if(isBoardReverse){
             promotionMove.reverseBoard();
         }

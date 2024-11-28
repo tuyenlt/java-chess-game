@@ -290,7 +290,8 @@ public class MainController implements ClientResponseHandle, Initializable {
             System.out.println(e);
         }
         gameClient.sendRequest(new InitPacket(user.playerId));
-        game.setOnGameEnd(()->{
+        game.setOnGameEnd((eloChange)->{
+            user.elo += eloChange;
             onlineModeMenu();
         });
         Scene scene = new Scene(game);

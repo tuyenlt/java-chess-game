@@ -24,7 +24,7 @@ public class PlayerSection extends Pane {
         this.side = side;
         this.maxTime = initialTimeInSeconds;
         this.setPrefSize(560, 330);
-        this.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
+        this.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
 
         indicator = ResourcesHanlder.createAvatarView(name, false);
         indicator.setLayoutX(20);
@@ -51,12 +51,12 @@ public class PlayerSection extends Pane {
     }
 
     public void startTimer() {
-        this.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
+        this.setStyle("-fx-background-color: rgba(0,0,0,0.3);");
         timer.start();
     }
 
     public void stopTimer() {
-        this.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
+        this.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
         timer.stop();
     }
 

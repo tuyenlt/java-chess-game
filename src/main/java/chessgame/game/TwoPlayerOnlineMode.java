@@ -1,5 +1,7 @@
 package chessgame.game;
 
+import java.util.function.Consumer;
+
 import chessgame.logic.Move;
 import chessgame.network.GameNetwork;
 import chessgame.network.IngameResponseHandler;
@@ -14,6 +16,7 @@ import javafx.application.Platform;
 public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandler{
 
     private GameNetwork client;
+    private Consumer<Integer> onGameEnd;
     
     public TwoPlayerOnlineMode(boolean isBoardReverse){
         super("singlePlayer", isBoardReverse);
@@ -38,6 +41,9 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
         }        
     }
 
+    public void setOnGameEnd(Consumer<Integer> onGameEnd){
+        this.onGameEnd = onGameEnd;
+    }
 
     @Override
     public void checkGameEnd(String currentTurn){
@@ -47,6 +53,7 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
     @Override
     public void handleGameEnd(GameEndResponse gameEndResponse) {
         String winnerName = "None";
+        System.out.println(gameEndResponse.eloChange);
         if(gameEndResponse.state == 0){
             winnerName = playerTop.name;
         }else if(gameEndResponse.state == 1){
@@ -58,7 +65,7 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
             gameEndResponse.state == 0.5 ? "Draw" : winnerName + " win", 
             String.valueOf(gameEndResponse.eloChange), 
             () -> {
-                onGameEnd.run();
+                onGameEnd.accept(gameEndResponse.eloChange);
             }
         );
         Platform.runLater(()->{

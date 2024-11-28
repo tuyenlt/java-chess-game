@@ -25,7 +25,6 @@ public class HistoryGameReplay extends StackPane {
     private ReplayBoard replayBoard;
     private boolean isAutoPlay = false; 
     private Timeline autoPlayTimeline;
-    private StockfishEvaluator stockfish = new StockfishEvaluator();
     private Runnable onReturn = () -> {
         System.out.println("return");
     };

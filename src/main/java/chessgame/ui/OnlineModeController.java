@@ -63,7 +63,6 @@ public class OnlineModeController {
                 avatarImageView.setClip(clip);
                 avatarImageView.setVisible(true);
             });
-            client.sendImage(avatarFile, user.name);
         } catch (Exception e) {
             e.printStackTrace();
         }

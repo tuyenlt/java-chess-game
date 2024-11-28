@@ -3,6 +3,7 @@ package chessgame.ui;
 import java.util.function.Consumer;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
@@ -20,5 +21,9 @@ public class GameOptionsMenu extends HBox {
         newButton.getStyleClass().add(styleClass);
         newButton.setOnAction(event -> onAction.accept(event));
         this.getChildren().add(newButton);
+    }
+
+    public void addNode(Node node){
+        this.getChildren().add(node);
     }
 }
