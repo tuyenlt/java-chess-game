@@ -1,12 +1,12 @@
 package chessgame.game;
 
-import chessgame.engine.StockfishEngineDemo;
+import chessgame.engine.StockfishEngine;
 import chessgame.logic.Move;
 import javafx.application.Platform;
 import javafx.scene.control.ChoiceBox;
 
 public class SinglePlayerMode extends MainGame{
-    private StockfishEngineDemo stockfish = new StockfishEngineDemo();
+    private StockfishEngine stockfish = new StockfishEngine();
     private String playerSide = "w";
     private boolean isBoardReverse;
     
@@ -30,7 +30,7 @@ public class SinglePlayerMode extends MainGame{
         // difficultyChoice.getStyleClass().add("custom-choice-box");
         difficultyChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             stockfish.stop();
-            stockfish = new StockfishEngineDemo();
+            stockfish = new StockfishEngine();
             stockfish.setDifficulty(newValue);
             createBoard(playerSide, isBoardReverse);
         });
@@ -42,7 +42,7 @@ public class SinglePlayerMode extends MainGame{
                 playerSide = "w";
             }
             stockfish.stop();
-            stockfish = new StockfishEngineDemo();
+            stockfish = new StockfishEngine();
             createBoard(playerSide, this.isBoardReverse);
         });
         gameOptionsMenu.addNode(difficultyChoice);

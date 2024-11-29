@@ -59,13 +59,10 @@ public class HistoryController {
                     Stage replayStage = new Stage();
                     replayStage.setTitle("Game Replay");
                     replayStage.setResizable(false);
-                    historyButton.getScene().setCursor(Cursor.WAIT);
                     HistoryGameReplay historyGameReplay = new HistoryGameReplay(historyGame.moves, !historyGame.onWhite);
                     historyGameReplay.setOnReturn(replayStage::close);
                     replayStage.setScene(new Scene(historyGameReplay));
-                    historyButton.getScene().setCursor(Cursor.DEFAULT);
                     replayStage.show();
-
                 });
 
                 HBox contentRow = new HBox();
@@ -105,7 +102,5 @@ public class HistoryController {
             }
         });
     }
-
-
 
 }

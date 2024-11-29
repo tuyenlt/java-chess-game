@@ -1,6 +1,6 @@
 package chessgame.game;
 
-import chessgame.engine.StockfishEngineDemo;
+import chessgame.engine.StockfishEngine;
 import chessgame.ui.GameOptionsMenu;
 import chessgame.ui.ReplayBoard;
 import javafx.animation.KeyFrame;
