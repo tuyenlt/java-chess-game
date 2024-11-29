@@ -43,6 +43,7 @@ public class ReplayBoard extends Pane{
         for(String move : moves){
             board.movePiece(new Move(move));
             double winRate = stockfish.getWinRate(board.getMoves("all"));
+            // System.out.println(board.getMoves("all").size());
             movesEvaluator.add(board.getTypeMove(winRate, false));
             boardStage.add(board.getBoardState());
         }

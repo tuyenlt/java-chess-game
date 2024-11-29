@@ -201,7 +201,7 @@ public class Board {
     public void movePiece(String stringMove){
         // System.out.println(stringMove);
         movePiece(new Move(stringMove));
-        allMoves.add(stringMove);                               
+        // allMoves.add(stringMove);                               
     }
 
     public void movePiece(Move move){
@@ -245,7 +245,7 @@ public class Board {
             blackMoves.add(move.toString());
             currentTurn = "w";
         }
-        if(!move.isTurnBot())allMoves.add(move.toString());
+        allMoves.add(move.toString());
 
         // Thêm thế cờ mới
         boardPositions.add(toString());
@@ -367,6 +367,10 @@ public class Board {
     // Xếp hạng nước đi Brilliant > Great > Best > Excellent > Good > Inaccuracy > Mistake > Blunder 
     public String getTypeMove(double newRate, boolean lostPiece){
         double changeRate = oldRate - newRate;
+        // System.out.println(allMoves.size());
+        // System.out.println(allMoves.getLast());
+        // System.out.println(oldRate);
+        // System.out.println(newRate);
         oldRate = 1- newRate;   
         if (changeRate >= 0.2) return "Blunder";
         else if(changeRate >= 0.1) return "Mistake";

@@ -111,10 +111,12 @@ public class StockfishEngineDemo {
     public double getWinRate(List<String> allMoves){
         int score = 0;
         setPosition(allMoves);
+        // Sao nó in ra 0???????
         sendCommand("go depth "+depth);                 // Phân tích với độ sâu depth mặc định là 20
         List<String> output = readOutput();
         for (String line : output) {
             if(line.startsWith("info depth " + depth)){
+                System.out.println(line);
                 if (line.contains("score cp")) {
                     // Điểm dựa trên vật chất (centipawn)
                     String[] parts = line.split("score cp ");
@@ -126,9 +128,13 @@ public class StockfishEngineDemo {
                 }
             } 
         }
-
+        
+        // System.out.println(allMoves.size());
+        // System.out.println(score);
+        // System.out.println(1/(1+Math.exp(-0.003*score)));
+        
         // Chuyển hóa từ điểm centipawn sang tỉ lệ thắng
-        return 1/(1+Math.exp(-0.003*score));
+        return 1-1/(1+Math.exp(-0.003*score));
     }
 
     // Dừng Stockfish

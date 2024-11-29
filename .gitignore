@@ -22,3 +22,5 @@ repository/
 *.log
 *.tmp
 *.bak
+
+.VSCodeCounter
