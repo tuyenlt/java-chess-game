@@ -201,7 +201,7 @@ public class Board {
     public void movePiece(String stringMove){
         // System.out.println(stringMove);
         movePiece(new Move(stringMove));
-        allMoves.add(stringMove);                               
+        // allMoves.add(stringMove);                               
     }
 
     public void movePiece(Move move){
@@ -365,9 +365,14 @@ public class Board {
     // newRate là tỉ lệ thắng sau khi đi nước đi x bằng cách gọi stockfish tính điểm
     // lostPiece là true nếu nước đi này có sự hi sinh 1 quân cờ nào đó
     // Xếp hạng nước đi Brilliant > Great > Best > Excellent > Good > Inaccuracy > Mistake > Blunder 
-    public String getTypeMove(double newRate, boolean lostPiece){
-        double changeRate = oldRate - newRate;
-        oldRate = 1- newRate;   
+    public String getTypeMove(double newRate, double bestMoveRate, boolean lostPiece){
+        double changeRate = bestMoveRate - newRate;
+        // System.out.println(allMoves.size());
+        // // System.out.println(allMoves.getLast());
+        // System.out.println(bestMoveRate);
+        // System.out.println(newRate);
+        // System.out.println(changeRate);
+        oldRate = 1- newRate;
         if (changeRate >= 0.2) return "Blunder";
         else if(changeRate >= 0.1) return "Mistake";
         else if(changeRate>= 0.05) return "Inaccuracy";
@@ -381,6 +386,11 @@ public class Board {
             if (newRate >=0.5 && oldRate <=0.5) return "Great";
             return "Best";
         }
+    }
+
+    public String getMovesString(){
+        if (allMoves.size()==0) return "";
+        return String.join(" ", allMoves);
     }
 
     @Override

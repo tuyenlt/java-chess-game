@@ -100,35 +100,45 @@ public class StockfishEngineDemo {
         List<String> output = readOutput();
         for (String line : output) {
             if (line.startsWith("bestmove")) {
-                System.out.println(line);
+                // System.out.println(line);
                 return line.split(" ")[1];
             }
         }
         return null;
     }
+
+    public String getBestMove(String moves){
+        sendCommand("position startpos moves " + moves);
+        return getBestMove();
+    }
     
     // Trả về tỉ lệ thắng của người chơi hiện tại
-    public double getWinRate(List<String> allMoves){
+    public double getWinRate(String moves, String current){
         int score = 0;
-        setPosition(allMoves);
+        sendCommand("position startpos moves " + moves);
+        // Sao nó in ra 0???????
         sendCommand("go depth "+depth);                 // Phân tích với độ sâu depth mặc định là 20
         List<String> output = readOutput();
         for (String line : output) {
             if(line.startsWith("info depth " + depth)){
+                // System.out.println(line);
                 if (line.contains("score cp")) {
                     // Điểm dựa trên vật chất (centipawn)
                     String[] parts = line.split("score cp ");
                     score = Integer.parseInt(parts[1].split(" ")[0]);
-                    if (allMoves.size() %2 ==0 ) score = -score;
+                    if (current.equals("w") ) score = -score;
                 } else if (line.contains("score mate")) {
-                    if (allMoves.size() % 2==0) score = Integer.MIN_VALUE;
                     score = Integer.MAX_VALUE;
                 }
             } 
         }
-
+        System.out.println(score);
+        // System.out.println(allMoves.size());
+        // System.out.println(score);
+        // System.out.println(1/(1+Math.exp(-0.003*score)));
+        
         // Chuyển hóa từ điểm centipawn sang tỉ lệ thắng
-        return 1 - 1/(1+Math.exp(-0.003*score));
+        return (1/(1+Math.exp(-0.003*score)));
     }
 
     // Dừng Stockfish
