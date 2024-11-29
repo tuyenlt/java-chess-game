@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.MainController">
+<StackPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chessgame.ui.MainController">
     <!-- Scene chính (main scene) -->
     <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22.0.1">
         <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
@@ -18,7 +18,7 @@
                 <Image url="@image/resized_image.png" />
             </image>
         </ImageView>
-        <AnchorPane fx:id="secondaryAnchorPane" layoutX="440.0" layoutY="60.0" prefHeight="600" prefWidth="400" style="-fx-background-color: rgba(38, 36, 33, 0.5);" stylesheets="@style.css">
+        <AnchorPane fx:id="secondaryAnchorPane" layoutX="440.0" layoutY="60.0" prefHeight="600" prefWidth="400" style="-fx-background-color: rgba(38, 36, 33, 0.5);">
             <effect>
                 <DropShadow color="#000000" offsetX="5" offsetY="5" radius="10" />
             </effect>
@@ -26,7 +26,7 @@
                 <VBox alignment="CENTER" layoutX="140" layoutY="20" />
                 <VBox layoutX="50.0" layoutY="300.0" prefWidth="300" spacing="10" />
                 <HBox alignment="CENTER" layoutX="120" layoutY="520" />
-                <Button fx:id="onlineModeButton" layoutX="25.0" layoutY="229.0" onAction="#switchToLogin" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Play Online">
+                <Button fx:id="onlineModeButton" layoutX="25.0" layoutY="229.0" onAction="#switchToLogin" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" text="Play Online">
                 </Button>
                 <ImageView fitHeight="81.0" fitWidth="96.0" layoutX="150.0" layoutY="37.0">
                     <image>
@@ -34,18 +34,25 @@
                     </image>
                 </ImageView>
                 <Label layoutX="53.0" layoutY="159.0" style="-fx-font-size: 40px;     -fx-font-family: Verdana;      /* Gradient xanh tím */     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 15, 0.5, 3, 3); /* Bóng đổ */     -fx-alignment: center;" text="CHESS GAME" />
-                <Button fx:id="quitButton" layoutX="25.0" layoutY="389.0" onAction="#quit" prefHeight="54.0" prefWidth="350.0" styleClass="quit-button" stylesheets="@style.css" text="Quit">
+                <Button fx:id="quitButton" layoutX="25.0" layoutY="389.0" onAction="#quit" prefHeight="54.0" prefWidth="350.0" styleClass="quit-button" text="Quit">
                 </Button>
-                <Button fx:id="playOfflineButton" layoutX="25.0" layoutY="309.0" onAction="#offlineModeMenu" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" stylesheets="@style.css" text="Play Offline">
+                <Button fx:id="playOfflineButton" layoutX="25.0" layoutY="309.0" onAction="#offlineModeMenu" prefHeight="54.0" prefWidth="350.0" styleClass="custom-button" text="Play Offline">
                 </Button>
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="53.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@image/online.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="53.0" layoutY="317.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@image/offline.png" />
+               </image>
+            </ImageView>
 
             </children>
         </AnchorPane>
-        
+
     </AnchorPane>
-
-
-
 
 
 </StackPane>
