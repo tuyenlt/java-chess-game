@@ -11,38 +11,19 @@ import chessgame.network.User;
 import chessgame.network.packets.GeneralPackets.*;
 import chessgame.network.packets.IngamePackets.InitPacket;
 import chessgame.utils.Config;
-import chessgame.utils.ResourcesHanlder;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.Flow;
 
 public class MainController implements ClientResponseHandle, Initializable {
     private static Stage stage;
@@ -74,10 +55,8 @@ public class MainController implements ClientResponseHandle, Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {       
         if (secondaryAnchorPane != null) {
-            double duration = 0.4;
-            if(AppState.isSecondaryPaneOpened()) duration = 0.2;
+            double duration = 0.2;
             AnimationUtils.applyEffect(secondaryAnchorPane, duration);
-            AppState.setSecondaryPaneOpened(true);
         }
 
     }
@@ -111,7 +90,6 @@ public class MainController implements ClientResponseHandle, Initializable {
     public void switchToLogin() {
         if(client == null){
             try {
-//                client = new ClientNetwork(10000, 5555, 6666, "localhost");
                 client = new ClientNetwork(10000, 5555, 6666, Config.serverAddress);
                 client.connectMainServer();
                 client.setUiResponseHandler(this);
@@ -274,7 +252,6 @@ public class MainController implements ClientResponseHandle, Initializable {
             game = new TwoPlayerOnlineMode(true);
         }     
         game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side, true);
-//        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, "localhost");
         GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, Config.serverAddress);
         gameClient.setResponHandler(game);
         game.setClient(gameClient);
@@ -284,14 +261,17 @@ public class MainController implements ClientResponseHandle, Initializable {
             System.out.println(e);
         }
         gameClient.sendRequest(new InitPacket(user.playerId));
+
         game.setOnGameEnd((eloChange)->{
             user.elo += eloChange;
             onlineModeMenu();
         });
+
         game.setOnGameEnd(()->{
             client.sendRequest(new MsgPacket("/surrender"));
             onlineModeMenu();
         });
+
         Scene scene = new Scene(game);
         Platform.runLater(()->{
             stage.setScene(scene);

@@ -128,7 +128,7 @@ public class StockfishEngineDemo {
         }
 
         // Chuyển hóa từ điểm centipawn sang tỉ lệ thắng
-        return 1/(1+Math.exp(-0.003*score));
+        return 1 - 1/(1+Math.exp(-0.003*score));
     }
 
     // Dừng Stockfish

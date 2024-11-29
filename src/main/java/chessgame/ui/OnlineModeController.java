@@ -2,7 +2,6 @@ package chessgame.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.cert.PolicyNode;
 
 import chessgame.network.ClientNetwork;
 import chessgame.network.User;
