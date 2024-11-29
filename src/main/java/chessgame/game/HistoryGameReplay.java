@@ -62,7 +62,9 @@ public class HistoryGameReplay extends StackPane {
         replayMenu.addButton("Prev", "custom-button", event -> {
             replayBoard.prev();
             updateMovesDisplay();
-            autoPlayTimeline.stop();
+            if(autoPlayTimeline!=null){
+                autoPlayTimeline.stop();
+            }            
         });
         
         replayMenu.addButton("Start/ Stop", "custom-button", event -> {
@@ -72,7 +74,9 @@ public class HistoryGameReplay extends StackPane {
         replayMenu.addButton("Next", "custom-button", event -> {
             replayBoard.next();
             updateMovesDisplay();
-            autoPlayTimeline.stop();
+            if(autoPlayTimeline!=null){
+                autoPlayTimeline.stop();
+            }
         });
 
         // Create ScrollPane for moves

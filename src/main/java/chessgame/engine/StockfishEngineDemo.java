@@ -14,7 +14,7 @@ public class StockfishEngineDemo {
     private BufferedReader stockfishReader;
     private OutputStreamWriter stockfishWriter;
     private String stockfishPath = "/stockfish/stockfish.exe"; 
-    private int depth =20;
+    private int depth ;
     
     // Khởi chạy Stockfish
     public StockfishEngineDemo() {
@@ -28,6 +28,7 @@ public class StockfishEngineDemo {
             stockfishProcess = new ProcessBuilder(stockfishPath).start();
             stockfishReader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
             stockfishWriter = new OutputStreamWriter(stockfishProcess.getOutputStream());
+            depth = 10;
         } catch (IOException e) {
             e.printStackTrace();
             // return false;
