@@ -25,7 +25,7 @@ public class ClientNetwork {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
         this.serverAddr = serverAddr;
-        Client client = new Client(1024 * 1024, 1024 * 1024);
+        client = new Client(1024 * 1024, 1024 * 1024);
         PacketsRegester.register(client);
     }
 

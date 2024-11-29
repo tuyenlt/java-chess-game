@@ -57,10 +57,10 @@ public class ResourcesHanlder {
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
             long fileSizeInBytes = selectedFile.length(); 
-            long maxFileSizeInBytes = 2 * 1024 * 1024;
+            long maxFileSizeInBytes = 1024 * 1024;
 
             if (fileSizeInBytes > maxFileSizeInBytes) {
-                throw new Exception("File size exceeds 2MB: " + selectedFile.getName());
+                throw new Exception("File size exceeds 1MB: " + selectedFile.getName());
             }
 
             System.out.println("File selected: " + selectedFile.getAbsolutePath());

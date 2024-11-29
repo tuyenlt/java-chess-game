@@ -95,6 +95,8 @@ public class MainController implements ClientResponseHandle, Initializable {
                 client.setUiResponseHandler(this);
             } catch (Exception e) {
                 System.out.println(e);
+                System.out.println(e.getCause());
+                System.out.println(e.getMessage());
             }
         }
 
