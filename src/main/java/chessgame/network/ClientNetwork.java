@@ -25,7 +25,7 @@ public class ClientNetwork {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
         this.serverAddr = serverAddr;
-        client = new Client(10000, 10000);
+        client = new Client(1024 * 1024, 1024 * 1024);
         PacketsRegester.register(client);
     }
 
@@ -80,7 +80,7 @@ public class ClientNetwork {
 
         });
         client.addListener(new ImageChunkHandler());
-        new Thread("Connect") {
+        new Thread() {
             public void run() {
                 try {
                     client.connect(timeout, serverAddr, tcpPort, udpPort);

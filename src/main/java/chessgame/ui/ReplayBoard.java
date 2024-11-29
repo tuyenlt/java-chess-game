@@ -3,7 +3,7 @@ package chessgame.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import chessgame.engine.StockfishEngineDemo;
+import chessgame.engine.StockfishEngine;
 import chessgame.logic.Board;
 import chessgame.logic.Move;
 import javafx.scene.Cursor;
@@ -37,7 +37,7 @@ public class ReplayBoard extends Pane{
     }
 
     private void createBoardState(String gameMoves){
-        StockfishEngineDemo stockfish = new StockfishEngineDemo();
+        StockfishEngine stockfish = new StockfishEngine();
         boardStage.add(board.getBoardState());
         movesEvaluator.add(" ");
         int k=0;

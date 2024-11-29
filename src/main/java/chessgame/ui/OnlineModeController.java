@@ -2,7 +2,7 @@ package chessgame.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.cert.PolicyNode;
+import java.nio.file.Files;
 
 import chessgame.network.ClientNetwork;
 import chessgame.network.User;
@@ -27,6 +27,9 @@ public class OnlineModeController {
 
     private Runnable onLogout;
 
+    private static LoadingController loadingController;
+    private static Parent loadingRoot;
+
     @FXML
     private AnchorPane root;
     @FXML
@@ -48,9 +51,18 @@ public class OnlineModeController {
     @FXML
     private Button singlePlayerButton;
 
+
     public void initialize() throws IOException{
         System.out.println("OnlineModeController initialized");
         System.out.println(avatarImageView.isVisible());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
+            loadingRoot = loader.load();
+            loadingController = loader.getController();
+            loadingPane.getChildren().setAll(loadingRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleImageUpload() {
@@ -121,8 +133,6 @@ public class OnlineModeController {
                 rankingPane.setVisible(true);
                 boardImageView.setVisible(false);
                 historyPane.setVisible(false);
-
-
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -154,23 +164,17 @@ public class OnlineModeController {
     }
 
     public void handleFindOnlineGame() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chessgame/loadingIcon.fxml"));
-            Parent loadingRoot = loader.load();
-            LoadingController loadingController = loader.getController();
-            loadingController.setOnCancel(()->{
-                client.sendRequest(new MsgPacket("/cancel-find-game"));
-                loadingPane.setVisible(false);
-            });
+        loadingController.loadingLabel.setText("Finding online game, please wait...");
+        loadingController.cancelFindingButton.setVisible(true);
+        loadingController.setOnCancel(()->{
+            client.sendRequest(new MsgPacket("/cancel-find-game"));
+            loadingPane.setVisible(false);
+        });
 
-            Platform.runLater(() -> {
-                loadingPane.getChildren().setAll(loadingRoot);
-                loadingPane.setVisible(true);
+        Platform.runLater(() -> {
+            loadingPane.setVisible(true);
 
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
         client.sendRequest(new FindGameRequest(user.playerId, user.name, user.elo));
         System.out.println("Find online game");
     }

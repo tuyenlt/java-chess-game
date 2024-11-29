@@ -163,6 +163,24 @@ abstract public class MainGame extends StackPane {
                 getChildren().add(gameEndAnnouncement);
             });
         }
+        if(playerSectionTop.getTimerLabel().getText().equals("0:00")){
+            GameEndAnnouncement gameEndAnnouncement = new GameEndAnnouncement(playerTop.name, playerBottom.name, playerBottom.name + " win", "None", 
+            () -> {
+                onGameEnd.run();
+            });
+            Platform.runLater(()->{
+                getChildren().add(gameEndAnnouncement);
+            });
+        }
+        if(playerSectionBottom.getTimerLabel().getText().equals("0:00")){
+            GameEndAnnouncement gameEndAnnouncement = new GameEndAnnouncement(playerTop.name, playerBottom.name, playerTop.name + " win", "None", 
+            () -> {
+                onGameEnd.run();
+            });
+            Platform.runLater(()->{
+                getChildren().add(gameEndAnnouncement);
+            });
+        }
     }
 
     public void setOnGameEnd(Runnable onGameEnd){

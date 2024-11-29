@@ -9,7 +9,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockfishEngineDemo {
+public class StockfishEngine {
     private Process stockfishProcess;
     private BufferedReader stockfishReader;
     private OutputStreamWriter stockfishWriter;
@@ -17,9 +17,9 @@ public class StockfishEngineDemo {
     private int depth ;
     
     // Khởi chạy Stockfish
-    public StockfishEngineDemo() {
+    public StockfishEngine() {
         try {
-            String path = StockfishEngineDemo.class
+            String path = StockfishEngine.class
                     .getResource("/chessgame/stockfish/stockfish.exe")
                     .getPath().replace("\\", "/");
             stockfishPath = URLDecoder.decode(path, "UTF-8");
@@ -118,7 +118,8 @@ public class StockfishEngineDemo {
         int score = 0;
         sendCommand("position startpos moves " + moves);
         // Sao nó in ra 0???????
-        sendCommand("go depth "+depth);                 // Phân tích với độ sâu depth mặc định là 20
+        // sendCommand("go depth "+ depth);                 // Phân tích với độ sâu depth mặc định là 20
+        sendCommand("go depth "+ 5);                 // Phân tích với độ sâu depth mặc định là 20
         List<String> output = readOutput();
         for (String line : output) {
             if(line.startsWith("info depth " + depth)){
