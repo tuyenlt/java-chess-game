@@ -40,18 +40,11 @@ public class ReplayBoard extends Pane{
         StockfishEngine stockfish = new StockfishEngine();
         boardStage.add(board.getBoardState());
         movesEvaluator.add(" ");
-        int k=0;
         for(String move : moves){
-            k++;
-            System.out.println(k);
             String bestMove = stockfish.getBestMove(board.getMovesString());
             double bestMoveRate = stockfish.getWinRate(board.getMovesString()+" "+bestMove, board.getCurrentTurn());
             board.movePiece(new Move(move));
             double newRate = stockfish.getWinRate(board.getMovesString(),((board.getCurrentTurn().equals("w") ? "b" : "w")));
-            // System.out.println(bestMove);
-            // System.out.println(move);
-            // System.out.println(bestMoveRate);
-            // System.out.println(newRate);
             movesEvaluator.add(board.getTypeMove(newRate,bestMoveRate, false));
             boardStage.add(board.getBoardState());
         }
