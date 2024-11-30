@@ -14,7 +14,7 @@ public class StockfishEngine {
     private BufferedReader stockfishReader;
     private OutputStreamWriter stockfishWriter;
     private String stockfishPath = "/stockfish/stockfish.exe"; 
-    private int depth =20;
+    private int depth ;
     
     // Khởi chạy Stockfish
     public StockfishEngine() {
@@ -28,6 +28,7 @@ public class StockfishEngine {
             stockfishProcess = new ProcessBuilder(stockfishPath).start();
             stockfishReader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
             stockfishWriter = new OutputStreamWriter(stockfishProcess.getOutputStream());
+            depth = 20;
         } catch (IOException e) {
             e.printStackTrace();
             // return false;
@@ -117,8 +118,8 @@ public class StockfishEngine {
         int score = 0;
         sendCommand("position startpos moves " + moves);
         // Sao nó in ra 0???????
-        // sendCommand("go depth "+ depth);                 // Phân tích với độ sâu depth mặc định là 20
-        sendCommand("go depth "+ 5);                 // Phân tích với độ sâu depth mặc định là 20
+        sendCommand("go depth "+ depth);                 // Phân tích với độ sâu depth mặc định là 20
+        // sendCommand("go depth "+ 5);                 // Phân tích với độ sâu depth mặc định là 20
         List<String> output = readOutput();
         for (String line : output) {
             if(line.startsWith("info depth " + depth)){
