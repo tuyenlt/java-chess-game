@@ -13,13 +13,14 @@ import javafx.stage.Stage;
 /**
  * JavaFX App
  */
+
+ 
 public class App extends Application {
 
     // private static Scene scene;
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Tải tệp FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScene.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -34,7 +35,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args); // Khởi chạy ứng dụng
+        launch(args); 
     }
 
 }

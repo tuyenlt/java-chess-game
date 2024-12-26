@@ -3,7 +3,7 @@ package chessgame.game;
 import java.util.function.Consumer;
 
 import chessgame.logic.Move;
-import chessgame.network.GameNetwork;
+import chessgame.network.GameClient;
 import chessgame.network.IngameResponseHandler;
 import chessgame.network.packets.GeneralPackets.MsgPacket;
 import chessgame.network.packets.IngamePackets.GameEndResponse;
@@ -15,7 +15,7 @@ import javafx.application.Platform;
 
 public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandler{
 
-    private GameNetwork client;
+    private GameClient client;
     private Consumer<Integer> onGameEnd;
     
     public TwoPlayerOnlineMode(boolean isBoardReverse){
@@ -25,7 +25,7 @@ public class TwoPlayerOnlineMode extends MainGame implements IngameResponseHandl
         });
     }
 
-    public void setClient(GameNetwork client){
+    public void setClient(GameClient client){
         this.client = client;
     }
 

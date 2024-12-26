@@ -1,12 +1,11 @@
 package chessgame.ui;
 
-import chessgame.game.HistoryGameReplay;
 import chessgame.game.SinglePlayerMode;
 import chessgame.game.TwoPlayerOfflineMode;
 import chessgame.game.TwoPlayerOnlineMode;
 import chessgame.network.ClientNetwork;
 import chessgame.network.ClientResponseHandle;
-import chessgame.network.GameNetwork;
+import chessgame.network.GameClient;
 import chessgame.network.User;
 import chessgame.network.packets.GeneralPackets.*;
 import chessgame.network.packets.IngamePackets.InitPacket;
@@ -58,7 +57,6 @@ public class MainController implements ClientResponseHandle, Initializable {
             double duration = 0.2;
             AnimationUtils.applyEffect(secondaryAnchorPane, duration);
         }
-
     }
 
     public void quit(ActionEvent event) {
@@ -90,7 +88,7 @@ public class MainController implements ClientResponseHandle, Initializable {
     public void switchToLogin() {
         if(client == null){
             try {
-                client = new ClientNetwork(10000, 5555, 6666, Config.serverAddress);
+                client = new ClientNetwork(Config.clientTimeOut, Config.serverTcpPort, Config.serverUdpPort, Config.serverAddress);
                 client.connectMainServer();
                 client.setUiResponseHandler(this);
             } catch (Exception e) {
@@ -254,7 +252,7 @@ public class MainController implements ClientResponseHandle, Initializable {
             game = new TwoPlayerOnlineMode(true);
         }     
         game.setPlayerBottom(user.name, String.valueOf(user.elo), response.side, true);
-        GameNetwork gameClient = new GameNetwork(10000, response.tcpPort, response.udpPort, Config.serverAddress);
+        GameClient gameClient = new GameClient(10000, response.tcpPort, response.udpPort, Config.serverAddress);
         gameClient.setResponHandler(game);
         game.setClient(gameClient);
         try{

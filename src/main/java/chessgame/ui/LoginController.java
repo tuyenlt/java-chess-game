@@ -3,7 +3,6 @@ package chessgame.ui;
 
 import chessgame.network.packets.GeneralPackets.LoginRequest;
 import chessgame.utils.Validator;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

@@ -28,7 +28,7 @@ public class StockfishEngine {
             stockfishProcess = new ProcessBuilder(stockfishPath).start();
             stockfishReader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
             stockfishWriter = new OutputStreamWriter(stockfishProcess.getOutputStream());
-            depth = 20;
+            depth = 10;
         } catch (IOException e) {
             e.printStackTrace();
             // return false;

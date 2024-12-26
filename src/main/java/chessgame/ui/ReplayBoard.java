@@ -1,12 +1,10 @@
 package chessgame.ui;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import chessgame.engine.StockfishEngine;
 import chessgame.logic.Board;
 import chessgame.logic.Move;
-import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -57,7 +55,6 @@ public class ReplayBoard extends Pane{
                 tile.setFill((row + col) % 2 == 0 ? Color.valueOf("#EBECD0") : Color.valueOf("#739552"));
                 tile.setX(col * TILE_SIZE);
                 tile.setY(row * TILE_SIZE);
-
                 tiles[row][col] = tile;
 
                 getChildren().add(tile);

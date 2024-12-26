@@ -10,17 +10,16 @@ import chessgame.network.packets.GeneralPackets.*;
 import chessgame.network.packets.IngamePackets.*;
 import chessgame.network.packets.PacketsRegester;
 
-public class GameNetwork {
+public class GameClient {
     private Client client;
     private int timeout;
     private int tcpPort;
     private int udpPort;
     private String serverAddr;
     private boolean isConnected = false;
-    private LoginResponse user = null; 
     private IngameResponseHandler responseHandle;
 
-    public GameNetwork(int timeout, int tcpPort, int udpPort, String serverAddr) {
+    public GameClient(int timeout, int tcpPort, int udpPort, String serverAddr) {
         this.timeout = timeout;
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;

@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 import chessgame.logic.Board;
 import chessgame.logic.Move;
 import chessgame.logic.Piece;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

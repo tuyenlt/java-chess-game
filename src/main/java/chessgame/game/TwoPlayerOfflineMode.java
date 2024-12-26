@@ -9,7 +9,5 @@ public class TwoPlayerOfflineMode extends MainGame {
 
     @Override
     protected void handleOnMovePiece(String currentTurn) {
-        // TODO Auto-generated method stub
-        
     }
 }

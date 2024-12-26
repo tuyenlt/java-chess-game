@@ -1,21 +1,17 @@
 package chessgame.ui;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import chessgame.game.HistoryGameReplay;
 import chessgame.network.packets.GeneralPackets.HistoryGame;
 import chessgame.network.packets.GeneralPackets.HistoryGameResponse;
-import chessgame.network.packets.GeneralPackets.RankingListResponse;
 import chessgame.network.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
